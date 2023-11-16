@@ -1,3 +1,16 @@
+# mudeer
+*linked*
+icons/
+build/
+
+# codelite workspace
+*.workspace
+.codelite
+.tern-project
+
+# dolphin
+.directory
+
 # Logs
 logs
 *.log
