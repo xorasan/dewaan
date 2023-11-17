@@ -1895,12 +1895,12 @@ var Web;
 			});
 			q.run(function () {
 				Server.init({
-					port: XAADIMPORT,
+					port: 3060,
 					name: "server"
 				});
 				print_prop( 'public path', public_path );
-				print_prop( 'build', 127 );
-				print_prop( 'server port', XAADIMPORT );
+				print_prop( 'build', 128 );
+				print_prop( 'server port', 3060 );
 			});
 		}
 	};
@@ -2095,7 +2095,7 @@ var Network = network = {
 		}, 1 * 15 * 60 * 1000); // 15m for now, 24h later
 	},
 };
-network.favor(PRIMARY).intercept('network', 'time', function (respond) {
+network.favor(PRIMARY).intercept('network', 'time', function (response) {
 	/*
 	* time is set only for perm and broadcast channels
 	* on-demand doesn't send time at all
@@ -2105,21 +2105,21 @@ network.favor(PRIMARY).intercept('network', 'time', function (respond) {
 	* time will be before the creation dates of those new items and
 	* they'll get synced on the next request
 	* */
-	if (respond.value) respond.extra.time = respond.value || 0;
-	else respond.extra.time = 0;
+	if (response.value) response.extra.time = response.value || 0;
+	else response.extra.time = 0;
 	/*
 	* only return time if client says that it doesn't have time
 	* so that only broadcast qanaat can send out time in all other cases
 	* */
-	if (!respond.value || respond.broadcast)
-		respond.intercept( new Date().getTime() );
-	respond.finish();
+	if (!response.value || response.broadcast)
+		response.intercept( new Date().getTime() );
+	response.finish();
 });
 Web.adaaf(function (done, queue, extra) {
 	var payload = extra.payload ;
 	var obj = extra.obj ;
 	var queuesub = $.queue() ;
-	var respond = function (donesub, name, need, value_from_client) {
+	var response = function (donesub, name, need, value_from_client) {
 		var rsp = {
 			finish: function () {
 				donesub(queuesub, extra);
@@ -2227,7 +2227,7 @@ Web.adaaf(function (done, queue, extra) {
 						count++;
 						if (typeof favor[item][o.name][o.need] == 'function') {
 							favor[item][o.name][o.need](
-								respond(donesub, o.name, o.need, o.value)
+								response(donesub, o.name, o.need, o.value)
 							);
 						} else donesub(queuesub);
 					});
