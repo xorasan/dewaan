@@ -2966,21 +2966,21 @@ var preferences;
 		},
 	};
 	var buildnum = preferences.get('#', 1);
-	if ( buildnum != 128 ) {
+	if ( buildnum != 129 ) {
 		preferences.pop(3); // ruid
 		preferences.pop('@'); // last sync time
 		preferences.pop(4); // list view cache
 		preferences.pop(6); // initial sync done
 	}
-	preferences.set('#', 128);
+	preferences.set('#', 129);
 	Hooks.set('ready', function () {
-		if ( buildnum != 128 ) {
+		if ( buildnum != 129 ) {
 			$.taxeer('seeghahjadeedah', function () {
 				Hooks.run('seeghahjadeedah', buildnum);
 			}, 2000);
 		}
 	});
-	$.log.s( 128 );
+	$.log.s( 129 );
 })();
 var activity;
 ;(function(){
@@ -3479,7 +3479,7 @@ var Settings, settings, currentad;
 		open('https://github.com/xorasan/mudeer', '_blank');
 	}, 'iconmudeer']);
 	if (Config.repo) {
-		add([Config.appname+' '+128, function () {
+		add([Config.appname+' '+129, function () {
 			return Config.sub;
 		}, function () {
 			open(Config.repo, '_blank');
@@ -5437,7 +5437,7 @@ var Network, network, sessions = sessions || 0;
 		payload = payload || {};
 		payload = Object.assign(payload, {
 			broadcast: 1 , // synced before
-			e$ : 128 , // build number
+			e$ : 129 , // build number
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		error_log(payload);
@@ -5482,7 +5482,7 @@ var Network, network, sessions = sessions || 0;
 		if (Object.keys(pending).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 128 , // build number
+			e$ : 129 , // build number
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.get = payload.get || {};
@@ -5540,7 +5540,7 @@ var Network, network, sessions = sessions || 0;
 		if (Object.keys(synced).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 128 , // build number
+			e$ : 129 , // build number
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.sync = payload.sync || {};
@@ -5571,7 +5571,7 @@ var Network, network, sessions = sessions || 0;
 	var upload = function (name, need, value, payload_raw, intercession) {
 		var payload = {};
 		payload = Object.assign(payload, {
-			e$ : 128 , // build number
+			e$ : 129 , // build number
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.upload = {};

@@ -1895,12 +1895,12 @@ var Web;
 			});
 			q.run(function () {
 				Server.init({
-					port: 3060,
+					port: Config.port,
 					name: "server"
 				});
 				print_prop( 'public path', public_path );
-				print_prop( 'build', 128 );
-				print_prop( 'server port', 3060 );
+				print_prop( 'build', 129 );
+				print_prop( 'server port', Config.port );
 			});
 		}
 	};
