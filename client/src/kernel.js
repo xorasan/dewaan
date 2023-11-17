@@ -850,3 +850,4 @@ $.unload = function (mods, fn) {
 })();
 
 $._r();
+$.b = 1;

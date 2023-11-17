@@ -27,6 +27,7 @@ src
 name      client
 connected y
 icons
+	mudeer
 	search
 	help
 	done
@@ -37,6 +38,7 @@ icons
 	timer
 	bugreport
 	featuredplaylist
+	home
 	formatsize
 	translate
 	playarrow
@@ -72,3 +74,8 @@ include
 	softkeys.touch
 	network
 kind      client
+appname   Dewaan
+sub       Forum Software
+desc      Tiny modern forum software for small companies
+repo      https://github.com/xorasan/dewaan
+port      3060

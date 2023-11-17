@@ -1,5 +1,6 @@
 +include linked/files.js
 +include linked/reset.server.js
++include linked/cli.js
 +include linked/weld.js
 +include linked/config.js
 +include linked/hooks.js

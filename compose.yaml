@@ -1,0 +1,6 @@
+services:
+  web:
+    image: dewaan
+    init: true
+    ports:
+         - 3060:3060

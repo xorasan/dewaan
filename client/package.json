@@ -1,5 +1,5 @@
 {
 	"name": "client",
-	"main": "releases/index.html",
+	"main": "../released/index.html",
 	"chromium-args": "--disable-features=ProcessPerSiteUpToMainFrameThreshold"
 }
