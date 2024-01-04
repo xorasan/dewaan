@@ -1,8 +1,8 @@
 {
-	"version": "0.0.1",
-	"name": "client",
-	"subtitle": "",
-	"description": "",
+	"version": "0.0.2",
+	"name": "Dewaan",
+	"subtitle": "Forum Software",
+	"description": "Tiny modern forum software for small companies",
 	"display": "standalone",
 	"fullscreen": "",
 	"cursor": "false",
@@ -13,9 +13,9 @@
 	},
 	"locales": {
 		"en-US": {
-			"name": "client",
-			"subtitle": "",
-			"description": ""
+			"name": "Dewaan",
+			"subtitle": "Forum Software",
+			"description": "Tiny modern forum software for small companies"
 		}
 	},
 	"default_locale": "en-US",
@@ -23,7 +23,7 @@
 		"56": "/0.png",
 		"112": "/1.png"
 	},
-	"origin": "app://client.xorasan",
+	"origin": "app://Dewaan.xorasan",
 	"chrome": {
 		"statusbar": "overlap"
 	}

@@ -103,6 +103,17 @@ $.log = function () {
 			}
 			eval('console.error('+a+');');
 		},
+		w: function () {
+			var a = '', str = '';
+			for (var b in arguments) {
+				if (b > 0) {
+					a = a+', ';
+				}
+				a = a+'arguments['+b+']';
+				str += ' '+ arguments[b];
+			}
+			eval('console.warn('+a+');');
+		},
 		i: function () {
 			var a = '';
 			for (var b in arguments) {
@@ -853,4 +864,23 @@ $.unload = function (mods, fn) {
 	};
 })();
 
+
+//math
+;(function (){
+	var DEG2RAD = Math.PI/180,
+		RAD2DEG = 180/Math.PI;
+	$.convert = {
+		toRad: function (v) {
+			return v*DEG2RAD;
+		},
+		toDeg: function (v) {
+			return v*RAD2DEG;
+		}
+	};
+	$.random = function (min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+})();
+
 $._r();
+$.b = 2;

@@ -1,6 +1,21 @@
 services:
-  web:
-    image: dewaan
-    init: true
+  mongodb:
+    image: mongodb/mongodb-community-server:7.0.3-ubuntu2204
+    container_name: dewaan-mongodb
     ports:
-         - 3060:3060
+      - 27017:27017
+    volumes:
+      - type: volume
+        target: /data/db
+        source: dewaan-mongodb-data
+  web:
+    image: dewaan:latest
+    container_name: dewaan-web
+    init: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3060:3060
+volumes:
+  dewaan-mongodb-data:

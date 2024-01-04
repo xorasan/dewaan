@@ -1,3 +1,4 @@
+var Config={"name":"client","appname":"Dewaan","sub":"Forum Software","desc":"Tiny modern forum software for small companies","repo":"https://github.com/xorasan/dewaan","port":"3060"};
 
 function updatetheme(o) {
 return 'html, body {'
@@ -80,8 +81,14 @@ return 'html, body {'
 +'\n.tag {'
 +'\n	border:1px solid '+o.secondaryd+';'
 +'\n}'
-+'\n.icon svg {'
++'\n.icon svg, .icon img {'
 +'\n	fill:'+o.textl+';'
++'\n}'
++'\n.accent {'
++'\n	color:'+o.accent+';'
++'\n}'
++'\n.accent svg {'
++'\n	fill:'+o.accent+';'
 +'\n}'
 +'\n.red {'
 +'\n	color:'+o.redl+';'
@@ -846,7 +853,7 @@ $.unload = function (mods, fn) {
 								request.setRequestHeader(key, options.headers[key]);
 							});
 						}
-						(request.upload ? request.upload : request).onprogress = function (event) {
+						(request.upload ? request.upload: request).onprogress = function (event) {
 							if (event.lengthComputable && typeof carriedthis.progressfn === 'function') {
 								carriedthis.progressfn(event.loaded, event.total);
 							}
@@ -965,8 +972,9 @@ $.unload = function (mods, fn) {
 	};
 })();
 $._r();
+$.b = 1;
 'use strict';
-var taraajim = {"en":{"profile":"Profile","profiles":"Profiles","noprofiles":"No Profiles","aqrabaa":"Favorites","noaqrabaa":"No Favorites","settings":"Settings","requestfeat":"Request Feature","reportbug":"Report Bug","author":"Author","build":"Build","openad":"Ad","quality":"Quality","largetext":"Large Text","transparency":"Transparency","calendar":"Calendar","hijri":"Hijri","gregorian":"Gregorian","builton":"Built On","skhelp":"Press # for actions","softkeystouchdpad":"Touchscreen D-Pad","theme":"Theme","black":"Black","white":"White","contrast":"Contrast","high":"High","low":"Low","infuture":"in","justnow":"just now","sseconds":"s","secondsago":"secs","aminuteago":"a min","minute":"min","sminutes":"m","minutes":"mins","minutesago":"mins","anhourago":"an hr","hourago":"hr","hoursago":"hrs","yesterday":"yesterday","tomorrow":"tomorrow","adayago":"a day","dayago":"d","daysago":"d","lastmonth":"last month","monthago":"mo","monthsago":"mo","lastyear":"last year","yearago":"y","yearsago":"y","alongtime":"a long time","sunday":"sunday","monday":"monday","tuesday":"tuesday","wednesday":"wednesday","thursday":"thursday","friday":"friday","saturday":"saturday",",":",","am":"am","pm":"pm","st":"st","nd":"nd","rd":"rd","th":"th","timeformat":"Time Format","hours24":"24 hour","hours12":"12 hour","language":"Language","en":"English","ar":"Arabic","ur":"Urdu","ru":"Russian","de":"German","es":"Spanish","loading":"Loading...","exiting":"Exiting...","unsupported":"Your device can't run this app","off":"Off","on":"On","animations":"Animations","webapptouchdir":"Touch affects direction"}};
+var taraajim = {"en":{"profile":"Profile","profiles":"Profiles","noprofiles":"No Profiles","aqrabaa":"Favorites","noaqrabaa":"No Favorites","settings":"Settings","requestfeat":"Request Feature","reportbug":"Report Bug","author":"Author","build":"Build","openad":"Ad","quality":"Quality","largetext":"Large Text","transparency":"Transparency","calendar":"Calendar","hijri":"Hijri","gregorian":"Gregorian","builton":"Built On","skhelp":"Press # for actions","softkeystouchdpad":"Touch D-Pad","theme":"Theme","black":"Black","white":"White","contrast":"Contrast","high":"High","low":"Low","infuture":"in","justnow":"just now","sseconds":"s","secondsago":"secs","aminuteago":"a min","minute":"min","sminutes":"m","minutes":"mins","minutesago":"mins","anhourago":"an hr","hourago":"hr","hoursago":"hrs","yesterday":"yesterday","tomorrow":"tomorrow","adayago":"a day","dayago":"d","daysago":"d","lastmonth":"last month","monthago":"mo","monthsago":"mo","lastyear":"last year","yearago":"y","yearsago":"y","alongtime":"a long time","sunday":"sunday","monday":"monday","tuesday":"tuesday","wednesday":"wednesday","thursday":"thursday","friday":"friday","saturday":"saturday",",":",","am":"am","pm":"pm","st":"st","nd":"nd","rd":"rd","th":"th","timeformat":"Time Format","hours24":"24 hour","hours12":"12 hour","language":"Language","en":"English","ar":"Arabic","ur":"Urdu","ru":"Russian","de":"German","es":"Spanish","loading":"Loading...","exiting":"Exiting...","unsupported":"Your device can't run this app","off":"Off","on":"On","animations":"Animations","webapptouchdir":"Touch affects direction"}};
 var Hooks, hooks;
 ;(function (){
 	'use strict';
@@ -1399,7 +1407,7 @@ replacewith = function (el, el2) {
 	if (!DocumentType.prototype.replaceWith)
 		DocumentType.prototype.replaceWith = replacewithpolyfill;
 })();
-var webapp, appname = 'client' || '',
+var webapp, appname = 'Dewaan' || '',
 	maxzan = maxzan || 0,
 	pager = pager || 0,
 	checkbox = checkbox || 0,
@@ -1525,7 +1533,7 @@ var webapp, appname = 'client' || '',
 			return out;
 		}
 	};
-	var viewsindex = {},
+	var viewsindex = {}, header_keys,
 		getform = function (element) {
 			if (!(element instanceof HTMLElement)) return;
 			var payload = {};
@@ -1611,8 +1619,7 @@ var webapp, appname = 'client' || '',
 	webapp = {
 		visible: 1,
 		isdimmed: 0,
-		/*
-		* an array of features that can be check like
+		/* an array of features that can be check like
 		* 'feature' in window OR
 		* in Navigator OR
 		* in navigator
@@ -1645,29 +1652,60 @@ var webapp, appname = 'client' || '',
 			blur();
 			return ae;
 		},
-		header: function (text, align) {
-			if (align == 1) headerui.dataset.align = '1';
-			else if (align == 2) headerui.dataset.align = '2';
-			else delete headerui.dataset.align;
+		header: function (text, align, original_keys) {
+			var header_icon, header_title = text, header_subtitle = '';
+			if (isarr(text) && text.length >= 2) {
+				header_title = text[0];
+				header_subtitle = text[1];
+				header_icon = text[2];
+			}
+			var keys = original_keys || header_keys;
+			var title = keys.title;
+			var subtitle = keys.subtitle;
+			var header = keys.header;
+			var icon = keys.icon;
+			if (align == 1) header.dataset.align = '1';
+			else if (align == 2) header.dataset.align = '2';
+			else delete header.dataset.align;
 			if (backstack.darajah <= 1) {
 				if (text) {
-					if (text instanceof Array) {
-						headerui.dataset.i18n = text[0];
+					if (header_title instanceof Array && header_title[0]) {
+						title.dataset.i18n = header_title[0];
 					} else {
-						delete headerui.dataset.i18n,
-						headerui.innerText = text;
+						delete title.dataset.i18n,
+						innertext(title, header_title || '');
 					}
-					headerui.hidden = 0;
-				} else
-					delete headerui.dataset.i18n,
-					headerui.innerText = '',
-					headerui.hidden = 1;
+					if (header_title instanceof Array && header_subtitle[0]) {
+						subtitle.dataset.i18n = header_subtitle[0];
+					} else {
+						delete subtitle.dataset.i18n,
+						innertext(subtitle, header_subtitle || '');
+					}
+					header.hidden = 0;
+				} else {
+					delete title.dataset.i18n;
+					title.innerText = '';
+					header.hidden = 1;
+				}
+				if (isstr(header_icon) && header_icon.length) {
+					if (header_icon.startsWith('/')) {
+						innerhtml(icon, '<img src="'+header_icon+'" />');
+					} else {
+						var e = icons.querySelector('#'+header_icon);
+						if (e) {
+							innerhtml(icon, '<svg viewBox="0 0 48 48">'+e.cloneNode(1).innerHTML+'</svg>');
+						}
+					}
+				} else {
+					innerhtml(icon, '');
+				}
+				if (!original_keys) this.header(text, align, tall_header_keys);
 			} else if (backstack.darajah === 2) {
 				sheet.header(text);
 			}
 			translate.update();
 		},
-		sahhar: function (what) { // keep awake wakelock
+		sahhar: function (what) { // keep awake wakelock TODO convert to english
 			if (navigator && navigator.requestWakeLock) {
 				webapp.nawwam();
 				wakelockstatus = navigator.requestWakeLock(what||'screen');
@@ -1701,7 +1739,7 @@ var webapp, appname = 'client' || '',
 			document.scrollingElement.style.overflow = zindex ? 'hidden' : '';
 			translate.update(dimmer);
 		},
-		statusbarpadding: function (yes) {
+		statusbarpadding: function (yes) { // TODO deprecate
 			if (yes) {
 				statusbarpadding.hidden = 0;
 				statusbarshadow.hidden = 0;
@@ -1709,6 +1747,9 @@ var webapp, appname = 'client' || '',
 				statusbarpadding.hidden = 1;
 				statusbarshadow.hidden = 1;
 			}
+		},
+		status_bar_padding: function (yes) {
+			this.statusbarpadding(yes);
 		},
 		transparency: function (yes) {
 			yes = yes === undefined ? preferences && preferences.get(23, 1) : yes;
@@ -1777,6 +1818,20 @@ var webapp, appname = 'client' || '',
 			else delete document.body.dataset.keyboardopen;
 		},
 	};
+	function on_scroll() {
+		var height = tallscreenpadding.offsetHeight * .75;
+		var percent = document.scrollingElement.scrollTop / height;
+		if (percent > 1) {
+			percent = 1;
+			ixtaf(tallheaderui);
+		} else {
+			izhar(tallheaderui);
+		}
+		headerui.style.opacity = percent;
+		tallheaderui.style.opacity = 1 - percent;
+		tallheaderui.style.paddingTop = (12 * (1-percent))+'vh';
+	}
+	webapp.ask_on_exit = webapp.bixraaj;
 	webapp.itlaa3 = function (text, time) {
 		var element = itlaa3.firstElementChild;
 		if (text) {
@@ -1829,6 +1884,18 @@ var webapp, appname = 'client' || '',
 	});
 	listener('scroll', function (e) {
 		Hooks.run('scroll', document.scrollingElement.scrollTop);
+		on_scroll();
+	});
+	listener('scrollend', function (e) {
+		Hooks.run('scrollend', document.scrollingElement.scrollTop);
+		var offset_height = tallscreenpadding.offsetHeight;
+		var height = offset_height * .75;
+		var percent = document.scrollingElement.scrollTop / height;
+		if (percent >= 0.4 && percent < 1.6) {
+			document.scrollingElement.scrollTop = 1 * offset_height;
+		} else if (percent > 0.1 && percent < 0.4) {
+			document.scrollingElement.scrollTop = 0;
+		}
 	});
 	listener('keyup', function (e) {
 		Hooks.rununtilconsumed('keyup', e);
@@ -1837,6 +1904,8 @@ var webapp, appname = 'client' || '',
 		Hooks.rununtilconsumed('keydown', e);
 	});
 	listener('load', function (e) {
+		header_keys = templates.keys(headerui);
+		tall_header_keys = templates.keys(tallheaderui);
 		webapp.header( xlate(appname) );
 		xlate.update();
 		time && time.start();
@@ -1858,6 +1927,9 @@ var webapp, appname = 'client' || '',
 			});
 			backstack.main();
 		}
+		$.taxeer('on_scroll', function () {
+			on_scroll();
+		}, 10);
 		document.addEventListener('visibilitychange', function () {
 			if (document.visibilityState === 'visible') {
 				webapp.visible = 1;
@@ -2054,15 +2126,13 @@ var datepicker = datepicker || 0;
 		}
 	}, {passive: false});*/
 })();
-/*
-*
-* lists have an adapter $.array, it contains the objects present in the dom list
+/* lists have an adapter $.array, it contains the objects present in the dom list
 *
 * the adapter set/pop functions can be overriden to provide your own logic
 *
 * the dom list set/pop functions also mutate the adapter
 * */
-var list;
+var List, list;
 ;(function(){
 	'use strict';
 	var direction = function () { return document.body.dir; };
@@ -2388,7 +2458,7 @@ var list;
 			* id would actually change the html#id
 			* so avoid it unless you know what you're doing
 			* */
-			if (id) $.log('list.set, stop using id, use o.uid instead');
+			if (id) $.log('List.set, stop using id, use o.uid instead');
 			o = o || {};
 			var clone, LV = this, listitem = o._listitem || LV._listitem,
 				parent = LV.keys.items,
@@ -2423,6 +2493,7 @@ var list;
 				delete o.ruid;
 			}
 			LV.adapter.set(o.uid, o);
+			if (LV._recycle) return; // defer rendering to scroll events
 			if (!clone) {
 				/*
 				* this is to avoid modifying provided o object
@@ -2617,9 +2688,9 @@ var list;
 		title: function (m, i18n) { // only visible when length > 0
 			return this.mowdoo3(m, i18n);
 		},
-		recycle: function (yes) {
-			this._recycle = yes;
-			return this;
+		set_scrolling_element: function () {
+		},
+		destroy: function () {
 		},
 		idprefix: function (id) {
 			this.idprefix_raw = id;
@@ -2650,7 +2721,7 @@ var list;
 			return LV;
 		},
 	};
-	list = function (element) {
+	List = list = function (element) { // TODO deprecate list
 		var LV = Object.create(proto);
 		element.dataset.focus = 'list';
 		element.listobject = LV;
@@ -2661,7 +2732,7 @@ var list;
 		LV.keys = templates.keys( LV.element );
 		LV.selected = 0;
 		LV.muntahaa();
-		LV.mowdoo3();
+		LV.title();
 		/* IMPORTANT EXPLAIN
 		* this is for use cases with a single list that is focussed by default
 		* for multiple lists in a focus group, chain .rakkaz() to unset this
@@ -2898,21 +2969,21 @@ var preferences;
 		},
 	};
 	var buildnum = preferences.get('#', 1);
-	if ( buildnum != 1 ) {
+	if ( buildnum != 2 ) {
 		preferences.pop(3); // ruid
 		preferences.pop('@'); // last sync time
 		preferences.pop(4); // list view cache
 		preferences.pop(6); // initial sync done
 	}
-	preferences.set('#', 1);
+	preferences.set('#', 2);
 	Hooks.set('ready', function () {
-		if ( buildnum != 1 ) {
+		if ( buildnum != 2 ) {
 			$.taxeer('seeghahjadeedah', function () {
 				Hooks.run('seeghahjadeedah', buildnum);
 			}, 2000);
 		}
 	});
-	$.log.s( 1 );
+	$.log.s( 2 );
 })();
 var activity;
 ;(function(){
@@ -3002,6 +3073,7 @@ var view;
 			return index;
 		},
 	};
+	view.get = view.axav;
 	view.dom_keys = view.mfateeh;
 })();
 var time;
@@ -3395,55 +3467,53 @@ var time;
 	Hooks.set('ready', function () {
 	});
 })();
-var settings, currentad;
+var Settings, settings, currentad;
 ;(function(){
-	var settingsitems = [
-		/*['quality', 0, function () {
-			Hooks.run('sheet', {
-				name: 'quality',
-				title: translate('quality'),
-			});
-		}],*/
-		['reportbug', 0, function () {
-			activity.abrad(myemail+'?subject='+appname+' bug '+1);
-		}, 'iconbugreport'],
-		['requestfeat', 0, function () {
-			activity.abrad(myemail+'?subject='+appname+' request '+1);
-		}, 'iconfeaturedplaylist'],
-		['timeformat', function () {
-			var is24 = preferences.get(24, 1);
-			return [is24 ? 'hours24' : 'hours12'];
+	var settingsitems = [];
+	function add(a) { settingsitems.push(a); }
+	/*['quality', 0, function () {
+		Hooks.run('sheet', {
+			name: 'quality',
+			title: translate('quality'),
+		});
+	}],*/
+	add(['Mudeer '+$.b, function () {
+		return 'Web Framework';
+	}, function () {
+		open('https://github.com/xorasan/mudeer', '_blank');
+	}, 'iconmudeer']);
+	if (Config.repo) {
+		add([Config.appname+' '+2, function () {
+			return Config.sub;
 		}, function () {
-			var is24 = preferences.get(24, 1);
-			if (is24) preferences.set(24, 0);
-			else preferences.set(24, 1);
-		}, 'icontimer'],
-		['calendar', function () {
-			var isgregorian = preferences.get(26, 1);
-			return [isgregorian ? 'gregorian' : 'hijri'];
-		}, function () {
-			var isgregorian = preferences.get(26, 1);
-			if (isgregorian) preferences.set(26, 0);
-			else preferences.set(26, 1);
-		}, 'icondaterange'],
-		['transparency', function () {
-			var isit = preferences.get(23, 1);
-			webapp.transparency();
-			return [isit ? 'on' : 'off'];
-		}, function () {
-			var isit = preferences.get(23, 1);
-			if (isit) { preferences.set(23, 0); }
-			else { preferences.set(23, 1); }
-		}, 'iconbluron'],
-		['largetext', function () {
-			var largetext = preferences.get(9, 1);
-			webapp.textsize();
-			return [largetext ? 'on' : 'off'];
-		}, function () {
-			preferences.set(9, preferences.get(9, 1) ? 0 : 1);
-		}, 'iconformatsize']
-	], settingslist, myemail = 'hxorasani@gmail.com', keys;
-	settings = {
+			open(Config.repo, '_blank');
+		}, '/e.png']);
+	}
+	add(['timeformat', function () {
+		var is24 = preferences.get(24, 1);
+		return [is24 ? 'hours24' : 'hours12'];
+	}, function () {
+		var is24 = preferences.get(24, 1);
+		if (is24) preferences.set(24, 0);
+		else preferences.set(24, 1);
+	}, 'icontimer']);
+	add(['calendar', function () {
+		var isgregorian = preferences.get(26, 1);
+		return [isgregorian ? 'gregorian' : 'hijri'];
+	}, function () {
+		var isgregorian = preferences.get(26, 1);
+		if (isgregorian) preferences.set(26, 0);
+		else preferences.set(26, 1);
+	}, 'icondaterange']);
+	add(['largetext', function () {
+		var largetext = preferences.get(9, 1);
+		webapp.textsize();
+		return [largetext ? 'on' : 'off'];
+	}, function () {
+		preferences.set(9, preferences.get(9, 1) ? 0 : 1);
+	}, 'iconformatsize']);
+	var settingslist, keys;
+	Settings = settings = {
 		adaaf: function (name, getvalue, onpress, icon) { // add
 			settingsitems.push([name, getvalue, onpress, icon]);
 			settings.jaddad(settingsitems.length-1);
@@ -3523,7 +3593,7 @@ var settings, currentad;
 					pager.intaxab('settings', 1);
 					webapp.header();
 				} else { // since pager already shows context
-					webapp.header( ['settings'] );
+					webapp.header([['settings'], 0, 'iconsettings']);
 				}
 				softkeys.list.basic(settingslist);
 				softkeys.set(K.en, function () {
@@ -3772,7 +3842,7 @@ var templates, namaavij;
 							if (o[i].startsWith('app://'))
 								keys[i].src = o[i];
 							else
-								keys[i].src = 'file://'+o[i];
+								keys[i].src = o[i];
 							keys[i].hidden = 0;
 						} else {
 							keys[i].hidden = 1;
@@ -3809,12 +3879,16 @@ var templates, namaavij;
 							keys[i].innerHTML = '';
 						}
 					} else
-					if (['icon', 'eqonah'].includes(i)) { // create SVG inside
+					if (['icon', 'eqonah'].includes(i)) { // create SVG inside or img if src = /...
 						if (typeof o[i] === 'string' && o[i].length) {
 							keys[i].hidden = 0;
-							var e = icons.querySelector('#'+o[i]);
-							if (e)
-								keys[i].innerHTML = '<svg viewBox="0 0 48 48">'+e.cloneNode(1).innerHTML+'</svg>';
+							if (o[i].startsWith('/')) {
+								innerhtml(keys[i], '<img src="'+o[i]+'" />');
+							} else {
+								var e = icons.querySelector('#'+o[i]);
+								if (e)
+									keys[i].innerHTML = '<svg viewBox="0 0 48 48">'+e.cloneNode(1).innerHTML+'</svg>';
+							}
 						} else {
 							keys[i].hidden = 1;
 							keys[i].innerHTML = '';
@@ -5208,25 +5282,25 @@ var dialog;
 	});*/
 })();
 /*
-* it has 3 qanawaat for comm with xaadim
-* axav get something from the xaadim immediately
+* it has 3 qanawaat for comm with server
+* get get something from the server immediately
 *
-* waaqat sync changes, zaboon -> xaadim
-* uses .waqt to maintain sync between zaboon & xaadim
+* sync sync changes, client -> server
+* uses .time to maintain sync between client & server
 * the response is empty
 * responds through broadcast
-* nashar listens for changes
-* returns on triggers like waaqat from you or others
-* always returns .waqt on success
+* broadcast listens for changes
+* returns on triggers like sync from you or others
+* always returns .time on success
 * */
-var shabakah, sessions = sessions || 0;
+var Network, network, sessions = sessions || 0;
 ;(function(){
 	'use strict';
-	var xitaab = 'http://localhost:3000/', buildexpired = false, offlinewaqt,
-		shabakahkeys;
-	var xataalog = function (v) {
+	var address = 'http://localhost:'+Config.port+'/', buildexpired = false, offlinetime,
+		networkkeys;
+	var error_log = function (v) {
 	};
-	var hasdisconnected = function (res) {
+	var has_disconnected = function (res) {
 		if (!res.err)
 			setnetwork(1);
 		else if (res.err === -300 || res.err > 300)
@@ -5234,40 +5308,40 @@ var shabakah, sessions = sessions || 0;
 	};
 	var setnetwork = function (on) {
 		if (on) {
-			if (offlinewaqt !== false) {
-				offlinewaqt = false;
+			if (offlinetime !== false) {
+				offlinetime = false;
 				preferences.pop('@0');
-				Hooks.run('ittasaal', true); // connection
-				$.taxeercancel('shabakahittasaal');
+				Hooks.run('connection', true); // connection
+				$.taxeercancel('networkconnection');
 			}
 			setnotifybar();
 		} else {
-			if (offlinewaqt === false) {
-				offlinewaqt = new Date().getTime();
-				preferences.set('@0', offlinewaqt);
-				Hooks.run('ittasaal', offlinewaqt); // connection
-				$.taxeer('shabakahittasaal', function () {
+			if (offlinetime === false) {
+				offlinetime = new Date().getTime();
+				preferences.set('@0', offlinetime);
+				Hooks.run('connection', offlinetime); // connection
+				$.taxeer('networkconnection', function () {
 					if (sessions)
-					shabakah.axav({
-						i: 'shabakah',
-						h: 'ittasaal',
+					network.get({
+						i: 'network',
+						h: 'connection',
 					});
 				}, 15*1000);
 			}
-			setnotifybar( 'offlinesince' , offlinewaqt || '');
+			setnotifybar( 'offlinesince' , offlinetime || '');
 		}
 	};
 	var setnotifybar = function (v, t) {
 		if (v) {
 			$.taxeer('setnotifybar', function () {
-				setdata(shabakahkeys.mowdoo3, 'i18n', v);
-				setdata(shabakahkeys.waqt, 'time', t);
-				time(shabakahui);
-				xlate.update(shabakahui);
+				setdata(networkkeys.topic, 'i18n', v);
+				setdata(networkkeys.time, 'time', t);
+				time(networkui);
+				xlate.update(networkui);
 			}, t);
-			shabakahui.hidden = 0;
+			networkui.hidden = 0;
 		} else {
-			shabakahui.hidden = 1;
+			networkui.hidden = 1;
 		}
 	};
 	var sizeunits = function (num) {
@@ -5287,342 +5361,342 @@ var shabakah, sessions = sessions || 0;
 		if (total > 4 * 1024) {
 			var percentage = sizeunits(loaded) +' / '+ sizeunits(total) +', '
 							+ (((loaded / total) * 100).toFixed() || 0) + '%';
-			webapp.itlaa3( percentage );
+			webapp.status( percentage );
 		}
 	};
-	var hasinshaexpired = function (jawaab) {
-		if (jawaab.e$) {
+	var has_build_expired = function (response) {
+		if (response.e$) {
 			buildexpired = 1;
 			window.caches.delete('def').then(function(del) {
 				webapp.dimmer(LAYERTOPMOST, xlate('appneedsreload'));
 			});
-			nasharanhaa();
-			$.fetchcancel( 'axav' );
-			$.fetchcancel( 'waaqat' );
+			broadcast_finish();
+			$.fetchcancel( 'get' );
+			$.fetchcancel( 'sync' );
 		}
 	};
-	var handlejawaab = function (jawaab) {
-		if (jawaab.rafa3)
-		for (var ism in jawaab.rafa3) {
-			if (shabakah.mundarij.rafa3[ism]) {
-				var haajaat = jawaab.rafa3[ism];
-				for (var haajah in haajaat) {
-					if (typeof shabakah.mundarij.rafa3[ism][haajah] == 'function') {
-						shabakah.mundarij.rafa3[ism][haajah](
-							haajaat[haajah]
+	var handle_response = function (response) {
+		if (response.upload)
+		for (var name in response.upload) {
+			if (network.channels.upload[name]) {
+				var needs = response.upload[name];
+				for (var need in needs) {
+					if (typeof network.channels.upload[name][need] == 'function') {
+						network.channels.upload[name][need](
+							needs[need]
 						);
 					}
 				}
 			}
 		}
-		if (jawaab.wasaatat)
-		for (var ism in jawaab.wasaatat) {
-			if (shabakah.mundarij.wasaatat[ism]) {
-				var haajaat = jawaab.wasaatat[ism];
-				for (var haajah in haajaat) {
-					if (typeof shabakah.mundarij.wasaatat[ism][haajah] == 'function') {
-						shabakah.mundarij.wasaatat[ism][haajah](
-							haajaat[haajah]
+		if (response.intercession)
+		for (var name in response.intercession) {
+			if (network.channels.intercession[name]) {
+				var needs = response.intercession[name];
+				for (var need in needs) {
+					if (typeof network.channels.intercession[name][need] == 'function') {
+						network.channels.intercession[name][need](
+							needs[need]
 						);
 					}
 				}
 			}
 		}
-		if (jawaab.axav) {
-			for (var ism in jawaab.axav) {
-				if (shabakah.mundarij.axav[ism]) {
-					var haajaat = jawaab.axav[ism];
-					for (var haajah in haajaat) {
-						if (typeof shabakah.mundarij.axav[ism][haajah] == 'function') {
-							shabakah.mundarij.axav[ism][haajah](
-								haajaat[haajah]
+		if (response.get) {
+			for (var name in response.get) {
+				if (network.channels.get[name]) {
+					var needs = response.get[name];
+					for (var need in needs) {
+						if (typeof network.channels.get[name][need] == 'function') {
+							network.channels.get[name][need](
+								needs[need]
 							);
 						}
 					}
 				}
 			}
-			Hooks.run('jawaabaxav', jawaab.waaqat);
+			Hooks.run('responseget', response.sync);
 		}
-		if (jawaab.waaqat) {
-			for (var ism in jawaab.waaqat) {
-				if (shabakah.mundarij.waaqat[ism]) {
-					var haajaat = jawaab.waaqat[ism];
-					for (var haajah in haajaat) {
-						if (typeof shabakah.mundarij.waaqat[ism][haajah] == 'function') {
-							shabakah.mundarij.waaqat[ism][haajah](
-								haajaat[haajah]
+		if (response.sync) {
+			for (var name in response.sync) {
+				if (network.channels.sync[name]) {
+					var needs = response.sync[name];
+					for (var need in needs) {
+						if (typeof network.channels.sync[name][need] == 'function') {
+							network.channels.sync[name][need](
+								needs[need]
 							);
 						}
 					}
 				}
 			}
-			Hooks.run('jawaabwaaqat', jawaab.waaqat);
+			Hooks.run('responsesync', response.sync);
 		}
 	};
-	var cachedkey, nasharhaalah = 0, nashartaxeer = 500;
-	var nasharishtaghal = function (payload, wasaatat) {
-		if (!cachedkey || !nasharhaalah) return;
-		if ($.fetchchannels.nashar
-		&& $.fetchchannels.nashar.active) return;
+	var cachedkey, broadcast_state = 0, broadcast_delay = 500;
+	var broadcast_process = function (payload, intercession) {
+		if (!cachedkey || !broadcast_state) return;
+		if ($.fetchchannels.broadcast
+		&& $.fetchchannels.broadcast.active) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			nashar: 1 , // mutawaaqit min qabl (synced before)
-			e$ : 1 , // insha 3adad
+			broadcast: 1 , // synced before
+			e$ : 2 , // build number
 		});
-		if (wasaatat) payload = Object.assign(payload, wasaatat);
-		xataalog(payload);
-		$.fetch( xitaab, 'json='+enc( JSON.stringify(payload) ), 'nashar', progressfn, 3*60*1000 )
+		if (intercession) payload = Object.assign(payload, intercession);
+		error_log(payload);
+		$.fetch( address, 'json='+enc( JSON.stringify(payload) ), 'broadcast', progressfn, 3*60*1000 )
 		.then(function (res) {
 			if (res.err) {
-				nashartaxeer = 4 * 15 * 1000; // 60s
+				broadcast_delay = 4 * 15 * 1000; // 60s
 			} else {
-				hasdisconnected(res);
-				var jawaab = {};
+				has_disconnected(res);
+				var response = {};
 				try {
-					jawaab = JSON.parse( (res||{}).body );
+					response = JSON.parse( (res||{}).body );
 				} catch (e) {
-					jawaab.nashar = 1;
-					jawaab.xataa = 1;
+					response.broadcast = 1;
+					response.error = 1;
 				}
-				if (!jawaab.xataa) nashartaxeer = 500;
-				if (hasinshaexpired(jawaab)) return;
-				handlejawaab(jawaab);
+				if (!response.error) broadcast_delay = 500;
+				if (has_build_expired(response)) return;
+				handle_response(response);
 			}
-			$.taxeer('shabakahnashar', function () {
-				wasaatatishtaghal(function (ashyaa) {
-					nasharishtaghal({}, ashyaa);
-				}, 'nashar');
-			}, nashartaxeer);
+			$.taxeer('networkbroadcast', function () {
+				intercession_process(function (objects) {
+					broadcast_process({}, objects);
+				}, 'broadcast');
+			}, broadcast_delay);
 		});
 	};
-	var nasharbadaa = function () {
-		$.taxeer('nasharbadaa', function () {
-			nasharhaalah = 1;
-			wasaatatishtaghal(function (ashyaa) {
-				nasharishtaghal({}, ashyaa);
-			}, 'nashar');
+	var broadcast_start = function () {
+		$.taxeer('broadcast_start', function () {
+			broadcast_state = 1;
+			intercession_process(function (objects) {
+				broadcast_process({}, objects);
+			}, 'broadcast');
 		}, 1000);
 	};
-	var nasharanhaa = function () {
-		nasharhaalah = 0;
-		$.fetchcancel('nashar');
+	var broadcast_finish = function () {
+		broadcast_state = 0;
+		$.fetchcancel('broadcast');
 	};
-	var mu3allaq = {}; // pending requests
-	var ajraa = function (payload, wasaatat) { // flush pending axav requests
-		if (Object.keys(mu3allaq).length === 0) return;
+	var pending = {}; // pending requests
+	var fulfill = function (payload, intercession) { // flush pending get requests
+		if (Object.keys(pending).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 1 , // insha 3adad
+			e$ : 2 , // build number
 		});
-		if (wasaatat) payload = Object.assign(payload, wasaatat);
-		payload.axav = payload.axav || {};
-		for (var i in mu3allaq) {
-			var m = mu3allaq[i] ,
-				ism = m[0] ,
-				haajah = m[1] ,
-				qadr = m[2] ;
-			payload.axav[ism] = payload.axav[ism] || {};
-			payload.axav[ism][haajah] = qadr;
+		if (intercession) payload = Object.assign(payload, intercession);
+		payload.get = payload.get || {};
+		for (var i in pending) {
+			var m = pending[i] ,
+				name = m[0] ,
+				need = m[1] ,
+				value = m[2] ;
+			payload.get[name] = payload.get[name] || {};
+			payload.get[name][need] = value;
 		}
-		xataalog(payload);
-		$.fetch( xitaab, 'json='+enc( JSON.stringify(payload) ), 'axav', progressfn, 30*1000 )
+		error_log(payload);
+		$.fetch( address, 'json='+enc( JSON.stringify(payload) ), 'get', progressfn, 30*1000 )
 		.then(function (res) {
-			hasdisconnected(res);
-			var jawaab = {};
+			has_disconnected(res);
+			var response = {};
 			try {
-				jawaab = JSON.parse( (res||{}).body );
+				response = JSON.parse( (res||{}).body );
 			} catch (e) {
-				jawaab.axav = 1;
-				jawaab.xataa = 1;
+				response.get = 1;
+				response.error = 1;
 			}
-			if (hasinshaexpired(jawaab)) return;
-			handlejawaab(jawaab);
+			if (has_build_expired(response)) return;
+			handle_response(response);
 		});
-		mu3allaq = {};
+		pending = {};
 	};
-	var wasaatat = {}; // intercession
-	var wasaatatishtaghal = function (callback, qanaat) {
-		var j = 0, arr = Object.keys(wasaatat);
+	var intercession = {}; // intercession
+	var intercession_process = function (callback, channel) {
+		var j = 0, arr = Object.keys(intercession);
 		if (arr.length === 0) {
 			callback();
 			return;
 		}
-		var q = $.queue(), ashyaa = { wasaatat: {} };
-		for (var i in wasaatat) {
+		var q = $.queue(), objects = { intercession: {} };
+		for (var i in intercession) {
 			q.set(function (done) {
-				var o = wasaatat[ arr[j] ];
-				o[2](function (shayy) {
-					if (shayy !== undefined) {
-						ashyaa.wasaatat[ o[0] ] = ashyaa.wasaatat[ o[0] ] || {};
-						ashyaa.wasaatat[ o[0] ][ o[1] ] = shayy;
+				var o = intercession[ arr[j] ];
+				o[2](function (object) {
+					if (object !== undefined) {
+						objects.intercession[ o[0] ] = objects.intercession[ o[0] ] || {};
+						objects.intercession[ o[0] ][ o[1] ] = object;
 					}
 					j++;
 					done(q);
-				}, qanaat);
+				}, channel);
 			});
 		}
 		q.run(function () {
-			callback && callback(ashyaa);
+			callback && callback(objects);
 		});
 	};
-	var mutawaaqit = {};
-	var waaqatishtaghal = function (payload, wasaatat) {
-		if (Object.keys(mutawaaqit).length === 0) return;
+	var synced = {};
+	var sync_process = function (payload, intercession) {
+		if (Object.keys(synced).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 1 , // insha 3adad
+			e$ : 2 , // build number
 		});
-		if (wasaatat) payload = Object.assign(payload, wasaatat);
-		payload.waaqat = payload.waaqat || {};
-		for (var i in mutawaaqit) {
-			var m = mutawaaqit[i] ,
-				ism = m[0] ,
-				haajah = m[1] ,
-				qadr = m[2] ;
-			payload.waaqat[ism] = payload.waaqat[ism] || {};
-			payload.waaqat[ism][haajah] = qadr;
+		if (intercession) payload = Object.assign(payload, intercession);
+		payload.sync = payload.sync || {};
+		for (var i in synced) {
+			var m = synced[i] ,
+				name = m[0] ,
+				need = m[1] ,
+				value = m[2] ;
+			payload.sync[name] = payload.sync[name] || {};
+			payload.sync[name][need] = value;
 		}
-		xataalog(payload);
-		$.fetch( xitaab, 'json='+enc( JSON.stringify(payload) ), 'waaqat', progressfn, 30*1000 )
+		error_log(payload);
+		$.fetch( address, 'json='+enc( JSON.stringify(payload) ), 'sync', progressfn, 30*1000 )
 		.then(function (res) {
-			hasdisconnected(res);
-			var jawaab = {};
+			has_disconnected(res);
+			var response = {};
 			try {
-				jawaab = JSON.parse( (res||{}).body );
+				response = JSON.parse( (res||{}).body );
 			} catch (e) {
-				jawaab.waaqat = 1;
-				jawaab.xataa = 1;
+				response.sync = 1;
+				response.error = 1;
 			}
-			if (hasinshaexpired(jawaab)) return;
-			handlejawaab(jawaab);
+			if (has_build_expired(response)) return;
+			handle_response(response);
 		});
-		mutawaaqit = {};
+		synced = {};
 	};
-	var rafa3 = function (ism, haajah, qadr, marfoo3, wasaatat) {
+	var upload = function (name, need, value, payload_raw, intercession) {
 		var payload = {};
 		payload = Object.assign(payload, {
-			e$ : 1 , // insha 3adad
+			e$ : 2 , // build number
 		});
-		if (wasaatat) payload = Object.assign(payload, wasaatat);
-		payload.rafa3 = {};
-		payload.rafa3[ism] = {};
-		payload.rafa3[ism][haajah] = qadr;
+		if (intercession) payload = Object.assign(payload, intercession);
+		payload.upload = {};
+		payload.upload[name] = {};
+		payload.upload[name][need] = value;
 		var fd = new FormData();
 		fd.append('json', JSON.stringify(payload) );
-		fd.append('rafa3', marfoo3);
-		fetch(xitaab, { method: 'post', body: fd }).then(function (res) {
-			hasdisconnected(res);
-			res.json().then(function (jawaab) {
-				if (hasinshaexpired(jawaab)) return;
-				handlejawaab(jawaab);
+		fd.append('upload', payload_raw);
+		fetch(address, { method: 'post', body: fd }).then(function (res) {
+			has_disconnected(res);
+			res.json().then(function (response) {
+				if (has_build_expired(response)) return;
+				handle_response(response);
 			});
 		});
 	};
-	shabakah = {
-		xitaab: xitaab,
-		mundarij: {
-			axav: {},
-			waaqat: {},
-			wasaatat: {},
-			rafa3: {},
+	Network = network = {
+		address: address,
+		channels: {
+			get: {},
+			sync: {},
+			intercession: {},
+			upload: {},
 		},
-		rafa3: function (ism, haajah, qadr, marfoo3) {
-			if (!ism) return;
-			if (!marfoo3) return;
-			haajah = haajah || 'xarq' ; // default
-			qadr = qadr || 0 ;
-			wasaatatishtaghal(function (ashyaa) {
-				rafa3(ism, haajah, qadr, marfoo3, ashyaa);
-			}, 'rafa3');
+		upload: function (name, need, value, payload) {
+			if (!name) return;
+			if (!payload) return;
+			need = need || 'default' ; // default
+			value = value || 0 ;
+			intercession_process(function (objects) {
+				upload(name, need, value, payload, objects);
+			}, 'upload');
 		},
-		nashar: function () {
+		broadcast: function () {
 			if (cachedkey) {
-				nasharbadaa();
+				broadcast_start();
 			} else {
-				nasharanhaa();
+				broadcast_finish();
 			}
 		},
-		waaqat: function (ism, haajah, qadr) {
-			if (!ism) return;
-			haajah = haajah || 'xarq' ; // default
-			qadr = qadr || 0 ;
-			mutawaaqit[ ism+'.'+haajah ] = [ism, haajah, qadr];
-			$.taxeer('shabakahwaaqat', function () {
-				wasaatatishtaghal(function (ashyaa) {
-					waaqatishtaghal({}, ashyaa);
-				}, 'waaqat');
+		sync: function (name, need, value) {
+			if (!name) return;
+			need = need || 'default' ; // default
+			value = value || 0 ;
+			synced[ name+'.'+need ] = [name, need, value];
+			$.taxeer('networksync', function () {
+				intercession_process(function (objects) {
+					sync_process({}, objects);
+				}, 'sync');
 			}, 100);
 		},
-		axav: function (ism, haajah, qadr) { // { ism, haajah, qadr }
-			if (!ism) return;
-			if (arguments.length === 2) qadr = haajah, haajah = 0;
-			haajah = haajah || 'xarq' ; // default
-			qadr = qadr || 0 ;
-			mu3allaq[ ism+'.'+haajah ] = [ism, haajah, qadr];
-			$.taxeer('shabakahajraa', function () {
-				wasaatatishtaghal(function (ashyaa) {
-					ajraa({}, ashyaa);
-				}, 'axav');
+		get: function (name, need, value) { // { name, need, value }
+			if (!name) return;
+			if (arguments.length === 2) value = need, need = 0;
+			need = need || 'default' ; // default
+			value = value || 0 ;
+			pending[ name+'.'+need ] = [name, need, value];
+			$.taxeer('networkfulfill', function () {
+				intercession_process(function (objects) {
+					fulfill({}, objects);
+				}, 'get');
 			}, 100);
 		},
-		jawaab: {
-			axav: function (ism, haajah, cb) {
-				if (typeof haajah == 'function') cb = haajah, haajah = 0;
-				haajah = haajah || 'xarq';
-				shabakah.mundarij.axav[ ism ] = shabakah.mundarij.axav[ ism ] || {};
-				shabakah.mundarij.axav[ ism ][ haajah ] = cb;
+		response: {
+			get: function (name, need, cb) {
+				if (typeof need == 'function') cb = need, need = 0;
+				need = need || 'default';
+				network.channels.get[ name ] = network.channels.get[ name ] || {};
+				network.channels.get[ name ][ need ] = cb;
 			},
-			waaqat: function (ism, haajah, cb) {
-				if (typeof haajah == 'function') cb = haajah, haajah = 0;
-				haajah = haajah || 'xarq';
-				shabakah.mundarij.waaqat[ ism ] = shabakah.mundarij.waaqat[ ism ] || {};
-				shabakah.mundarij.waaqat[ ism ][ haajah ] = cb;
+			sync: function (name, need, cb) {
+				if (typeof need == 'function') cb = need, need = 0;
+				need = need || 'default';
+				network.channels.sync[ name ] = network.channels.sync[ name ] || {};
+				network.channels.sync[ name ][ need ] = cb;
 			},
-			tawassat: function (ism, haajah, cb) {
-				if (typeof haajah == 'function') cb = haajah, haajah = 0;
-				haajah = haajah || 'xarq';
-				shabakah.mundarij.wasaatat[ ism ] = shabakah.mundarij.wasaatat[ ism ] || {};
-				shabakah.mundarij.wasaatat[ ism ][ haajah ] = cb;
+			intercept: function (name, need, cb) {
+				if (typeof need == 'function') cb = need, need = 0;
+				need = need || 'default';
+				network.channels.intercession[ name ] = network.channels.intercession[ name ] || {};
+				network.channels.intercession[ name ][ need ] = cb;
 			},
-			rafa3: function (ism, haajah, cb) {
-				if (typeof haajah == 'function') cb = haajah, haajah = 0;
-				haajah = haajah || 'xarq';
-				shabakah.mundarij.rafa3[ ism ] = shabakah.mundarij.rafa3[ ism ] || {};
-				shabakah.mundarij.rafa3[ ism ][ haajah ] = cb;
+			upload: function (name, need, cb) {
+				if (typeof need == 'function') cb = need, need = 0;
+				need = need || 'default';
+				network.channels.upload[ name ] = network.channels.upload[ name ] || {};
+				network.channels.upload[ name ][ need ] = cb;
 			},
 		},
-		tawassat: function (ism, haajah, cb) { // intercept
-			if (typeof haajah == 'function') cb = haajah, haajah = 0;
-			haajah = haajah || 'xarq' ; // default
-			wasaatat[ ism+'.'+haajah ] = [ism, haajah, cb];
+		intercept: function (name, need, cb) { // intercept
+			if (typeof need == 'function') cb = need, need = 0;
+			need = need || 'default' ; // default
+			intercession[ name+'.'+need ] = [name, need, cb];
 		},
 	};
-	/* TODO hook visibility to nashar
+	/* TODO hook visibility to broadcast
 	*
-	* hook sessionchange, start/stop nashar
+	* hook sessionchange, start/stop broadcast
 	*
-	* hook ready, if signedin, start nashar
+	* hook ready, if signedin, start broadcast
 	*
-	* on hook [axav|nashar], run hook jawaab { [axav|nashar]: bool, xataa: bool }
+	* on hook [get|broadcast], run hook response { [get|broadcast]: bool, error: bool }
 	*
-	* have shabakah.xaadim
+	* have network.server
 	* */
 	Hooks.set('sessionchange', function (key) {
 		cachedkey = key || 0;
 		if (cachedkey) {
-			shabakah.nashar();
-			shabakah.waaqat();
+			network.broadcast();
+			network.sync();
 		}
 	});
 	Hooks.set('ready', function () {
-		shabakahkeys = templates.keys(shabakahui);
-		shabakah.tawassat('shabakah', 'waqt', function (intahaa, qanaat) {
+		networkkeys = templates.keys(networkui);
+		network.intercept('network', 'time', function (intahaa, channel) {
 			intahaa( preferences.get('@') );
 		});
-		shabakah.jawaab.tawassat('shabakah', 'waqt', function (jawaab) {
-			if (jawaab && cachedkey) preferences.set('@', jawaab);
+		network.response.intercept('network', 'time', function (response) {
+			if (response && cachedkey) preferences.set('@', response);
 		});
-		offlinewaqt = preferences.get('@0', 1) || false;
+		offlinetime = preferences.get('@0', 1) || false;
 		listener('online', function (e) {
 			setnetwork(1);
 		});
@@ -5632,15 +5706,64 @@ var shabakah, sessions = sessions || 0;
 		if (sessions) {
 			cachedkey = sessions.signedin() || 0;
 			if (cachedkey) {
-				shabakah.nashar();
-				shabakah.waaqat();
+				network.broadcast();
+				network.sync();
 			}
 		}
 	});
 })();
 ;(function(){
 	'use strict';
-	var main = {
+	var main_dom_keys;
+	var pagermain = function () {
+		if (pager) {
+			pager.safaa();
+			pager.jama3('main', 'iconpeople', xlate('ppl'));
+			pager.jama3('hisaab', 'iconperson', xlate('you'));
+			pager.jama3('settings', 'iconsettings', xlate('cfg'));
+			pager.intaxab('main');
+		}
 	};
+	var pagersessions = function () {
+		if (pager) {
+			pager.safaa();
+			pager.jama3('main', 'iconhelp', xlate('intro'));
+			pager.jama3('signin', 'iconperson', xlate('signin'));
+			pager.jama3('signup', 'iconpersonadd', xlate('signup'));
+			pager.jama3('settings', 'iconsettings', xlate('cfg'));
+			pager.intaxab('main');
+		}
+	};
+	var main = {
+		update: function () {
+			if (sessions.signedin()) {
+				pagermain();
+			} else {
+				pagersessions();
+			}
+		},
+		set_header: function () {
+			webapp.header([Config.appname, Config.desc, '/e.png']);
+		},
+	};
+	Hooks.set('sessionchange', function (key) {
+		if (key) { // logged in
+			pagermain();
+		} else { // logged out
+			pagersessions();
+		}
+	});
+	Hooks.set('ready', function () {
+		webapp.status_bar_padding();
+		webapp.ask_on_exit(1);
+		main.set_header();
+		main.update(); // setup pager
+		main_dom_keys = view.dom_keys('main');
+	});
+	Hooks.set('restore', function () {
+		if (view.is_active('main')) {
+			main.set_header();
+		}
+	});
 })();
 
