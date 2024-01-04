@@ -1,12 +1,14 @@
 {
-	"version": "1.2.8",
+	"version": "11.0.7",
 	"name": "Dewaan",
 	"subtitle": "Forum Software",
 	"description": "Tiny modern forum software for small companies",
 	"display": "standalone",
 	"fullscreen": "",
 	"cursor": "false",
-	"launch_path": "/index.html",
+	"background_color": "#000000",
+	"start_url": "/",
+	"launch_path": "/",
 	"developer": {
 		"name": "Hasan Xorasani",
 		"url": "mailto:hxorasani@gmail.com"

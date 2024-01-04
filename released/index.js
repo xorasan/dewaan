@@ -3,19 +3,7 @@ function updatetheme(o) {
 return '';
 };
 
-/* 01 Jan 2017
-* these are on demand
-* included in the custom engine build process
-* standard ECMA/JS shims
-* don't include shims for non-standard JS features
-* or vendor specific features here
-* index engine/shims.js
-* shims/node.js
-* shims/dom-removenode.js
-* shims/object-create.js
-* shims/object-assign.js
-* shims/string-trim.js
-*/
+ 
 if (typeof module !== 'object') { module = {}; }
 if (typeof module.exports !== 'object') { module.exports = {}; }
 if (typeof window !== 'object') { window = global||{}; }
@@ -26,10 +14,7 @@ if (typeof document !== 'object') {
 }
 var glatteis = {
 };
-/*
-* a move to .then(cb) would be awesome or nuh?
-* @todo indeed.
-*/
+ 
 var glatteisfn = function (name, fn) {
 	if (name) {
 		var mod = (glatteis._mods[name] || glatteis[name]);
@@ -42,7 +27,7 @@ var glatteisfn = function (name, fn) {
 			}
 		} else {
 			var path = glatteis._paths[name] || ( $.path + '/masdar/' + name + '.js' );
-			if (typeof fn === 'function') { // defer execution
+			if (typeof fn === 'function') { 
 				glatteis.require(path, function(mod) {
 					glatteis._mods[name] = mod;
 					fn(mod);
@@ -86,6 +71,17 @@ $.log = function () {
 			}
 			eval('console.error('+a+');');
 		},
+		w: function () {
+			var a = '', str = '';
+			for (var b in arguments) {
+				if (b > 0) {
+					a = a+', ';
+				}
+				a = a+'arguments['+b+']';
+				str += ' '+ arguments[b];
+			}
+			eval('console.warn('+a+');');
+		},
 		i: function () {
 			var a = '';
 			for (var b in arguments) {
@@ -100,12 +96,7 @@ $.log = function () {
 	$.log = Object.assign($.log, proto);
 })();
 ;(function (){
-	/*
-	* takes a function with a unique name, if a function with this name is
-	* provided again, it delays the exec of that function by a few ms
-	*
-	* calling without fn will just clear the timeout on that id
-	* */
+	 
 	var taxeeraat = {};
 	$.taxeercancel = function (id) {
 		clearTimeout(taxeeraat[id]);
@@ -127,7 +118,7 @@ $.log = function () {
 		}
 	};
 })();
-$.re = function (string, automaton, flags) { // automaton, flags
+$.re = function (string, automaton, flags) { 
 	var object = (new RegExp(automaton||'', flags||'')).exec(string||'') || {};
 	object.re = function (automaton, flags) {
 		return $.re(object[0]||'', automaton, flags);
@@ -135,20 +126,11 @@ $.re = function (string, automaton, flags) { // automaton, flags
 	return object;
 };
 $.regex = $.re;
-/*
-* this restores the initial module.exports = {} from
-* = glatteis by ._c
-* inclusion in other parent scripts after concatenation &
-* uglification
-*/
+ 
 $._r = function () {
 	module.exports = glatteis;
 };
-/*
-* used only when mods are concat'd
-* if no ._name property is present in mod, use the name argument
-* if no name argument, return false
-*/
+ 
 $._c = function (name) {
 	var mod = module.exports;
 	module.exports = {};
@@ -168,27 +150,23 @@ $._paths = {
 };
 $._mods = {
 };
-$.cache = function (name, path) { // cache a module's path
+$.cache = function (name, path) { 
 	$._paths[name] = path;
 };
 $.unload = function (mods, fn) {
-	/*
-	* @TODO: delete/unload mods from memory
-	* run ._unload per mod for a graceful exit
-	* once all mods are unloaded in a chain/order -> call fn
-	*/
+	 
 };
 ;(function (){
 	var _arrayPrototype = {
 		set: function (id, object) {
-			if (this._keys[id] !== undefined) { // update
+			if (this._keys[id] !== undefined) { 
 				if (typeof object === 'function') {
 					this._array[this._keys[id]] = object(this._array[this._keys[id]]);
 				} else {
 					this._array[this._keys[id]] = object;
 				}
 				typeof this.onset === 'function' && this.onset(object, id);
-			} else { // add
+			} else { 
 				if (typeof object === 'function') {
 					this._keys[id] = this._array.push(
 												object(this._array[this._keys[id]])
@@ -242,10 +220,7 @@ $.unload = function (mods, fn) {
 				}
 			}
 		},
-		/*
-		* this supports both native and Ge arrays
-		* id is the prop name in array that you want to be the id
-		* */
+		 
 		setall: function (id, array) {
 			this._id = id;
 			if (typeof array.toNative === 'function') array = array.toNative();
@@ -281,10 +256,7 @@ $.unload = function (mods, fn) {
 			});
 			return nativearr;
 		},
-		/*
-		* id is the prop name in array that you want to be the id
-		* key is the prop you want to compare for order
-		* */
+		 
 		sort: function (reverse, key, id) {
 			var temparray = this.toNative();
 			if (typeof reverse === 'function') {
@@ -314,16 +286,8 @@ $.unload = function (mods, fn) {
 			}
 			return this;
 		},
-		/*reverse: function (id, order) {
-			this._array.reverse();
-			this.setall(id, this._array);
-			return this;
-		},*/
-		/*
-		* the new non-camelcase format in effect since 29nov2018
-		* returns all keys that are not 'undefined'
-		* returns native array
-		* */
+		 
+		 
 		tokeys: function () {
 			var arr = [], keys = Object.keys(this._keys);
 			for (var i in keys) {
@@ -352,7 +316,7 @@ $.unload = function (mods, fn) {
 				}
 			}
 		},
-		eawwad: function (uid, uid2) { // swap objects in array to change order
+		eawwad: function (uid, uid2) { 
 			var index = this._keys[uid];
 			var index2 = this._keys[uid2];
 			if (index > -1 && index2 > -1) {
@@ -502,13 +466,7 @@ $.unload = function (mods, fn) {
 				else
 					return this.process(this);
 			},
-			/* TODO
-			* when requests are queued too fast, it gets stuck on the last
-			* request and never processes it unless queue is called again
-			* or process is called manually
-			*
-			* fix this asap, it's an ugly prob
-			* */
+			 
 			process: function (carriedthis) {
 				carriedthis = carriedthis || this;
 				if (carriedthis._array.length && !carriedthis.active) {
@@ -545,7 +503,7 @@ $.unload = function (mods, fn) {
 								request.setRequestHeader(key, options.headers[key]);
 							});
 						}
-						(request.upload ? request.upload: request).onprogress = function (event) {
+						(request.upload ? request.upload : request).onprogress = function (event) {
 							if (event.lengthComputable && typeof carriedthis.progressfn === 'function') {
 								carriedthis.progressfn(event.loaded, event.total);
 							}
@@ -591,19 +549,7 @@ $.unload = function (mods, fn) {
 		var newobject = Object.create(queuerequest);
 		return newobject;
 	};
-	/*
-	* (s)cript location is required, (c)allback function is passed the
-	* responseText as the first argument
-	* (e)xecute the script before the callback function
-	* this is fetch 2.0 now
-	* it tries to implement a very basic form of ES6 fetch + then
-	* it uses a barebones promise without depending on JS base Promise or
-	* Response class
-	*
-	* channels: strings that identify separate independent queues of requests
-	* for example in web apps, one for regular sync requests and another for
-	* listening for events from the server
-	*/
+	 
 	$.fetchtimeout = 30 * 1000;
 	$.fetchcancel = function (channel) {
 		channel = $.fetchchannels[channel || 1];
@@ -634,7 +580,7 @@ $.unload = function (mods, fn) {
 				}
 			};
 		if ( !$.fetchchannels[channel] ) {
-			$.fetchchannels[channel] = /*Object.create(queuerequest)*/ $.queuerequest();
+			$.fetchchannels[channel] =   $.queuerequest();
 			$.fetchchannels[channel].name = channel;
 			$.fetchchannels[channel].fetchtimeout = fetchtimeout || $.fetchtimeout;
 		}
@@ -663,14 +609,169 @@ $.unload = function (mods, fn) {
 		};
 	};
 })();
+;(function (){
+	var DEG2RAD = Math.PI/180,
+		RAD2DEG = 180/Math.PI;
+	$.convert = {
+		toRad: function (v) {
+			return v*DEG2RAD;
+		},
+		toDeg: function (v) {
+			return v*RAD2DEG;
+		}
+	};
+	$.random = function (min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+})();
 $._r();
+$.b = 2;
 'use strict';
 $.path = __dirname;
-/*
-	Files - 02 Aug 2016
-		- 11 Nov 2016
-		- 22 May 2018 add sync retrieval support
-*/
+var
+get_global_object = function () { 
+	return window || {}; 
+},
+generate_alias = function (o, l) { 
+	o = o || '';
+	if (o.length === 0) return '';
+	l = l || 255;
+	o = o.substr(0, l)
+		.replace(/\%/g, ' pct' )
+		.replace(/\@/g, ' at ' )
+		.replace(/\&/g, ' and ' )
+		.replace(/[$-\-/:-?\{\}-~!"^_`\[\]@#]/g, '-' ) 
+		.replace(/[^.\d\wa-zA-Z0-9ا-ےÄäÜüÖößЀ-ҁҊ-ӿÇçĞğŞşIıÜüﻙ]+/g, '-' ) 
+		.replace(/\s[\s]+/g, '-' )
+		.replace(/[\s]+/g, '-' )
+		.replace(/^[\-]+/g, '' )
+		.replace(/[\-]+$/g, '' )
+		.replace(/\-\-/g, '-' )
+		.replace(/\.\-/g, '.' )
+		.replace(/\-\./g, '.' )
+		.replace(/^\./g, '' )
+		.replace(/\.$/g, '' )
+		.trim()
+		.toLowerCase();
+	return o;
+},
+stringify = function (o) {
+	return JSON.stringify(o);
+},
+parsejson = function (o) {
+	return JSON.parse(o);
+},
+mubaaraat = function (str, re) {
+	return (str.match(re)||[])[0];
+},
+tabdeel = function (str, arr) {
+	if (isstr(str) && isarr(arr)) {
+		for (var i = 0; i < arr.length; i += 2) {
+			str = str.replace(arr[i], arr[i+1]);
+		}
+	}
+	return str;
+},
+deepcopy = function (v) {
+},
+isundef = function (v) {
+	return v === undefined;
+},
+isstr = function (v) {
+	return typeof v == 'string';
+},
+isfinite = function (v) {
+	return Number.isFinite(v);
+},
+isnan = function (v) {
+	return Number.isNaN(v);
+},
+isnum = function (v) {
+	return typeof v == 'number' && !isnan(v) && isfinite(v);
+},
+isfun = function (v) {
+	return typeof v == 'function';
+},
+isarr = function (v) {
+	return v instanceof Array;
+},
+areobjectsequal = function (a, b) { 
+	var same = 1;
+	if (a && b && Object.keys(a).length === Object.keys(b).length)
+	for (var i in a) {
+		if (a[i] !== b[i]) {
+			same = 0;
+			break;
+		}
+	}
+	else same = 0;
+	return same;
+},
+zero = function (num) {
+	return num < 10 ? '0'+num : num;
+},
+collapsearray = function (arr) {
+	var arr2 = [];
+	arr.forEach(function (e) {
+		if (!isundef(e)) arr2.push(e);
+	});
+	return arr2;
+},
+array2string = function (arr) { 
+	return ' '+arr.join(' ');
+},
+intersect = function (arr, superset) { 
+	var arr2 = [];
+	arr.forEach(function (item) {
+		if (!isundef(superset[ item ])) arr2.push(item);
+	});
+	return arr2;
+},
+shallowcopy = function (v) { 
+	if (isnum(v) || isstr(v)) {
+		return v;
+	} else
+	if (v instanceof Array) {
+		var v2 = [];
+		v.forEach(function (item) {
+			v2.push( Object.assign({}, item) );
+		});
+		return v2;
+	}
+	else {
+		return Object.assign({}, v);
+	}
+},
+parseint = function (v, r) {
+	return parseInt(v, r);
+},
+parsefloat = function (v, n) {
+	if (n) v = parseFloat(v).toFixed(n);
+	return parseFloat(v);
+},
+intify = function (arr) {
+	for (var i = 0; i < arr.length; ++i) {
+		arr[i] = parseint(arr[i]);
+	}
+	return arr;
+},
+tolower = function (s) {
+	return (s||'').toLowerCase();
+},
+toupper = function (s) {
+	return (s||'').toUpperCase();
+};
+var parsestring = function (v, m) { 
+	if (typeof v == 'string') {}
+	else if (typeof v == 'number') v = String(v);
+	else v = '';
+	if (isnum(m)) v = v.substr(0, m);
+	return v;
+},
+get_time_now = function () {
+	return new Date().getTime();
+};
+ 
 var Files;
 ;(function () {
 	'use strict';
@@ -683,7 +784,7 @@ var Files;
 		s: false,
 		init: function () {
 			if (Files.fs === false) {
-				if (typeof require === 'function') { // use node fs
+				if (typeof require === 'function') { 
 					try { Files.fs = require('fs-extra'); }
 					catch (e) { Files.fs = require('fs'); }
 					Files.path = require('path');
@@ -693,7 +794,7 @@ var Files;
 							__dirname = process.execPath.match(/(.*)\/.*$/)[1];
 						}
 					Files.basepath = __dirname;
-				} else { // use h5 file api
+				} else { 
 				}
 			}
 		},
@@ -737,14 +838,12 @@ var Files;
 				return Files.fs.realpathSync(path, cache);
 			}
 		},
-		/*
-		* if cb is not a func, uses sync methods
-		*/
+		 
 		get: {
 			file: function (path, cb, options) {
 				if (typeof cb === 'function') {
 					var innercb = function (err, data) {
-						cb(data, err); // data, err
+						cb(data, err); 
 					}
 					Files.fs.readFile(path, innercb);
 					return true;
@@ -904,28 +1003,7 @@ var Files;
 	Files.init();
 	module.exports = Files;
 })();
-var parsestring = function (v, m) { // forces v to be a string, maximum
-	if (typeof v == 'string') {}
-	else if (typeof v == 'number') v = String(v);
-	else v = '';
-	if (isnum(m)) v = v.substr(0, m);
-	return v;
-};
-/* 04 Jun 2018
-* events-code: 3129*
-* common command line interface for linux terminals
-* basic building blocks, ansi codes, colors, basic formatting
-* emits using hooks
-* cli-resize { rows, cols }
-* cli-close sync function
-* cli-command { raw, args{} }
-* cli-hint { line }
-* cli-answer { line }
-* gets you the -* & --* & commands & everything in raw
-* cli-init { raw (args), one, two, commands }
-* listens using hooks
-* cli-ask { question, options } returns answer
-*/
+ 
 var Cli = Cli || {};
 ;(function () {
 	'use strict';
@@ -966,13 +1044,7 @@ var Cli = Cli || {};
 			Bgcyan : "\x1b[46m" ,
 			Bgwhite : "\x1b[47m"
 		},
-		/*
-		* ^cmd^ = command: blink, bright, underscore...
-		* `color` = fg color
-		* ~color~ = bg color
-		* `` = reset
-		* ~~ = reset
-		*/
+		 
 		ansi: function (str) {
 			var rs = /\`\`/,
 				r2 = /\~\~/,
@@ -1024,14 +1096,7 @@ var Cli = Cli || {};
 		rli: false,
 		width: 80,
 		height: 24,
-		/* my format, if this is defined, commands send parsed arguments
-		* install: {
-		* -- - details type default
-		* overwrite: ['o', 'overwrite existing files', 'true', false ],
-		* public: ['p', 'create /public folder', 'true', false ],
-		* public: ['p', 'create /public folder', 'true', false ],
-		* },
-		* */
+		 
 		define: function () {
 		},
 		sizes: function () {
@@ -1068,10 +1133,7 @@ var Cli = Cli || {};
 		setautoprompt: function (auto) {
 			_._autoprompt = !!auto;
 		},
-		/*
-		* off by setting text to false
-		* on by specifying the actual text
-		*/
+		 
 		prompt: function (text) {
 			if (!_.rl || !_.rli) _.cli();
 			if (text === false) {
@@ -1088,30 +1150,7 @@ var Cli = Cli || {};
 		setprompt: function (text) {
 			_._prompt = text === undefined ? _._prompt : text;
 		},
-		/*
-		* **as-is:** What you enter, is what you get
-		* - 'string', 1, true
-		* - **int:** Is converted to an Integer wrapped in a Number Object
-		* - 'int', 'number', 'num',
-		* - 'time', 'seconds', 'secs', 'minutes', 'mins'
-		* - 'x', 'n'
-		* - **date:** Is converted to a Date Object
-		* - 'date', 'datetime', 'date_time'
-		* **float:** Is converted to a Float wrapped in a Number Object
-		* - 'float', 'decimal'
-		* **file:** Is converted to a String Object if it is a valid path
-		* - 'path', 'file', 'directory', 'dir'
-		* **email:** Converted to a String Object if it is a valid email format
-		* - 'email'
-		* **url:** Converted to a String Object if it is a valid URL format
-		* - 'url', 'uri', 'domain', 'host'
-		* - **ip:** Converted to a String Object if it is a valid IP Address format
-		* - 'ip'
-		* - **true:** Converted to true if argument is present on command line
-		* - 'bool', 'boolean', 'on'
-		* **false:** Converted to false if argument is present on command line
-		* - 'false', 'off', false, 0
-		*/
+		 
 		gettype: function (type) {
 			if (typeof type !== 'string') return 's';
 			if (type.startsWith('fl')) {
@@ -1157,10 +1196,7 @@ var Cli = Cli || {};
 			}
 			return value;
 		},
-		/*
-		* finds the biggest string in an [], returns a function that fills any
-		* string provided with spaces to make it as big as the biggest string
-		*/
+		 
 		getfiller: function (obj) {
 			var biggest = 0;
 			if (obj instanceof Array) {
@@ -1192,10 +1228,7 @@ var Cli = Cli || {};
 			};
 		},
 		_inquestion: false,
-		/*
-		* callback Function || Object, treated as args if not function
-		*
-		* */
+		 
 		question: function (query, callback, key, def, type) {
 			if (!_.rl || !_.rli) _.cli();
 			_._inquestion = true;
@@ -1230,6 +1263,10 @@ var Cli = Cli || {};
 				_._onresize = true;
 				process.stdout.on('resize', function () {
 					_.sizes();
+					Hooks.run('cli-resize', {
+						rows: _.height,
+						cols: _.width
+					});
 					Hooks.run(_.events.resize, {
 						rows: _.height,
 						cols: _.width
@@ -1244,12 +1281,7 @@ var Cli = Cli || {};
 									process.stdout,
 									_.completer
 							);
-			/* @todo
-			* If terminal is true for this instance then the output stream will
-			* get the best compatibility if it defines an output.columns property,
-			* and fires a "resize" event on the output if/when the columns ever
-			* change (process.stdout does this automatically when it is a TTY).
-			* */
+			 
 			_.rl = readline;
 			_.rli = rl;
 			rl.on('line', function(line) {
@@ -1268,7 +1300,7 @@ var Cli = Cli || {};
 				Hooks.set(_.events.close, _.events.cli, function () {
 					if (_._inquestion) {
 						_._inquestion = false;
-						_.echo('^C'); // @todo better way to cancel a question
+						_.echo('^C'); 
 						process.exit(0);
 					} else {
 						_.echo('exit');
@@ -1325,13 +1357,7 @@ var Cli = Cli || {};
 			}
 			return args;
 		},
-		/*
-		* takes options object
-		* prompt: defautl '>'
-		* autoprompt: false
-		* cli: boolean, default false, enters cli and waits for input
-		* this will start generating hooks events
-		*/
+		 
 		init: function (options) {
 			var options = options || {},
 				raw = process.argv.slice(2),
@@ -1350,28 +1376,12 @@ var Cli = Cli || {};
 	};
 	module.exports = Cli = _;
 })();
-/*
-* Weld is a preprocessor
-* it's full version currently lives in the root folder
-* it's planned to be moved here once mudeer src modules can handle nesting under folder
-*
-* the proposed structure for future src module:
-* src/
-* weld.js
-* weld/
-* htm.js
-* js.js
-* config.js
-* ...
-*
-*
-* this file is a dirty hack to allow Mudeer apps to parse config.w files -_- :D :( :/
-*/
+ 
 var Weld;
 ;(function(){
 function parse_weld( text ) {
 	if (typeof text !== 'string') $.log('text needs to be string');
-	text = (text || '')/*.split('---')[0]*/;
+	text = (text || '') ;
 	var levels = [],
 		lastlevel = 0,
 		lastelement = false,
@@ -1403,10 +1413,7 @@ function parse_weld( text ) {
 	return parsedlines;
 };
 var _mod = {
-	/*
-		* returns all kids as strings in an array
-		* or returns '' if there are no kids
-		* */
+	 
 	childrentoarray: function (children) {
 		var array = [];
 		for (var i in children) {
@@ -1415,11 +1422,7 @@ var _mod = {
 		if (array.length === 0) return '';
 		return array;
 	},
-	/*
-		* returns true if
-		* all kids don't have children
-		* and they also don't have values
-		* */
+	 
 	allchildrenterminal: function (children) {
 		for (var i in children) {
 			if (children[i].children.length > 0 || children[i].value.length > 0) {
@@ -1508,6 +1511,30 @@ Weld = {
 	parse_config: function ( text ) {
 		return _mod.parse( parse_weld( text ) );
 	},
+	 
+	encode_config: function (obj, tabs) {
+		var weld = '',
+			tabs = tabs || 0,
+			filler = Cli.getfiller(obj);
+		for (var i in obj) {
+			var sub = obj[i];
+			if (typeof sub === 'object') {
+				if (!(isarr(sub) && sub.length === 0)) { 
+					weld += '\t'.repeat(tabs) + i + '\n';
+					weld += ( Weld.encode_config( sub, tabs+1 ) );
+				}
+			} else {
+				if (isarr(obj)) {
+					weld += '\t'.repeat(tabs) + sub + '\n';
+				} else if (obj instanceof Object) {
+					weld += '\t'.repeat(tabs) + filler(i) + ' ' + sub + '\n';
+				} else {
+					weld += '\t'.repeat(tabs) + filler(i) + ' ' + sub + '\n';
+				}
+			}
+		}
+		return weld;
+	},
 };
 })();
 var Config = {};
@@ -1593,24 +1620,48 @@ var Hooks, hooks;
 	module.exports = Hooks;
 	hooks = Hooks;
 })();
-/*
-* listen on conf.port, serve-static from /public, both accepted as args
-* watch for changes to /src and restart automatically after a few secs
-* optionally accept a db handle that is passed as extra.db
-* this allows multiple dbs to be queried easily
-* emits hooks: request
-* listens on hooks: response, session, ...
-* session handling convention:
-* a request comes in, server emits request
-* ge-accounts uses the .db, .name, .pass and emits result
-* session on success, server emits
-* response on failure, server _out's it.
-*
-*
-*
-*
-* */
-var Server;
+ 
+var Captcha, captcha;
+;(function () {
+	'use strict';
+	Captcha = captcha = {
+		svgc: false,
+		btoa: false,
+		atob: false,
+		get: function (boxdatabase, cb) {
+			if (typeof cb !== 'function') return;
+			var c = captcha.svgc.createMathExpr({
+				color: 1,
+				noise: 5,
+				width: 220,
+				height: 120,
+				fontSize: 128,
+			});
+			MongoDB.set(boxdatabase, 'temporary', [{
+				hash: Sessions.weakhash(),
+				value: c.text,
+				updated: new Date().getTime(),
+			}], function (result) {
+				if (result.rows.length) {
+					cb({
+						raw: c.data,
+						data: captcha.btoa(c.data),
+						text: c.text,
+						hash: result.rows[0].hash
+					});
+				}
+				else cb(false);
+			});
+		}
+	};
+	var base64 = require('./deps/Base64');
+	captcha.atob = base64.atob;
+	captcha.btoa = base64.btoa;
+	captcha.svgc = require('./deps/svg-captcha');
+	module.exports = captcha;
+})();
+ 
+var Server, SocketIO;
 ;(function(){
 	'use strict';
 	var routes = [];
@@ -1641,8 +1692,9 @@ var Server;
 			options = options || {};
 			options.port = options.port || 3000;
 			process.title = options.name || 'server';
-			var express = require('./deps/express'); // web framework external module
+			var express = require('./deps/express'); 
 			var fileupload = require('./deps/express-fileupload');
+			var socketIo = require('./deps/socket.io'); 
 			var app = express();
 			app.use(fileupload());
 			app.disable('x-powered-by');
@@ -1674,15 +1726,22 @@ var Server;
 			app.get('*', function (req, res) {
 				res.sendFile( public_path+'index.html' );
 			});
-			app.listen(options.port);
+			var http = require('http');
+			var server = http.createServer(app);
+			SocketIO = new socketIo.Server(server);
+			SocketIO.on('connection', function (socket) {
+				Hooks.run('socket', socket);
+			});
+			server.listen(options.port);
 		}
 	};
 	module.exports = Server;
 })();
+ 
 var Web;
 ;(function(){
 	'use strict';
-	var loadedmodules = [], Cache = {};
+	var loadedmodules = [], init_modules = [], Cache = {};
 	var node_path = require('path');
 	var public_path = node_path.resolve( Config.public || $.path )+'/';
 	var echo = Cli.echo;
@@ -1690,22 +1749,23 @@ var Web;
 		echo( ' ^bright^'+a+'~~ '+b+' ' )
 	}
 	Web = {
+		get_public_path: function () {
+			return public_path;
+		},
 		_out: function (req, res, obj, extra) {
 			obj = obj || {};
-			/*
-			* only the perm and nashar channels are allowed to send waqt
-			* and they handle it elsewhere :p
-			* this was for the on-demand channel and that one doesn't send waqt
-			* anymore
-			* */
+			 
 			try {
 				res.json(obj);
 			} catch (e) {
 				$.log.s(e);
 			}
 		},
-		adaaf: function (callback) { // add
+		add: function (callback) { 
 			loadedmodules.push(callback);
+		},
+		during_init: function (callback) {
+			init_modules.push(callback);
 		},
 		api: function (req, res) {
 			res.setHeader('Access-Control-Allow-Origin', '*');
@@ -1713,8 +1773,8 @@ var Web;
 				extra = {
 					payload: {} ,
 					obj: {} ,
-					boxdatabase: "",
-					database: "",
+					boxdatabase: Config.database.name,
+					database: Config.database.name,
 					host: host[0] ,
 					port: host[1] ,
 					req: req ,
@@ -1730,16 +1790,12 @@ var Web;
 						if (req.headers) {
 							if (req.headers.kaleed)
 								extra.payload.kaleed = req.headers.kaleed;
-							if (req.headers.rafa3)
-								extra.payload.rafa3 = req.headers.rafa3;
+							if (req.headers.upload)
+								extra.payload.upload = req.headers.upload;
 							if (req.headers.e$)
 								extra.payload.e$ = req.headers.e$;
 						}
-						/*
-						* if the client is running a different build than this
-						* send an expiredbuild (e$) hint to force them out and onto
-						* the current build
-						* */
+						 
 					} catch (e) {
 						$.log( e, 'invalid json payload' );
 					}
@@ -1757,66 +1813,26 @@ var Web;
 				Web._out(req, res, extra.obj, extra.payload);
 			});
 		},
-		init: function (mods, options) {
-			options = options || {};
+		init: function (callback) {
 			var q = $.queue();
-			if (mods instanceof Array)
-				q.set(function (done, queue) {
-					$.log.s( 'loading modules' );
-					$.preload(mods, function () {
-						mods.forEach(function (mod) {
-							loadedmodules.push( $(mod) );
-						});
-						done(queue);
-					});
+			if (isarr(callback)) {
+				$.log.e( ' Web.init( mods.. ) is deprecated ' );
+				$.log.s( ' Use Web.add( fn ) instead ' );
+			}
+			try {
+				init_modules.forEach(function (mod) {
+					q.set(mod);
 				});
-			if (0)
-				q.set(function (done, queue) {
-					$.log.s( 'connecting to database' );
-					wuqu3aat.init({
-						host: 'localhost',
-						multiple: true,
-						u: "",
-						p: "",
-						charset: 'utf8mb4',
-						errcb: function (e) {
-							if (e && e.code === 'ER_NOT_SUPPORTED_AUTH_MODE') {
-								$.log.s( 'mysql server connection not supported' );
-								$.log.s( 'maybe you forgot to add your user:pass to mysql?' );
-								process.exit();
-							}
-							else if (e && e.code === 'ER_ACCESS_DENIED_ERROR') {
-								$.log.s( 'mysql server username password incorrect' );
-								$.log.s( e.sqlMessage );
-								process.exit();
-							}
-							else if (e && e.code === 'ECONNREFUSED') {
-								$.log.s( 'mysql server is down' );
-								process.exit();
-							}
-							else if (e && e.fatal) {
-								$.log.s( 'mysql server unknown error dying' );
-								process.exit();
-							}
-							else {
-								$.log.s( 'mysql connected' );
-							}
-							done(queue);
-						}
-					});
-				});
+			} catch (e) {
+				$.log.s( 'q.set*', e );
+			}
 			q.set(function (done, queue) {
 				var intercept = function (req, res) {
 					var path = public_path,
 						file = path+'index.html';
 					if (req.url.startsWith('/m3') || req.url.startsWith('/qss')) {
 						var file = process.cwd()+req.url;
-						/*
-						* make uploads get cached
-						* for an avg of 30 days or something
-						*
-						* chrome doesn't cache content from bad certs
-						* */
+						 
 						res.setHeader('Cache-Control', 'private, max-age=2592000, must-revalidate');
 						var ifmodsince = req.headers['if-modified-since'];
 						if (ifmodsince) {
@@ -1833,7 +1849,7 @@ var Web;
 								}
 							});
 							return;
-						} // otherwise check the very last else clause
+						} 
 					} else {
 						if ( ['/qr.js'].includes( req.url ) ) {
 							req.next();
@@ -1842,13 +1858,13 @@ var Web;
 							file = false;
 						}
 					}
-					if (/*isallowed && */file === false) {
+					if ( file === false) {
 						file = path+'index.html';
 					}
 					if (typeof file === 'number') {
 						res.sendStatus(file);
 					} else {
-						if ( [ 'robots.txt', '/_.js', '/20.js', '/a.js', '/e.png',
+						if ( [ 'robots.txt', '/_.js', '/20.js', '/a.js', '/e.png', '/0.png', '/1.png',
 								'/mb.css', '/mb.js', '/mbdr.css', '/mbdr.js',
 								'/manifest.webapp', '/insaan.shakl', '/pallete.js',
 								'/kmr.otf', '/kmb.otf', '/kml.otf'].includes( req.url ) ) {
@@ -1856,25 +1872,6 @@ var Web;
 						}
 						else if ( '/favicon.ico' === req.url) {
 							res.sendStatus(404);
-						}
-						else if ( '/manifest.json' === req.url) {
-							Files.get.file(path+'manifest.json', function (data, err) {
-								if (err) {
-									res.sendStatus(404);
-								} else if (data) {
-									data = data.toString();
-									res.setHeader('Last-Modified', new Date().toUTCString() );
-									try {
-										data = JSON.parse(data);
-										data.name = "server";
-										data.short_name = "server";
-										res.json(data);
-									} catch (ignore) {
-										$.log.e( ignore );
-										res.sendStatus(500);
-									}
-								}
-							});
 						}
 						else {
 							res.sendFile(file, null, function (err) {
@@ -1896,157 +1893,34 @@ var Web;
 			q.run(function () {
 				Server.init({
 					port: Config.port,
-					name: "server"
+					name: "Dewaan"
 				});
-				print_prop( 'public path', public_path );
-				print_prop( 'build', 129 );
-				print_prop( 'server port', Config.port );
+				print_prop( 'Public Path', public_path );
+				print_prop( 'Build', 1108 );
+				print_prop( 'Server Port', Config.port );
+				if (isfun(callback)) callback();
 			});
 		}
 	};
-	Web.add = Web.adaaf;
 	module.exports = Web;
 })();
-/*
-* polling.worker is queued at the very end
-* if no module returns (extra.munfaq = true) (handled)
-* only then the worker should index this request
-*
-* modules know if this is a live request, so when they actually
-* have stuff to return they can mark the request as handled
-* and that'll tell the polling.worker to not get queued
-* */
-var Polling;
-;(function(){
-	'use strict';
-	var connections = {};
-	/* theory
-	* these connections are not to be used for syncing
-	* syncing is done using regular requests that clients can trigger regularly
-	* like when getting online, once a client is fully synced, only then it
-	* should start polling
-	*
-	* connections is account uids as index
-	* and objects of requests indexed using waqtstamps
-	* whenever the server wants to send an 'obj' to an account
-	* it will call .intahaa(accountuid, obj)
-	* this will send that obj to all pending requests under that account
-	* and then that account will get popped from connections
-	* */
-	Polling = {
-		worker: function (done, queue, extra) {
-			var payload = extra.payload,
-				obj = extra.obj,
-				queue2 = $.queue();
-			queue2.set(function (done2, queue2) { // listen
-				if ( extra.munfaq ) { // handled consumed
-					/*
-					* this means there already was new data that some module
-					* has included in the extra.obj
-					*
-					* EXPERIMENTAL override
-					* since this is the waqt the request is being sent out
-					* this waqt should be added to extra.obj
-					* -50ms compensates for any lag caused by the chained
-					* module queue
-					*
-					* THIS is now being handled in shabakah using diff logic
-					* */
-					done2(queue2, extra);
-				} else
-				if ( extra.hisaab && payload.nashar && extra.hisaab.sid ) {
-					connections[ extra.hisaab.sid ] = {
-						uid: extra.hisaab.uid,
-						sid: extra.hisaab.sid,
-						res: extra.res,
-						waqt: new Date().getTime(),
-					};
-				} else done2(queue2, extra);
-			});
-			queue2.run( function () {
-				done(queue, extra);
-			} );
-		},
-		/*
-		* use this function somwhere
-		* and the next step is to make this pass through all the Main mods
-		* each main mod should have a poll or recap like function that takes
-		* from and to waqtstamps
-		* when this function is called
-		* it goes through all the mods' poll or recap function
-		* piles up an object, and then sends it out
-		* and do pragmatically think big, this in the near future should be
-		* used for collab in the pages+articles editor so build it solid
-		* */
-		intahaa: function (obj) {
-			for (var i in connections) {
-				try {
-					connections[i].res.json(obj || 1);
-					delete connections[i];
-				} catch (e) {
-					$.log.s('Polling.intahaa err', e);
-				}
-			}
-		},
-		/*
-		* accounts is an array, only requests for these account uids should end
-		* if accounts is undefined, then just end all
-		* */
-		intahaakul: function (accounts) {
-			for (var i in connections) {
-				var yes;
-				if (accounts && accounts.includes(connections[i].uid)) yes = 1;
-				if (!accounts) yes = 1;
-				if (yes) {
-					try {
-						connections[i].res.end('1');
-						delete connections[i];
-					} catch (e) {
-						$.log('Polling.intahaakul err', e);
-					}
-				}
-			}
-		},
-	};
-	var poptimer = setInterval(function () {
-		var currentwaqt = new Date().getTime();
-		for (var i in connections) {
-			if ( currentwaqt - connections[i].waqt >= 30 * 1000 ) {
-				delete connections[i];
-			}
-		}
-	}, 10 * 60 * 1000);
-	module.exports = Polling;
-	Web.adaaf(Polling.worker);
-})();
-/*
-* Web.adaaf
-* network.get( name, need, cb )
-* network.sync( ... )
-*
-* json.get.name.need = value
-* json.sync.name.need = value
-*
-* broadcast is very lightweight
-*
-* mirror this on client side
-* you are able to listen for specific responses for your own juzw
-* you can add batch commands to be executed every 24h
-* */
+ 
 var network_favors = {}, PRIMARY = 100, SECONDARY = 500, TERTIARY = 1000,
 	network_batches = {};
 [PRIMARY, SECONDARY, TERTIARY].forEach(function (favor) {
 	network_favors[favor] = {
-		intercession: {},
-		get: {},
-		sync: {},
-		upload: {},
+		intercession : {},
+		get : {},
+		sync : {},
+		upload : {},
 	};
 });
+var debug_network = 0;
 var Network = network = {
 	intercept: function (name, need, cb) {
 		if (typeof need == 'function') cb = need, need = 0;
 		need = need || 'default';
+		if (debug_network) Cli.echo(' ^bright^Network~~ '+name+' intercept ^dim^'+need+'~~ ');
 		var favor = network_favors[this._favor || SECONDARY];
 		favor.intercession[ name ] = favor.intercession[ name ] || {};
 		favor.intercession[ name ][ need ] = cb;
@@ -2054,6 +1928,7 @@ var Network = network = {
 	get: function (name, need, cb) {
 		if (typeof need == 'function') cb = need, need = 0;
 		need = need || 'default';
+		if (debug_network) Cli.echo(' ^bright^Network~~ '+name+' get ^dim^'+need+'~~ ');
 		var favor = network_favors[this._favor || SECONDARY];
 		favor.get[ name ] = favor.get[ name ] || {};
 		favor.get[ name ][ need ] = cb;
@@ -2061,6 +1936,7 @@ var Network = network = {
 	sync: function (name, need, cb) {
 		if (typeof need == 'function') cb = need, need = 0;
 		need = need || 'default';
+		if (debug_network) Cli.echo(' ^bright^Network~~ '+name+' sync ^dim^'+need+'~~ ');
 		var favor = network_favors[this._favor || SECONDARY];
 		favor.sync[ name ] = favor.sync[ name ] || {};
 		favor.sync[ name ][ need ] = cb;
@@ -2068,12 +1944,13 @@ var Network = network = {
 	upload: function (name, need, cb) {
 		if (typeof need == 'function') cb = need, need = 0;
 		need = need || 'default';
+		if (debug_network) Cli.echo(' ^bright^Network~~ '+name+' upload ^dim^'+need+'~~ ');
 		var favor = network_favors[this._favor || SECONDARY];
 		favor.upload[ name ] = favor.upload[ name ] || {};
 		favor.upload[ name ][ need ] = cb;
 	},
 	favor: function (favor) {
-		var s = Object.assign({}, network);
+		var s = Object.assign({}, Network);
 		s._favor = favor;
 		return s;
 	},
@@ -2092,30 +1969,19 @@ var Network = network = {
 				}
 			}
 			network.batch_process();
-		}, 1 * 15 * 60 * 1000); // 15m for now, 24h later
+		}, 1 * 15 * 60 * 1000); 
 	},
 };
-network.favor(PRIMARY).intercept('network', 'time', function (response) {
-	/*
-	* time is set only for perm and broadcast channels
-	* on-demand doesn't send time at all
-	*
-	* setting time here helps because while the response for this request
-	* is being processed, if new items are added by someone else, this
-	* time will be before the creation dates of those new items and
-	* they'll get synced on the next request
-	* */
+Network.favor(PRIMARY).intercept('network', 'time', function (response) {
+	 
 	if (response.value) response.extra.time = response.value || 0;
 	else response.extra.time = 0;
-	/*
-	* only return time if client says that it doesn't have time
-	* so that only broadcast qanaat can send out time in all other cases
-	* */
+	 
 	if (!response.value || response.broadcast)
 		response.intercept( new Date().getTime() );
 	response.finish();
 });
-Web.adaaf(function (done, queue, extra) {
+Web.add(function (done, queue, extra) {
 	var payload = extra.payload ;
 	var obj = extra.obj ;
 	var queuesub = $.queue() ;
@@ -2125,7 +1991,7 @@ Web.adaaf(function (done, queue, extra) {
 				donesub(queuesub, extra);
 			},
 			consumed: function () {
-				extra.consumed = 1; // handled consumed
+				extra.consumed = 1; 
 				donesub(queuesub, extra);
 			},
 			get: function (valuex, value2, need2) {
@@ -2212,7 +2078,7 @@ Web.adaaf(function (done, queue, extra) {
 		return rsp;
 	};
 	var arr = [], count = 0;
-	var schedule = function (item, favor) { // priority
+	var schedule = function (item, favor) { 
 		for (var name in payload[item]) {
 			if (favor[item][name]) {
 				var needs = payload[item][name];
@@ -2246,11 +2112,1584 @@ Web.adaaf(function (done, queue, extra) {
 		done(queue, extra);
 	});
 });
-network.batch_process();
+Network.batch_process();
+ 
+var Sessions, sessions,
+	tbl_adwr = 'sessions'
+	tbl_hsbt = 'accounts',
+	tbl_wqti = 'temporary',
+	hashalgo = new require('./deps/easy-pbkdf2').EasyPbkdf2();
+Sessions = sessions = {
+	usernameisvalid: function (username) {
+		var result = {
+			code: false
+		};
+		result.username = username = generate_alias(username);
+		if (result.username.length >= 3) {
+			if (result.username.length <= 24) {
+				result.code = false;
+			} else {
+				result.code = 'usernameover';
+			}
+		} else {
+			result.code = 'usernameunder';
+		}
+		return result;
+	},
+	usernameexists: function (username, cb) {
+		if (!isstr(username)) { $.log.e(' usernameexists expects username as string '); return; }
+		if (!isfun(cb)) { $.log.e(' usernameexists needs a callback '); return; }
+		MongoDB.query(response.extra.database, tbl_hsbt, { name: username }, function (rows) {
+			cb((rows && rows.length === 1));
+		});
+	},
+	passwordisvalid: function (password) {
+		var result = {
+			code: false
+		};
+		if (password.length >= 8) {
+			if (password.length <= 2048) {
+				result.code = false;
+			} else {
+				result.code = 'passwordover';
+			}
+		} else {
+			result.code = 'passwordunder';
+		}
+		return result;
+	},
+	hashpassword: function (password, callback) {
+		if (typeof callback === 'function') {
+			hashalgo.hash(password, function (err, hash, salt) {
+				if (err) throw err;
+				callback({
+					err: err,
+					salt: salt,
+					hash: hash
+				});
+			});
+		}
+	},
+	verifypassword: function (salt, hash, password, cb) {
+		if (typeof cb !== 'function') return;
+		hashalgo.verify(salt, hash, password, function (err, matched) {
+			if (err) throw err;
+			cb(matched);
+		});
+	},
+	weakhash: function (value) {
+		return hashalgo.weakHash(
+			value
+			||
+			(
+				$.random(0, 99999) +""+ get_time_now()
+			)
+		);
+	},
+	get_session_account: function (key, callback) {
+		if (!isfun(callback)) {
+			$.log.e(' get_session_account needs a callback ');
+			return false;
+		}
+		if (!isstr(key)) {
+			callback(false);
+			return false;
+		}
+		MongoDB.get(Config.database.name, tbl_adwr, {
+			hash: parsestring(key),
+		}, function (sessionrow) {
+			if (sessionrow) {
+				MongoDB.set(Config.database.name, tbl_adwr, [{
+					uid: sessionrow.uid,
+					updated: get_time_now(),
+				}], function () {
+					MongoDB.get(Config.database.name, tbl_hsbt, {
+						uid: sessionrow.account,
+					}, function (accountrow) {
+						if (accountrow) {
+							var out_result = {
+								session: sessionrow,
+								account: accountrow
+							};
+							callback(out_result);
+							return out_result;
+						} else {
+							callback(false);
+							return false;
+						}
+					});
+				});
+			} else {
+				callback(false);
+				return false;
+			}
+		});
+	},
+	sendcaptcha: function (response) {
+		captcha.get(response.extra.boxdatabase, function (svg) {
+			response.need('captcha')
+				.get('captcha', svg.raw)
+				.get('hash', svg.hash)
+				.finish();
+		});
+	},
+	format: function (sessionrow, accountrow, response) {
+		response.get({
+			key : sessionrow.hash ,
+			uid: accountrow.uid ,
+			name : accountrow.name ,
+			displayname : accountrow.displayname,
+			latitude : accountrow.latitude ,
+			longitude : accountrow.longitude ,
+			kind : accountrow.kind ,
+		});
+		sessions.account2extra(sessionrow, accountrow, response);
+	},
+	account2extra: function (sessionrow, accountrow, response) {
+		response.extra.account = {
+			sid : sessionrow.uid , 
+			key : sessionrow.hash , 
+			uid: accountrow.uid , 
+			name : accountrow.name , 
+			displayname : accountrow.displayname , 
+			shape : accountrow.shape , 
+			shape_m : accountrow.shape_m , 
+			features : accountrow.features , 
+			features_m : accountrow.features_m , 
+			radius : accountrow.radius , 
+			lifestory : accountrow.lifestory , 
+			kind : accountrow.kind , 
+			possessions : accountrow.possessions , 
+			possessions_m: accountrow.possessions_m , 
+			birthday : accountrow.birthday , 
+			gender : accountrow.gender , 
+			family : accountrow.family , 
+			relatives : accountrow.relatives , 
+			blocks : accountrow.blocks , 
+			friends : accountrow.friends , 
+			jobs : accountrow.jobs , 
+			jobs_m : accountrow.jobs_m , 
+			money : accountrow.money , 
+			nafaqah : accountrow.nafaqah , 
+			talab : accountrow.talab , 
+			phone : accountrow.phone , 
+			status : accountrow.status , 
+			connected : accountrow.connected , 
+			joined : accountrow.joined , 
+			latitude : accountrow.latitude , 
+			longitude : accountrow.longitude , 
+			created : accountrow.created , 
+			updated : accountrow.updated , 
+		};
+	},
+	set: function (database, accountrow, response, callback) {
+		var key = Sessions.weakhash()+Sessions.weakhash();
+		MongoDB.set(database, tbl_adwr, [{
+			hash: key,
+			account: accountrow.uid,
+			updated: get_time_now(),
+		}], function (outcome) {
+			sessions.format(outcome.rows[0], accountrow, response);
+			typeof callback === 'function' && callback(response);
+		}, {
+			checkname: false
+		});
+	},
+	getall: function (options, cb) {
+		if (typeof cb !== 'function') return;
+		var sql = 'SELECT * FROM '+tbl_adwr+' ORDER BY `updated` DESC;';
+		data.query(sql, function (rows) {
+			cb(rows);
+		});
+	},
+	pop: function (options, cb) {
+		if (typeof cb !== 'function') return;
+		if (options.uid < 1) return;
+		var sql = [
+			'DELETE FROM '+tbl_adwr+' WHERE `uid` = ?',
+			[options.uid]
+		];
+		data.query(sql, function (result) {
+			cb(result);
+		});
+	},
+	popbytime: function (options, cb) {
+		if (typeof cb !== 'function') return;
+		if (options.updated < 1) return;
+		var comparisonstring = '<=';
+		if (options.after === true || options.before === false) comparisonstring = '>=';
+		var sql = [
+			'DELETE FROM '+tbl_adwr+' WHERE `updated` '+comparisonstring+' ?',
+			[options.updated]
+		];
+		data.query(sql, function (result) {
+			cb(result);
+		});
+	},
+	 
+	schedpop: function (time, every) {
+		var ftime = time || (60 * 60 * 24 * 30);
+		ftime = ftime * 1000;
+		var fevery = every || 360;
+		fevery = fevery * 1000;
+		clearTimeout(sessions._schedpopto);
+		sessions._schedpopto = setTimeout(function () {
+			var fromtime = (get_time_now()) - ftime;
+			$.log('popping session entries');
+			sessions.popbytime({updated: fromtime}, function () {
+			});
+			sessions.schedpop(time, every);
+		}, fevery);
+	},
+	stopschedpop: function () {
+		clearTimeout(sessions._schedpopto);
+	}
+};
+Network.favor(PRIMARY).intercept('sessions', 'key', function (response) {
+	Sessions.get_session_account(response.value, function (result) {
+		if (result) {
+			response.intercept(true);
+			Sessions.account2extra(result.session, result.account, response);
+			response.finish();
+		} else {
+			response.intercept(false).finish();
+		}
+	});
+});
+Network.get('sessions', 'captcha', function (response) {
+	$.log( 'sessions', 'captcha' );
+	sessions.sendcaptcha(response);
+});
+Network.get('sessions', 'sign_in', function (response) {
+	var creds = response.value;
+	var boxdatabase = response.extra.boxdatabase;
+	var database = response.extra.database;
+	if (typeof creds.answer === 'string') {
+		MongoDB.get(boxdatabase, tbl_wqti, {
+			hash: parsestring(creds.hash),
+			value: creds.answer.trim(),
+		}, function (result) {
+			if (result) {
+				MongoDB.pop(boxdatabase, tbl_wqti, result.uid);
+				var username = Sessions.usernameisvalid( creds.username );
+				var password = Sessions.passwordisvalid( creds.password );
+				if (username.code && password.code) {
+					response.get('username', username.code)
+						.get('password', password.code)
+						.finish();
+				} else {
+					MongoDB.get(database, tbl_hsbt, {
+						name: username.username,
+					}, function (accountrow) {
+						if ( creds.join ) {
+							if (accountrow) {
+								response.get('username', 'usernametaken');
+								sessions.sendcaptcha(response);
+							} else {
+								Sessions.hashpassword( creds.password, function (cryptpassword) {
+									MongoDB.set(database, tbl_hsbt, [{
+										name: username.username,
+										hash: cryptpassword.hash,
+										salt: cryptpassword.salt, 
+										updated: get_time_now(),
+										status: 0,
+									}], function (outcome) {
+										accountrow = outcome.rows[0];
+										sessions.set(database, accountrow, response, function () {
+											response.finish();
+										});
+									});
+								});
+							}
+						}
+						else { 
+							if (accountrow && creds.password ) {
+								if (accountrow.salt === '' && accountrow.hash === '' && accountrow.uid) {
+									Sessions.hashpassword( creds.password, function (cryptpassword) {
+										MongoDB.set(database, tbl_hsbt, [{
+											uid: accountrow.uid,
+											hash: cryptpassword.hash,
+											salt: cryptpassword.salt,
+											updated: get_time_now(),
+										}], function (outcome) {
+											$.log( outcome );
+											accountrow = outcome.rows[0];
+											sessions.set(database, accountrow, response, function () {
+												response.finish();
+											});
+										}, {
+											checkname: false
+										});
+									});
+								} else {
+									Sessions.verifypassword(accountrow.salt,
+														accountrow.hash,
+														creds.password, function (matched) {
+										if (matched) {
+											sessions.set(database, accountrow, response, function () {
+												response.finish();
+											});
+										} else {
+											response.get('password', 'passwordwrong');
+											sessions.sendcaptcha(response);
+										}
+									});
+								}
+							} else {
+								response.get('password', 'passwordwrong');
+								sessions.sendcaptcha(response);
+							}
+						}
+					});
+				}
+			}
+			else {
+				response.get('answer', 'answerwrong');
+				sessions.sendcaptcha(response);
+			}
+		});
+	} else response.get(false).finish();
+});
+Network.get('sessions', 'sign_out', function (response) {
+	response.get(true).finish();
+});
+Network.get('sessions', 'username_exists', function (response) {
+	var creds = response.value,
+		database = response.extra.database;
+	if (creds.exists && creds.join) {
+		var username = Sessions.usernameisvalid( creds.username );
+		response.get('proceed', creds.proceed)
+			.get('join', 1)
+			.get('username', username.username);
+		if (username.code) {
+			response.get('exists', username.code)
+				.finish();
+		} else {
+			MongoDB.get(database, tbl_hsbt, {
+				name: username.username,
+			}, function (accountrow) {
+				response.get('exists', accountrow ? 'usernametaken' : 'usernameavailable')
+					.finish();
+			});
+		}
+	} else response.finish();
+});
+Network.get('sessions', 'active', function (response) {
+	var database = response.extra.database;
+	MongoDB.query(database, tbl_adwr, {}, function (result) {
+		var names = [];
+		result.rows.forEach(function (o) {
+			names.push(o.uid+' '+o.account);
+		});
+		response.get('names', names)
+				.finish();
+	});
+});
+Web.add(function (done, queue, extra) {
+	done(queue, extra);
+	return;
+	var payload = extra.payload,
+		obj = extra.obj,
+		boxdatabase = extra.boxdatabase,
+		database = extra.database,
+		account = {};
+	if (payload.key) {
+	}
+	else if ( payload.get && payload.get.sessions ) {
+		var creds = payload.get.sessions;
+		obj.sessions = account;
+	}
+	else
+		done(queue, extra);
+});
+var Accounts;
+;(function(){
+	'use strict';
+	Accounts = {
+	};
+})();
+Network.get('accounts', 'all', function (response) {
+	MongoDB.query(Config.database.name, tbl_hsbt, {}, function (result) {
+		response.get(result.rows)
+				.finish();
+	});
+});
+Network.sync('accounts', 'nearby', function (response) {
+	$.log( 'accounts', 'nearby', response.value );
+	response.value[0].remove = 1;
+	response.sync(response.value)
+		.finish();
+});
+;(function(){
+function get_manifest_as_json(cb) {
+	var path = Web.get_public_path();
+	Files.get.file(path+'manifest.w', function (data, err) {
+		var manifest;
+		if (err) {
+			if (err.code == 'ENOENT') {
+				Cli.echo(' creating manifest.w ');
+				manifest = {
+					name: "Dewaan",
+				};
+				Files.set.file(path+'manifest.w', Weld.encode_config(manifest) );
+			} else {
+				$.log.s( err );
+			}
+		} else if (data) {
+			manifest = Weld.parse_config( data.toString() );
+		}
+		if (isfun(cb)) cb(manifest);
+	});
+}
+Network.get('manifest', 'read', function (response) {
+	get_manifest_as_json(function (manifest) {
+		if (manifest) response.get(manifest);
+		response.finish();
+	});
+});
+Web.during_init(function (done, queue) {
+	Server.get('/manifest.json', function (req, res) {
+		var path = Web.get_public_path();
+		get_manifest_as_json(function (manifest) {
+			var name = "Dewaan";
+			if (manifest && manifest.name) {
+				name = manifest.name;
+			}
+			Files.get.file(path+'manifest.json', function (data, err) {
+				if (err) {
+					$.log.s( err );
+					res.sendStatus(404);
+				} else if (data) {
+					data = data.toString();
+					res.setHeader('Last-Modified', new Date().toUTCString() );
+					try {
+						data = JSON.parse(data);
+						data.name = name;
+						data.short_name = name;
+						res.json(data);
+					} catch (ignore) {
+						$.log.e( ignore );
+						res.sendStatus(500);
+					}
+				}
+			});
+		});
+	});
+	done(queue);
+});
+})();
+var profile,
+	TAGMAX = 15,
+	ISMMUBEENMAX = 48,
+	HIKAAYAHMAX = 480;
+;(function(){
+	profile = {
+		value: function (u, v) {
+			return { uid: u, value: v };
+		},
+		nazzaf: function (str, max) {
+			if (!isstr(str)) str = parsestring(str);
+			return str.trim().slice(0, max);
+		},
+	};
+})();
+Network.intercept('profile', function (response) {
+	if (response.account) { 
+		var arr = [];
+		if (response.time < response.account.updated) {
+			arr.push( profile.value('name', response.account.name ) );
+			arr.push( profile.value('displayname', response.account.displayname ) );
+			arr.push( profile.value('lifestory', response.account.lifestory ) );
+		}
+		if (arr.length) response.get(arr).consumed();
+		else response.finish();
+	} else response.finish();
+});
+Network.sync('profile', function (response) {
+	var value = response.value;
+	if (!response.account) { response.finish(); return; } 
+	if (!value) { response.finish(); return; } 
+	var tabdeel = 0, things = { uid: response.account.uid }, arr = [];
+	 
+	if (isstr(value.displayname)) {
+		arr.push(
+			profile.value('displayname',
+				things.displayname = profile.nazzaf(value.displayname, ISMMUBEENMAX)
+			)
+		);
+	}
+	if (isstr(value.lifestory)) {
+		arr.push(
+			profile.value('lifestory',
+				things.lifestory = profile.nazzaf(value.lifestory, HIKAAYAHMAX)
+			)
+		);
+		tabdeel = 1;
+	}
+	if (isnum(value.birthday)) {
+		response.sync('birthday', things.birthday = value.birthday );
+		tabdeel = 1;
+	}
+	if (isnum(value.gender)) {
+		if (value.gender < 0 || value.gender > 3) value.gender = 0;
+		response.sync('gender', things.gender = value.gender);
+		tabdeel = 1;
+	}
+	if (arr.length) {
+		things.updated = get_time_now();
+		MongoDB.set(Config.database.name, tbl_hsbt, [things], function (j) {
+			Polling.finish_all([response.account.uid]);
+			response.sync(arr).finish();
+		});
+	}
+	else response.finish();
+});
+var Rooms, rooms,
+	tbl_mklmt = 'rooms';
+;(function(){
+	'use strict';
+	var maxba = {}; 
+	Rooms = rooms = {
+		raakib: function (members) { 
+			if (isarr(members))
+			for (var i = 0; i < members.length; ++i) {
+				var v = members[i];
+				if (v[1] !== 1) return v;
+			}
+		},
+		is_other: function (members, suid) { 
+			if (isarr(members))
+			for (var i = 0; i < members.length; ++i) {
+				var v = members[i];
+				if (v[0] !== suid) return v;
+			}
+		},
+		is_you: function (members, suid) { 
+			if (isarr(members))
+			for (var i = 0; i < members.length; ++i) {
+				var v = members[i];
+				if (v[0] === suid) return v;
+			}
+		},
+		maxba: function (uid, k, v) {
+			if (arguments.length === 0) return maxba;
+			var m = maxba[uid];
+			if (k && v && !m) m = maxba[uid] = {};
+			if (m) {
+				if (isundef(k)) { 
+					delete maxba[uid];
+				} else
+				if (isundef(v)) {
+					return m[k];
+				} else {
+					m[k] = v;
+				}
+			}
+		},
+		slow_mode: function (uid, caaniyaat) {
+			var v = rooms.maxba(uid, 'slow_mode');
+			var c = new Date().getTime();
+			if (isundef(v) || v < c) v = c;
+			v += caaniyaat*1000;
+			rooms.maxba(uid, 'slow_mode', v);
+			rooms.maxba(uid, 'updated', c);
+			rooms.finish_all(uid);
+			return v;
+		},
+		members: function (uid, members) {
+			var v = rooms.maxba(uid, 'members');
+			if (!areobjectsequal(v, members) && members) {
+				rooms.maxba(uid, 'members', members);
+				rooms.maxba(uid, 'updated', new Date().getTime());
+				rooms.finish_all(uid);
+			}
+		},
+		members_to_string: function (arr) {
+			var str = '';
+			arr.forEach(function (o) {
+				str += ' '+o[0]+':'+o[1];
+			});
+			return str;
+		},
+		to_members: function (str) {
+			var members = [];
+			str.trim().split(' ').forEach(function (v) {
+				v = intify(v.split(':'));
+				members.push( [v[0], v[1]] );
+			});
+			return members;
+		},
+		is_member: function (room, uid, type) { 
+			if (room) {
+				if (isstr(room.members)) {
+					if (room.members.match(' '+uid+':'+(type||'')))
+						return 1;
+				} else if (room.members) {
+					if (room.members[uid]) {
+						if (type) return room.members[uid] === type;
+						else return 1;
+					}
+				}
+			}
+		},
+		are_both_members: function (room, uid) { 
+			if (room) {
+				if (isstr(room.members)) {
+					if (room.members.match(' '+uid+':1')
+					&& room.members.match(/\:1/g).length >= 2)
+						return 1;
+				} else if (room.members) {
+					var v = Object.values(room.members);
+					if (room.members[uid] === 1 && v[0] === 1 && v[1] === 1) {
+						return 1;
+					}
+				}
+			}
+		},
+		finish_all: function (uid) {
+			$.slow_mode('mlkmtinahaa'+uid, function () {
+				var v = rooms.maxba(uid, 'members');
+				if (v) {
+					v = Object.keys(v);
+					if (v.length) {
+						v = intify( v ); 
+						Polling.finish_all(v);
+					}
+				}
+			}, 50);
+		},
+	};
+})();
+Network.intercept('rooms', function (response) {
+	if (response.account) {
+		var arr = [], objs = [], limit = 100, maxba = rooms.maxba(), yes;
+		for (var i in maxba) {
+			if (maxba[i].updated > response.time
+			&& rooms.is_member(maxba[i], response.account.uid)) {
+				objs[i] = {
+					uid: parseint(i),
+					slow_mode: maxba[i].slow_mode,
+				};
+				yes = 1;
+			}
+		}
+		arr = Object.values(objs);
+		MongoDB.query(Config.database.name, tbl_mklmt, {
+			members: new RegExp(' '+response.account.uid+':'),
+			updated: { $gt: response.time },
+		}, function (outcome) {
+			outcome.rows.forEach(function (o, i) {
+				var x = objs[o.uid] || {}, members = [], membersobj = {};
+				o.members.split(' ').forEach(function (v) {
+					v = v.split(':');
+					var a = parseint(v[0]),
+						b = parseint(v[1]);
+					if (isnum(a) && isnum(b)) {
+						membersobj[ a ] = b;
+						members.push([ a, b ]);
+					}
+				});
+				rooms.members(o.uid, membersobj);
+				x.uid = o.uid;
+				x.members = members;
+				x.created = o.created;
+				x.updated = o.updated;
+				objs[o.uid] = x;
+			});
+			arr = Object.values(objs);
+			if (arr.length) response.sync(arr), yes = 1;
+			if (yes) response.consumed(); else response.finish();
+		});
+	} else if (yes) response.consumed(); else response.finish();
+});
+Network.sync('rooms', function (response) {
+	var value = response.value;
+	if (!response.account) { response.finish(); return; } 
+	if (!value) { response.finish(); return; } 
+	if (isarr(value)) {
+		var arr = [];
+		value.forEach(function (item) {
+			if (isnum(item.uid)) arr.push({ uid: item.uid });
+		});
+		MongoDB.query(Config.database.name, tbl_mklmt, {
+			uid: { $in: arr }
+		}, function (rows) {
+			var suid = response.account.uid, ct = get_time_now(),
+				riddah = [], mklmt = [], lihifz = [];
+			value.forEach(function (item) {
+				var m = parseint(item.uid), room = rows.get(m), members2 = item.members;
+				if (isarr(members2) && room && rooms.is_member(room, suid)) {
+					var members = rooms.to_members(room.members), yes = 1,
+						is_other = rooms.is_other(members, suid),
+						is_you = rooms.is_you(members, suid),
+						is_other2 = rooms.is_other(members2, suid),
+						is_you2 = rooms.is_you(members2, suid),
+						o = {
+							uid: m,
+							created: room.created,
+							updated: room.updated,
+						},
+						shayy = { uid: m, updated: ct };
+					if (isarr(is_other) && isarr(is_you)) {
+						if (is_other[1] === -3) {
+							yes = 0;
+						} else
+						if (is_you[1] === -3) {
+							if (is_you2[1] === 0) is_you[1] = 0;
+							if (is_you2[1] === 1) {
+								is_you[1] = 1;
+								if (is_other[1] !== -2) {
+									is_other[1] = -1;
+									shayy.remove = ct;
+								}
+							}
+						} else
+						if ([-2, 0].includes(is_you[1])) {
+							if (is_you2[1] === 1) {
+								is_you[1] = 1;
+								if (is_other[1] === 0) {
+									is_other[1] = -1;
+									shayy.remove = ct;
+								}
+							}
+						} else
+						if (is_you[1] === 0 && is_other[1] === 1) {
+							if (is_you2[1] === 1) {
+								is_you[1] = 1;
+							}
+						} else
+						if (is_you[1] === -1 && is_other[1] === 1) {
+							if (is_you2[1] === 1) {
+								is_you[1] = 1;
+							}
+							if (is_you2[1] === -2) {
+								is_you[1] = -2;
+								shayy.remove = ct;
+							}
+							if (is_you2[1] === -3) {
+								is_you[1] = -3;
+							}
+						}
+						if (is_other[1] !== -3 && is_you2[1] === -3) {
+							is_you[1] = -3;
+							if (is_other[1] === -1) is_other[1] = 0;
+						}
+						if (yes) {
+							var membersstr = rooms.members_to_string([is_you, is_other]);
+							o.members = [is_you, is_other];
+							shayy.members = membersstr;
+							o.havaf = shayy.remove;
+							mklmt.push(o);
+							lihifz.push(shayy);
+						}
+					} else riddah.push(o);
+				} else riddah.push({ uid: m, havaf: -1 });
+			});
+			MongoDB.set(Config.database.name, tbl_mklmt, lihifz, function (outcome) {
+				response.sync(mklmt.concat(riddah)).finish();
+			});
+		});
+	} else response.finish();
+});
+Network.get('rooms', 'invite', function (response) {
+	var prof1 = response.value, prof0 = response.account.uid;
+	if (!response.account) { response.finish(); return; } 
+	if (!isnum(prof1) || prof1 <= 0 || prof1 === prof0) {
+		response.finish(); return;
+	} 
+	helpers.get(Config.database.name, tbl_hsbt, { uid: prof1 }, function (hsb) {
+	if (hsb)
+	wuqu3aat.query('select * from `'+Config.database.name+'`.`'+tbl_mklmt+'` '+
+				'where (members like ? or members like ?) '+
+				'order by updated asc limit 0,'+1,
+	[ '% '+prof1+':% '+prof0+':%', ' '+prof0+':% '+prof1+':%' ]).then(function (outcome) {
+		var haalah = 0, uid, row = outcome.rows[0], out = {},
+			members, membersobj = {}, membersstr = '';
+		if (row) {
+			uid = row.uid; members = row.members;
+			out.uid = uid;
+			out.created = row.created;
+			out.updated = row.updated;
+			out.members = [[prof0, 1], [prof1, -1]];
+			members.split(' ').forEach(function (v) {
+				v = v.split(':');
+				var a = parseint(v[0]), b = parseint(v[1]);
+				if (isnum(a) && isnum(b)) {
+					membersobj[ a ] = b;
+					membersstr += ' '+a+':';
+					if (a === prof0) {
+						membersstr += 1;
+					} else {
+						membersstr += -1;
+					}
+				}
+			});
+		} else {
+			out.members = [[prof0, 1], [prof1, -1]];
+			membersobj[ prof0 ] = 1;
+			membersobj[ prof1 ] = -1;
+			membersstr = ' '+prof0+':1 '+prof1+':-1';
+		}
+		if (haalah === 0) { 
+			var created = new Date().getTime();
+			helpers.set(Config.database.name, tbl_mklmt, [{
+				uid: uid,
+				members: membersstr,
+				updated: created,
+			}], function (outcome) {
+				var row = outcome.rows[0];
+				out.uid = row.uid;
+				out.created = row.created;
+				out.updated = row.updated;
+				rooms.members(row.uid, membersobj);
+				rooms.finish_all(row.uid); 
+				response.get(out).finish();
+			}, { checkism: false });
+		}
+		else response.get(out).finish();
+	});
+	else response.get().finish();
+	});
+});
+Network.batch('rooms', function () {
+	MongoDB.query(Config.database.name, tbl_mklmt, {
+		members: new RegExp(':-2'),
+	}, function (outcome) {
+		var modify = [], ct = new Date().getTime();
+		outcome.rows.forEach(function (o) {
+			if (ct-o.remove < 5 * 60 * 1000) modify.push({
+				uid: o.uid,
+				members: o.members.replace(':-2', ':0'),
+				remove: ct,
+			});
+			MongoDB.set(Config.database.name, tbl_mklmt, modify, function (outcome) {
+			});
+		});
+	});
+});
+var Messages, messages,
+	tbl_rsl = 'messages',
+	musicmetadata = require('./deps/music-metadata');
+;(function(){
+	'use strict';
+	Messages = messages = {
+		text2seconds: function (text) { 
+			var c = text.length;
+			return Math.ceil( c / 6 ) || 1;
+		},
+	};
+})();
+Network.intercept('messages', function (response) {
+	if (response.account && response.time > 0) {
+		var arr = [], limit = 100;
+		MongoDB.query(Config.database.name, tbl_mklmt, {
+			members: new RegExp(' '+response.account.uid+':'),
+		}, function (mklmt) {
+			if (mklmt.rows.length) {
+				var mstr = [];
+				mklmt.rows.forEach(function (m) {
+					mstr.push(m.uid);
+				});
+				MongoDB.query(Config.database.name, tbl_rsl, {
+					room: { $in: mstr },
+					updated: { $gt: response.time },
+				}, function (outcome) {
+					outcome.rows.forEach(function (o, i) {
+						var x = {};
+						x.uid = o.uid;
+						x.room = o.room;
+						x.owner = o.owner;
+						x.kind = o.kind;
+						if (x.kind === 0) x.text = o.text;
+						if ([1, 2].includes(x.kind)) x.address = o.text;
+						x.remove = o.remove;
+						x.condition = o.condition;
+						x.created = o.created;
+						x.updated = o.updated;
+						arr.push( x );
+					});
+					if (arr.length) response.get(arr).consumed();
+					else response.finish();
+				});
+			} else response.finish();
+		});
+	} else response.finish();
+});
+Network.get('messages', function (response) {
+	if (response.account) {
+		var arr = [],
+			limit = 100;
+		MongoDB.query(Config.database.name, tbl_rsl, {
+			room: response.value.filter.room,
+		}, function (outcome) {
+			outcome.rows.forEach(function (o, i) {
+				var x = {};
+				x.uid = o.uid;
+				x.room = o.room;
+				x.owner = o.owner;
+				x.kind = o.kind;
+				if (x.kind === 0) x.text = o.text;
+				if ([1, 2].includes(x.kind)) x.address = o.text;
+				x.remove = o.remove;
+				x.condition = o.condition;
+				x.created = o.created;
+				x.updated = o.updated;
+				arr.push( x );
+			});
+			response.get(arr).consumed();
+		});
+	} else response.finish();
+});
+Network.upload('messages', 'photo', function (response) {
+	var value = response.value, marfoo3 = response.marfoo3, duration = 3;
+	if (!response.account) { response.finish(); return; } 
+	if (!isnum(value) || value < 1 || !marfoo3) { response.finish(); return; } 
+	var filesize = Math.ceil(marfoo3.size/1024); 
+	if (filesize > 150) { response.upload(0).finish(); return; } 
+	duration = filesize;
+	MongoDB.query(Config.database.name, tbl_mklmt, {
+		uid: { $in: [value] }
+	}, function (rows) {
+		if (rows.length) {
+			var mklmh = rows.get(value);
+			var ct = get_time_now(), yr = new Date().getFullYear();
+			var zaad = [], txrt = {};
+			if (mklmh) {
+				if (Rooms.are_both_members(mklmh, response.account.uid)) {
+					var o = {
+						room: value,
+						kind: 2,
+						owner: response.account.uid,
+						updated: ct,
+					};
+					Files.set.folder('m3/'+yr);
+					Files.set.folder('m3/'+yr+'/'+value);
+					o.text = 'm3/'+yr+'/'+value+'/'+ct+'.jpg';
+					marfoo3.mv(o.text, function (a) {
+						$.log('photo move result', a);
+					});
+					zaad.push(o);
+				}
+			}
+			if (zaad.length)
+			MongoDB.set(Config.database.name, tbl_rsl, zaad, function (outcome) {
+				var nataaij = [];
+				outcome.rows.forEach(function (item) {
+					var m = item.room;
+					if (!item.remove)
+					var txr = Rooms.slow_mode(m, duration);
+					txrt[ m ] = {
+						uid: m,
+						delay: txr,
+					};
+					var o = {
+						uid: item.uid,
+						ruid: item.ruid,
+						room: m,
+						kind: 2,
+						address: item.text,
+						remove: item.remove,
+						owner: item.owner,
+						created: item.created,
+						updated: item.updated,
+					};
+					if (item.remove) {
+					}
+					nataaij.push(o);
+				});
+				response.need('delay').get(Object.values(txrt));
+				response.need('default').sync(nataaij);
+				response.upload(1).consumed();
+			});
+			else
+			response.upload(0).consumed();
+		} else response.upload(0).consumed();
+	});
+});
+Network.upload('messages', 'sawt', function (response) {
+	var value = response.value, marfoo3 = response.marfoo3;
+	if (!response.account) { response.finish(); return; } 
+	if (!isnum(value) || value < 1 || !marfoo3) { response.finish(); return; } 
+	var filesize = Math.ceil(marfoo3.size/1024); 
+	if (filesize > 80) { response.upload(0).finish(); return; } 
+	musicmetadata.parseBuffer(response.marfoo3.data, 0, {
+		duration: true,
+	}).then(function (d) {
+		var duration = d.format.duration; 
+		duration = Math.max(duration, filesize);
+		if (!isnum(duration)) duration = filesize;
+		MongoDB.query(Config.database.name, tbl_mklmt, {
+			uid: { $in: [value] }
+		}, function (rows) {
+			if (rows.length) {
+				var mklmh = rows.get(value);
+				var ct = get_time_now(), yr = new Date().getFullYear();
+				var zaad = [], txrt = {};
+				if (mklmh) {
+					if (Rooms.are_both_members(mklmh, response.account.uid)) {
+						var o = {
+							room: value,
+							kind: 1,
+							owner: response.account.uid,
+							updated: ct,
+						};
+						Files.set.folder('m3');
+						Files.set.folder('m3/'+yr);
+						Files.set.folder('m3/'+yr+'/'+value);
+						o.text = 'm3/'+yr+'/'+value+'/'+ct+'.webm';
+						marfoo3.mv(o.text, function (a) {
+						});
+						zaad.push(o);
+					}
+				}
+				if (zaad.length)
+				MongoDB.set(Config.database.name, tbl_rsl, zaad, function (outcome) {
+					var nataaij = [];
+					outcome.rows.forEach(function (item) {
+						var m = item.room;
+						if (!item.remove)
+						var txr = Rooms.slow_mode(m, duration);
+						txrt[ m ] = {
+							uid: m,
+							delay: txr,
+						};
+						var o = {
+							uid: item.uid,
+							ruid: item.ruid,
+							room: m,
+							kind: 1,
+							address: item.text,
+							remove: item.remove,
+							owner: item.owner,
+							created: item.created,
+							updated: item.updated,
+						};
+						if (item.remove) {
+						}
+						nataaij.push(o);
+					});
+					response.need('delay').get(Object.values(txrt));
+					response.need('default').sync(nataaij);
+					response.upload(1).consumed();
+				});
+				else
+				response.upload(0).consumed();
+			} else response.upload(0).consumed();
+		});
+	});
+});
+Network.sync('messages', function (response) {
+	var value = response.value;
+	if (!response.account) { response.finish(); return; } 
+	if (!value) { response.finish(); return; } 
+	var mklmt = [];
+	value.forEach(function (item) {
+		if (item.uid && item.room)
+			mklmt.push({
+				uid: item.room,
+			});
+	});
+	MongoDB.query(Config.database.name, tbl_mklmt, {
+		uid: { $in: mklmt },
+	}, function (rows) {
+		if (rows.length) {
+			var zaad = [], pops = [], txrt = {};
+			var ct = get_time_now();
+			value.forEach(function (item) {
+				var m = item.room, mklmh = rows.get(m);
+				if (item.uid && mklmh) {
+					if (Rooms.are_both_members(mklmh, response.account.uid)) {
+						var o = {
+							uid: item.uid,
+							room: item.room,
+							updated: ct,
+						};
+						if (item.remove) {
+							o.remove = ct;
+						} else {
+							o.text = parsestring(item.text, 480);
+							o.owner = response.account.uid;
+						}
+						zaad.push(o);
+					} else
+					pops.push({
+						uid: item.uid,
+						remove: -1,
+					});
+				}
+			});
+			if (zaad.length)
+			helpers.set(Config.database.name, tbl_rsl, zaad, function (outcome) {
+				var nataaij = [];
+				outcome.rows.forEach(function (item) {
+					var m = item.room;
+					if (!item.remove)
+					var txr = Rooms.slow_mode(m, messages.text2seconds(item.text));
+					txrt[ m ] = {
+						uid: m,
+						delay: txr,
+					};
+					var o = {
+						uid: item.uid,
+						ruid: item.ruid,
+						room: m,
+						text: item.text,
+						remove: item.remove,
+						owner: item.owner,
+						created: item.created,
+						updated: item.updated,
+					};
+					if (item.remove) {
+					}
+					nataaij.push(o);
+				});
+				response.need('delay').get(Object.values(txrt));
+				response.sync(nataaij.concat(pops)).finish();
+			});
+			else
+			response.sync(pops).finish();
+		} else {
+			var zaad = [];
+			value.forEach(function (item) {
+				if (item.uid)
+				zaad.push({
+					uid: item.uid,
+					remove: -1,
+				});
+			});
+			response.sync(zaad).finish();
+		}
+	});
+});
+ 
+var Databases;
+;(function () {
+	'use strict';
+	Databases = {
+	};
+	module.exports = Databases;
+})();
+ 
+var MongoDB;
+;(function () {
+	'use strict';
+	const { MongoClient, ObjectId } = require('./deps/mongodb');
+	const uri = 'mongodb://localhost/';
+	const client = new MongoClient( uri );
+	var db, tbl_pops = 'pops', debug_mongodb = 0;
+	function generate_uid() { return new ObjectId().toString(); }
+	async function connect() {
+		Cli.echo(' ^bright^MongoDB~~ Connecting... ^dim^', uri, '~~');
+		try {
+			await client.connect();
+			Cli.echo(' ^bright^MongoDB~~ Connected ');
+		} catch (error) {
+			Cli.echo(' ^bright^MongoDB~~ Error connecting ');
+			$.log.e( error );
+			process.exit(1);
+		} finally {
+		}
+	}
+	function use_db(name) {
+		return client.db(name);
+	}
+	 
+	async function upsert(db, collection_name, doc, cb) {
+		if (debug_mongodb) $.log( ' upsert... ', collection_name );
+		var out_error;
+		try {
+			const collection = use_db( db ).collection( collection_name );
+			var created = get_time_now(), uid = doc.uid || generate_uid();
+			delete doc.created; 
+			const update = {
+				$set: doc, 
+				$setOnInsert: { _id: uid, created: created },
+			};
+			const result = await collection.updateOne(
+				{ _id: uid }, 
+				update,
+				{ upsert: true },
+			);
+			if (result.upsertedCount > 0) {
+				doc.uid = result.upsertedId;
+				doc.created = created;
+			} else {
+				doc.uid = doc._id;
+				delete doc._id;
+			}
+		} catch (error) {
+			$.log.e(' Error during upsert:', error);
+		} finally {
+			if (isfun(cb)) cb( out_error, doc );
+		}
+	}
+	async function upsert_one_or_many(db, collection_name, doc_or_docs, cb) {
+		var out_docs = [], out_error;
+		if (!isarr( doc_or_docs )) doc_or_docs = [ doc_or_docs ];
+		for (const o of doc_or_docs) {
+			await upsert(db, collection_name, o, function (err, doc) {
+				if (err) {
+					if (!isarr(out_error)) out_error = [];
+					out_error.push(err);
+				}
+				out_docs.push( doc );
+			});
+		}
+		if (isfun(cb)) {
+			var out = { rows: out_docs };
+			if (out_error) out.err = out_error;
+			cb( out );
+		}
+	}
+	async function find_many_as_array(db, collection_name, filter, cb) {
+		if (debug_mongodb) $.log( ' find_many_as_array... ', collection_name );
+		if (isfun(cb)) {
+			var out_docs, out_error;
+			filter = filter || {};
+			if (filter.uid) {
+				filter._id = filter.uid;
+				delete filter.uid;
+			}
+			try {
+				const collection = use_db( db ).collection( collection_name );
+				out_docs = await collection.find( filter ).toArray();
+				out_docs = out_docs.map(function (o) {
+					o.uid = o._id;
+					delete o._id;
+					return o;
+				});
+			} catch (error) {
+				$.log.e(' Error during find_many_as_array:', error);
+			} finally {
+				var out = { rows: out_docs };
+				if (out_error) out.err = out_error;
+				cb( out );
+			}
+		} else {
+			Cli.echo( ' ^bright^find_many_as_array~~ needs a callback ' );
+		}
+	}
+	async function find_one(db, collection_name, filter, cb) {
+		if (debug_mongodb) $.log( ' find_one... ', collection_name );
+		if (isfun(cb)) {
+			var out_docs, out_error;
+			filter = filter || {};
+			if (filter.uid) {
+				filter._id = filter.uid;
+				delete filter.uid;
+			}
+			try {
+				const collection = use_db( db ).collection( collection_name );
+				out_docs = await collection.find( filter ).limit(1).toArray();
+				out_docs = out_docs.map(function (o) {
+					o.uid = o._id;
+					delete o._id;
+					return o;
+				});
+			} catch (error) {
+				$.log.e(' Error during find_one:', error);
+			} finally {
+				if (out_docs[0]) {
+					cb( out_docs[0] );
+				} else {
+					cb( false );
+				}
+			}
+		} else {
+			Cli.echo( ' ^bright^find_one~~ needs a callback ' );
+		}
+	}
+	async function delete_one(db, collection_name, uid, cb, alt_collection_name) {
+		$.log( ' delete_one... ', collection_name );
+		var result, out_error;
+		try {
+			const collection = use_db( db ).collection( collection_name );
+			result = await collection.deleteOne({ _id: uid })
+			if (result.deletedCount) {
+				await upsert(db, tbl_pops, {
+					luid: uid,
+					ltable: alt_collection_name || collection_name,
+					updated: get_time_now(),
+				}, function (err, doc) {
+					out_error = err;
+				});
+			}
+		} catch (error) {
+			out_error = error;
+			$.log.e(' Error during delete_one:', error);
+		} finally {
+			if (isfun(cb)) cb( out_error, result );
+		}
+	}
+	async function delete_many(db, collection_name, filter, cb, alt_collection_name) {
+		var uids = [];
+		if (isstr(filter) || isnum(filter) || isarr(filter)) {
+			uids = isarr(filter) ? filter : [ filter ];
+		} else {
+			await find_many_as_array(db, collection_name, filter, function (out) {
+				if (out.rows.length) {
+					out.rows.forEach(function (o) {
+						uids.push( o.uid );
+					});
+				}
+			});
+		}
+		if (debug_mongodb) $.log( ' delete_many... ', collection_name );
+		var out_uids = [], out_error;
+		for (const o of uids) {
+			await delete_one(db, collection_name, o, function (err, doc) {
+				if (err) {
+					if (!isarr(out_error)) out_error = [];
+					out_error.push(err);
+				}
+				out_uids.push( o );
+			});
+		}
+		var old_time = get_time_now() - (40*1000*60*60*24); 
+		var pops_result;
+		try {
+			const collection = use_db( db ).collection( tbl_pops );
+			pops_result = await collection.deleteMany({
+				updated: {
+					$lte: old_time
+				}
+			});
+		} catch (error) {
+			Cli.echo( ' delete_many error while deleting old pops ' );
+			$.log.e( error );
+		} finally {
+			if (pops_result && pops_result.deletedCount) {
+				Cli.echo( ' delete_many deleted '+pops_result.deletedCount+' old pops ' );
+			}
+		}
+		if (isfun(cb)) {
+			if (out_uids.length && debug_mongodb) Cli.echo( ' delete_many deleted '+out_uids.length+' docs ' );
+			cb( out_uids, out_error );
+		}
+	}
+	module.exports = Databases.mongodb = MongoDB = {
+		connect : connect,
+		db : use_db,
+		set : upsert_one_or_many,
+		query : find_many_as_array,
+		get : find_one,
+		pop : delete_many,
+		uid: generate_uid,
+	};
+})();
+Web.during_init(function (done, queue) {
+	MongoDB.connect().finally(function () {
+		done(queue);
+	});
+});
+ 
+var Polling;
+;(function(){
+	'use strict';
+	var connections = {};
+	 
+	Polling = {
+		worker: function (done, queue, extra) {
+			var payload = extra.payload,
+				obj = extra.obj,
+				queue2 = $.queue();
+			queue2.set(function (done2, queue2) { 
+				if ( extra.consumed ) { 
+					 
+					done2(queue2, extra);
+				} else
+				if ( extra.account && payload.broadcast && extra.account.sid ) {
+					connections[ extra.account.sid ] = {
+						uid: extra.account.uid,
+						sid: extra.account.sid,
+						name: extra.account.name,
+						res: extra.res,
+						time: new Date().getTime(),
+					};
+				} else done2(queue2, extra);
+			});
+			queue2.run( function () {
+				done(queue, extra);
+			} );
+		},
+		 
+		finish: function (obj) {
+			for (var i in connections) {
+				try {
+					connections[i].res.json(obj || 1);
+					delete connections[i];
+				} catch (e) {
+					$.log.s('Polling.finish err', e);
+				}
+			}
+		},
+		 
+		finish_all: function (accounts) {
+			for (var i in connections) {
+				var yes;
+				if (accounts && accounts.includes(connections[i].uid)) yes = 1;
+				if (!accounts) yes = 1;
+				if (yes) {
+					try {
+						connections[i].res.end('1');
+						delete connections[i];
+					} catch (e) {
+						$.log('Polling.finish_all err', e);
+					}
+				}
+			}
+		},
+	};
+	var poptimer = setInterval(function () {
+		var current_time = new Date().getTime();
+		for (var i in connections) {
+			if ( current_time - connections[i].time >= 30 * 1000 ) {
+				delete connections[i];
+			}
+		}
+	}, 10 * 60 * 1000);
+	module.exports = Polling;
+	Network.get('polling', 'connections', function (response) {
+		var names = [];
+		for (var i in connections) { names.push(connections[i].name); }
+		response.get('names', names)
+				.finish();
+	});
+	Web.add(Polling.worker);
+})();
 ;(function(){
 	'use strict';
 	var main = {
 	};
-	Web.init();
+	Web.init(() => {
+	});
+	var default_room = 'default_room';
+	var connections = {};
+	function add_connection(socket_id, key, value, data) {
+		var o = connections[ key ] = Object.assign(connections[ key ] || {}, value || {});
+		o.socket_id = socket_id;
+		o.mobile = data.mobile;
+		o.platform = data.platform;
+		o.browser = data.browser;
+		o.browser_version = data.browser_version;
+		if (isundef(o.color)) {
+			o.color = count_connections();
+		}
+		return o;
+	}
+	function get_connection(socket_id) {
+		for (var i in connections) {
+			if (connections[i].socket_id == socket_id) {
+				return i;
+				break;
+			}
+		}
+	}
+	function remove_connection(socket_id) {
+		var key = get_connection(socket_id);
+		if (key) {
+			delete connections[ key ];
+			$.log('removed connection', socket_id, '->', key);
+		} else {
+			$.log('un-authenticated user disconnected');
+		}
+	}
+	function export_connection(o) {
+		return {
+			uid: o.session.uid,
+			color: o.color,
+			name: o.account.name,
+			mobile: o.mobile,
+			platform: o.platform,
+			browser: o.browser,
+			browser_version: o.browser_version,
+		};
+	}
+	function count_connections() {
+		return Object.keys(connections).length;
+	}
+	Hooks.set('socket', (socket) => {
+		$.log('a user connected', socket.id);
+		socket.on('join', (data, callback) => {
+			if (isstr(data.key) && data.key.length) {
+				Sessions.get_session_account(data.key, (result) => {
+					if (result) {
+						var result_object = add_connection( socket.id, data.key, result, data );
+						result_object = export_connection( result_object );
+						socket.join( default_room );
+						SocketIO.to( default_room ).emit( 'join', [ result_object ] );
+						if (isfun(callback)) { 
+							var arr = [];
+							for (var i in connections) {
+								arr.push( export_connection(connections[i]) );
+							}
+							callback(arr);
+						}
+						$.log('user joined', result.account.name);
+					} else {
+						$.log('user failed to auth for joining', data, result);
+					}
+				});
+			}
+		});
+		socket.on('leave', (data, callback) => {
+			if (isstr(data.key) && data.key.length) {
+				Sessions.get_session_account(data.key, (result) => {
+					if (result) {
+						SocketIO.to( default_room ).emit( 'leave', result.session.uid );
+						socket.leave( default_room );
+						if (isfun(callback)) { callback( result.session.uid ); }
+						$.log('user left', result.account.name);
+					} else {
+						$.log('user failed to auth for leaving', data, result);
+					}
+				});
+			}
+		});
+		socket.on('pointer', (data, callback) => {
+			if (isarr(data)) {
+				var conn = get_connection(socket.id);
+				if (conn) { 
+					var result = connections[conn];
+					if (result) {
+						SocketIO.to( default_room ).emit( 'pointer', [result.session.uid, data[0], data[1]] );
+					}
+				}
+			}
+		});
+		socket.on('pointer_contact', (data, callback) => {
+			if (isnum(data)) {
+				var conn = get_connection(socket.id);
+				if (conn) { 
+					var result = connections[conn];
+					if (result) {
+						SocketIO.to( default_room ).emit( 'pointer_contact', [result.session.uid, data] );
+					}
+				}
+			}
+		});
+		socket.on('disconnect', () => {
+			var conn = get_connection(socket.id);
+			if (conn) {
+				var conn_object = connections[conn];
+				socket.to( default_room ).emit( 'leave', conn_object.session.uid );
+				socket.leave( default_room );
+				remove_connection(socket.id);
+			}
+		});
+	});
+	Network.get('call_screen', 'active', function (response) {
+		response.get( count_connections() ).finish();
+	});
+	Files.fs.watch('./index.js', (eventtype, filename) => {
+		$.taxeer('kill-server', () => {
+			Cli.echo( ' ^bright^Updated~~ source code, exiting... ' );
+			process.exit();
+		}, 500);
+	});
+	process.on('unhandledRejection', (err) => {
+		$.log.e(err);
+		process.exit(1);
+	});
 })();
 

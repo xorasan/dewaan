@@ -4,6 +4,10 @@
 +include linked/webapp.css.w
 +include linked/webapp.3inch.css.w
 +include linked/webapp.13inch.css.w
++include linked/webapp.notify.css.w
++include linked/sidebar.css.w
++include linked/network.css.w
++include linked/manifest.css.w
 +include linked/list.css.w
 +include linked/backstack.css.w
 +include linked/preferences.css.w
@@ -13,6 +17,9 @@
 +include linked/settings.css.w
 +include linked/translate.css.w
 +include linked/templates.css.w
++include linked/recorder.css.w
++include linked/uploader.css.w
++include linked/canvas.css.w
 +include linked/softkeys.css.w
 +include linked/softkeys.list.css.w
 +include linked/sheet.css.w
@@ -20,4 +27,10 @@
 +include linked/dialog.css.w
 +include linked/webapp.touch.css.w
 +include linked/softkeys.touch.css.w
-+include linked/network.css.w
++include linked/sessions.css.w
++include linked/offline.css.w
++include linked/profile.css.w
++include linked/accounts.css.w
++include linked/polling.client.css.w
++include linked/rooms.css.w
++include linked/messages.css.w
