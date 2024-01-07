@@ -11,8 +11,8 @@ body
 	
 	[view=call_screen] #call_screen_ui
 //		#visualizer .flex
-		[id=list]
 		canvas [id=whiteboard] #whiteboardui
+		[id=list]
 	
 	[template=call_list_item] .flex .listitem .call_list_item .pad .padv
 		.shrink .pad

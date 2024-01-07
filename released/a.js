@@ -124,17 +124,17 @@ return 'body {'
 +'\n	background:'+o.primary+';'
 +'\n	color:'+o.accent+';'
 +'\n}'
-+'\n#itlaa3 .text {'
++'\n#webapp_status_ui .text {'
 +'\n	box-shadow:0 0 10px 0 '+o.tertiary+';'
 +'\n	border:1px solid '+o.tertiaryl+';'
 +'\n}'
 +'\n#taht3nsar .text {'
 +'\n	border:1px solid '+o.tertiaryd+';'
 +'\n}'
-+'\n#itlaa3 .text, #taht3nsar .text {'
++'\n#webapp_status_ui .text, #taht3nsar .text {'
 +'\n	background:'+o.secondaryd+';'
 +'\n}'
-+'\n[data-transparency] #itlaa3 .text, [data-transparency] #taht3nsar .text {'
++'\n[data-transparency] #webapp_status_ui .text, [data-transparency] #taht3nsar .text {'
 +'\n	background:'+o.primaryt+';'
 +'\n	border-color:'+o.secondaryt+';'
 +'\n}'
@@ -1939,8 +1939,10 @@ var Webapp, webapp, appname = 'Dewaan' || '',
 		return backstack.darajah === 0 && view.is_active( home_views );
 	};
 	Webapp.ask_on_exit = webapp.bixraaj;
+	var status_dom_keys;
 	Webapp.itlaa3 = function (text, time) {
-		var element = itlaa3.firstElementChild;
+		status_dom_keys = status_dom_keys || templates.keys(webapp_status_ui);
+		var element = status_dom_keys.text;
 		if (text) {
 			if (text instanceof Array) {
 				element.dataset.i18n = text[0];
@@ -1949,14 +1951,22 @@ var Webapp, webapp, appname = 'Dewaan' || '',
 				delete element.dataset.i18n,
 				element.innerText = text;
 			}
-			itlaa3.hidden = 0;
-			$.taxeer('itlaa3', function () {
-				webapp.itlaa3();
+			webapp_status_ui.hidden = 0;
+			if (innerwidth() > 1024) webapp_status_ui.style.right = '-20px';
+			else webapp_status_ui.style.right = '';
+			$.taxeer('webapp_status_animation', function () {
+				webapp_status_ui.style.right = '';
+			}, 100);
+			$.taxeer('webapp_status', function () {
+				if (innerwidth() > 1024) webapp_status_ui.style.right = '-20px';
+				$.taxeer('webapp_status_final', function () {
+					webapp.itlaa3();
+				}, 100);
 			}, time||3000);
 		} else {
 			delete element.dataset.i18n,
 			element.innerText = '',
-			itlaa3.hidden = 1;
+			webapp_status_ui.hidden = 1;
 		}
 	};
 	Webapp.status = webapp.itlaa3;
@@ -2041,7 +2051,7 @@ var Webapp, webapp, appname = 'Dewaan' || '',
 	listener('load', function (e) {
 		header_keys = templates.keys(headerui);
 		tall_header_keys = templates.keys(tallheaderui);
-		webapp.header( xlate(appname) );
+		Webapp.header( xlate(appname) );
 		xlate.update();
 		time && time.start();
 		webapp.icons();
@@ -2303,25 +2313,41 @@ function url_content_to_data_uri(url){
 		}
 	});
 })();
-var Sidebar;
+var Sidebar, sidebar_sheet_list;
 ;(function(){
 	var sidebar_list, debug_sidebar = 1;
 	Sidebar = {
 		set: function (options) { if (sidebar_list) {
 			if (debug_sidebar) $.log.w( 'Sidebar.set', options.uid );
+			var old_options = sidebar_list.adapter.get(options.uid);
+			if (old_options) {
+				old_options = shallowcopy( old_options );
+				delete old_options.id_dom;
+				options = Object.assign(old_options, options);
+			}
 			sidebar_list.set(options);
+			if (sidebar_sheet_list) {
+				delete options.id_dom;
+				sidebar_sheet_list.set(options);
+			}
 		} },
-		get: function (theme, key) {
+		get: function (uid) {
+			return shallowcopy( sidebar_list.adapter.get(uid) );
 		},
 		remove: function (uid) {
 			sidebar_list.pop(uid);
+			if (sidebar_sheet_list) {
+				sidebar_sheet_list.pop(uid);
+			}
 		},
 		open: function () {
 			if (innerwidth() > 1024) {
 			} else {
 				open_list_sheet('Menu', function (l) {
+					sidebar_sheet_list = l;
 					l.uponclick = function (o) {
-						backstack.back();
+						if (!o.keep_open) 
+							backstack.back();
 						$.taxeer('after_sidebar_sheet', function () {
 							sidebar_list.uponclick(o);
 						}, 20);
@@ -2329,7 +2355,6 @@ var Sidebar;
 					sidebar_list.adapter.each(function (o) {
 						o = shallowcopy(o);
 						delete o.id_dom;
-						o.value = o.count;
 						l.set(o);
 					});
 				});
@@ -2372,10 +2397,15 @@ var Sidebar;
 			sidebar_list.uponclick( o );
 		};
 		sidebar_list.uponclick = function (o) {
-			sidebar_list.select_by_uid( o.uid, 1, 1, 1 );
-			var name = o.uid;
-			Hooks.run('view', name);
-			if (get_global_object().Pager) Pager.choose(name);
+			if (isfun(o.cb) || isfun(o.callback)) {
+				if (isfun(o.cb)) o.cb();
+				if (isfun(o.callback)) o.callback();
+			} else {
+				sidebar_list.select_by_uid( o.uid, 1, 1, 1 );
+				var name = o.uid;
+				Hooks.run('view', name);
+				if (get_global_object().Pager) Pager.choose(name);
+			}
 		};
 	});
 	Hooks.set('viewready', function (args) {
@@ -2535,7 +2565,7 @@ var Network, network, sessions = sessions || 0;
 		payload = payload || {};
 		payload = Object.assign(payload, {
 			broadcast : 1 , 
-			e$ : 1108 , 
+			e$ : 1184 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		error_log(payload);
@@ -2580,7 +2610,7 @@ var Network, network, sessions = sessions || 0;
 		if (Object.keys(pending_gets).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 1108 , 
+			e$ : 1184 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.get = payload.get || {};
@@ -2638,7 +2668,7 @@ var Network, network, sessions = sessions || 0;
 		if (Object.keys(synced).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 1108 , 
+			e$ : 1184 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.sync = payload.sync || {};
@@ -2669,7 +2699,7 @@ var Network, network, sessions = sessions || 0;
 	var upload = function (name, need, value, payload_raw, intercession) {
 		var payload = {};
 		payload = Object.assign(payload, {
-			e$ : 1108 , 
+			e$ : 1184 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.upload = {};
@@ -2870,12 +2900,12 @@ var List, list;
 		beforepop: 0,
 		uponpastend: function () {
 			var yes = focusnext(this.element);
-			if (yes && yes.listobject) softkeys.list.basic(yes.listobject);
+			if (yes && yes.listobject) Softkeys.list.basic(yes.listobject);
 			return yes;
 		},
 		uponpaststart: function () {
 			var yes = focusprev(this.element);
-			if (yes && yes.listobject) softkeys.list.basic(yes.listobject);
+			if (yes && yes.listobject) Softkeys.list.basic(yes.listobject);
 			return yes;
 		},
 		uponend: 0, 
@@ -2934,7 +2964,7 @@ var List, list;
 			this.element.parentElement.hidden = 0;
 		},
 		uponrakkaz: function (v, active) { 
-			if (v && active) softkeys.list.basic(this);
+			if (v && active) Softkeys.list.basic(this);
 		},
 		rakkaz: function (v, active) { 
 			if (this._prevent_focus) return;
@@ -3577,11 +3607,11 @@ var Backstack, backstack;
 	});
 	s = backstack.states;
 })();
-var preferences;
+var Preferences, preferences;
 ;(function(){
 	'use strict';
 	 
-	preferences = {
+	Preferences = preferences = {
 		popall: function () {
 			return localStorage.clear();
 		},
@@ -3618,21 +3648,21 @@ var preferences;
 		},
 	};
 	var buildnum = preferences.get('#', 1);
-	if ( buildnum != 1108 ) {
+	if ( buildnum != 1184 ) {
 		preferences.pop(3); 
 		preferences.pop('@'); 
 		preferences.pop(4); 
 		preferences.pop(6); 
 	}
-	preferences.set('#', 1108);
+	preferences.set('#', 1184);
 	Hooks.set('ready', function () {
-		if ( buildnum != 1108 ) {
+		if ( buildnum != 1184 ) {
 			$.taxeer('seeghahjadeedah', function () {
 				Hooks.run('seeghahjadeedah', buildnum);
 			}, 2000);
 		}
 	});
-	$.log.s( 1108 );
+	$.log.s( 1184 );
 })();
 var activity;
 ;(function(){
@@ -4141,7 +4171,7 @@ var Settings, settings, currentad;
 		open('https://github.com/xorasan/mudeer', '_blank');
 	}, 'iconmudeer']);
 	if (Config.repo) {
-		add([Config.appname+' '+1108, function () {
+		add([Config.appname+' '+1184, function () {
 			return Config.sub;
 		}, function () {
 			open(Config.repo, '_blank');
@@ -5679,10 +5709,10 @@ var Softkeys, softkeys, K, P;
 		},
 	};
 })();
-var sheet;
+var Sheet, sheet;
 ;(function(){
 	var index = {}, header, container, active_sheet_name, ae, murakkaz;
-	sheet = {
+	Sheet = sheet = {
 		okay: 0,
 		cancel: 0,
 		onshow: 0,
@@ -5835,6 +5865,9 @@ function open_list_sheet(name, init, callback) {
 		t: name,
 		i: function (k) {
 			new_list = list( k.list ).listitem( 'list_sheet_item' ).idprefix( 'list_sheet_item' );
+			new_list.after_set = function (o, c, k) {
+				if (o.count) izhar(k.count_tag); else ixtaf(k.count_tag);
+			};
 			if (isfun(init)) init(new_list);
 		},
 		c: function () {
@@ -5842,7 +5875,7 @@ function open_list_sheet(name, init, callback) {
 		}
 	});
 }
-var themes;
+var Themes, themes;
 ;(function(){
 	var K, P, settingsuid, current = 0, contrast = 0;
 	var store = {
@@ -5998,7 +6031,7 @@ var themes;
 			}
 		}
 	}
-	themes = {
+	Themes = themes = {
 		 
 		saveto: 19,
 		saveto_contrast: '19c',
@@ -6500,25 +6533,38 @@ var Sessions, sessions,
 			}
 		});
 	}
-	function update_sidebar() {
-		if (get_global_object().Sidebar) {
-			if (Sessions.signedin()) {
-				Sidebar.remove('signin');
-				Sidebar.remove('signup');
-			} else {
-				Sidebar.set({
-					uid: 'signin',
-					title: xlate('signin'),
-					icon: 'iconperson',
-				});
-				Sidebar.set({
-					uid: 'signup',
-					title: xlate('signup'),
-					icon: 'iconpersonadd',
-				});
-			}
+	function update_sidebar() { if (get_global_object().Sidebar) {
+		if (Sessions.signedin()) {
+			Sidebar.remove('signin');
+			Sidebar.remove('signup');
+			Sidebar.set({
+				uid: 'signout',
+				title: xlate('signout'),
+				icon: 'iconexittoapp',
+				keep_open: 1,
+				callback: function () {
+					Hooks.run('dialog', {
+						m: 'signoutconfirm',
+						c: function () {
+							sessions.signout();
+						},
+					});
+				}
+			});
+		} else {
+			Sidebar.remove('signout');
+			Sidebar.set({
+				uid: 'signin',
+				title: xlate('signin'),
+				icon: 'iconperson',
+			});
+			Sidebar.set({
+				uid: 'signup',
+				title: xlate('signup'),
+				icon: 'iconpersonadd',
+			});
 		}
-	}
+	} }
 	Sessions = sessions = {
 		jaddad: function (parent) {
 			jaddadkeys(parent);
@@ -6623,7 +6669,13 @@ var Sessions, sessions,
 			return preferences.get(1);
 		},
 		uid: function () { 
-			return preferences.get(2);
+			return Preferences.get(2);
+		},
+		get_account_uid: function () {
+			return this.uid();
+		},
+		get_session_uid: function () {
+			return Preferences.get('session_uid');
 		},
 		get: function (uri, dry) {
 			if (backstack.locked)
@@ -6757,9 +6809,7 @@ var Sessions, sessions,
 				preferences.pop( 21 );
 				cache = {};
 				Webapp.status( xlate('loggedout') );
-				update_sidebar();
 				Hooks.run('sessionchange', 0);
-				Hooks.run('view', 'main');
 			});
 		},
 		usernameexists: function (user, temp) {
@@ -6794,13 +6844,19 @@ var Sessions, sessions,
 			}
 		},
 	};
+	Hooks.set('sessionchange', function (signedin) {
+		$.log.w('Sessions', signedin ? 'signed in' : 'signed out');
+		update_sidebar();
+	});
 	Hooks.set('ready', function (args) {
 		Network.intercept('sessions', 'key', function (finish) {
 			finish(sessions.signedin() || undefined);
 		});
 		Network.response.intercept('sessions', 'key', function (response) {
 			if (response === false) {
-				sessions.signout();
+				Sessions.signout();
+			} else {
+				Preferences.set('session_uid', response);
 			}
 		});
 		Network.response.get('sessions', 'username_exists', function (response) {
@@ -6862,14 +6918,7 @@ var Sessions, sessions,
 				});
 			}
 		});
-		Settings.adaaf('signout', 0, function () {
-			Hooks.run('dialog', {
-				m: 'signoutconfirm',
-				c: function () {
-					sessions.signout();
-				},
-			});
-		});
+		Hooks.run('sessionchange', !!Sessions.signedin());
 		var m = view.mfateeh('signup');
 		var usnmfld = m.username;
 		usnmfld.onkeyup = function () {
@@ -6890,7 +6939,7 @@ var Sessions, sessions,
 		if (args.name == 'sessions') {
 		}
 		if (args.name == 'signin') {
-			webapp.header(xlate('signin'));
+			Webapp.header([['signin'], '', 'iconpersonadd']);
 			mfateeh = view.mfateeh('signin');
 			if (mfateeh.aqdaam.dataset.currentqadam === undefined)
 				mfateeh.aqdaam.dataset.currentqadam = 0;
@@ -6900,7 +6949,7 @@ var Sessions, sessions,
 			password_visibility( getattribute(mfateeh.password, 'type') == 'text' );
 		}
 		if (args.name == 'signup') {
-			webapp.header(xlate('signup'));
+			Webapp.header([['signup'], '', 'iconpersonadd']);
 			mfateeh = view.mfateeh('signup');
 			if (mfateeh.aqdaam.dataset.currentqadam === undefined)
 				mfateeh.aqdaam.dataset.currentqadam = 0;
@@ -6953,7 +7002,7 @@ var Offline, offline;
 	};
 	var createstores = function () {
 		if (debug_offline) $.log.w('Offline createstores', maxaazin);
-		var request = indexedDB.open(database, 1108);
+		var request = indexedDB.open(database, 1184);
 		request.onerror = function(event) {
 			if (event.target.error.name === 'VersionError') {
 				 
@@ -7685,6 +7734,17 @@ var profilelist;
 			q: details[0] || item.uid
 		});
 	};
+	function update_sidebar() { if (get_global_object().Sidebar) {
+		if (Sessions.signedin()) {
+			Sidebar.set({
+				uid: module_name,
+				title: translate( module_name ),
+				icon: 'iconperson',
+			});
+		} else {
+			Sidebar.remove(module_name);
+		}
+	} }
 	Profile = profile = {
 		 
 		maxba: function (uid, value) { 
@@ -7707,12 +7767,10 @@ var profilelist;
 		delay: -1, 
 		keyvalue: 1
 	});
+	Hooks.set('sessionchange', function (signedin) {
+		update_sidebar();
+	});
 	Hooks.set('ready', function () {
-		if (get_global_object().Sidebar) { Sidebar.set({
-			uid: module_name,
-			title: translate( module_name ),
-			icon: 'iconperson',
-		}); }
 		var dom_keys = view.dom_keys(module_name);
 		profilelist = List( dom_keys.list ).idprefix(module_name).listitem('profilekatab');
 		profile.update(); 
@@ -8851,13 +8909,13 @@ var SocketIO = io({
 }), call_list, Whiteboard, pointer_data;
 ;(function(){
 	var module_name = 'call_screen', connection_status, connection_status_string,
-		should_call;
+		is_in_call;
 	var pen_colors = [ 
-		'white',
-		'#f66', 
-		'#6f6', 
-		'#ff6', 
-		'#69f', 
+		'text',
+		'red',
+		'green',
+		'yellow',
+		'cyan',
 	];
 	var pointer_held = 0;
 	pointer_data = {};
@@ -8870,24 +8928,34 @@ var SocketIO = io({
 			var x = data.x, y = data.y;
 			if (caller) {
 				color = caller.color;
-				var color_str = pen_colors[color] || 'white';
+				var color_str = Themes.get(pen_colors[color] || 'text');
 				Whiteboard.circle(x, y, 10, 0, 360, color_str);
-				Whiteboard.text(x+14, y+4, caller.name+' '+data.contact, -1, color_str);
+				var contact_str = data.contact ? 'pressed' : '';
+				Whiteboard.text(x+14, y+4, caller.name+' '+contact_str, -1, color_str);
 				var lines = data.lines;
 				if (isarr(lines)) {
-					var xlp, lp; 
 					lines.forEach(function (p) {
-						if (lp && p)
-							Whiteboard.line([ lp, p ], color_str);
-						if (xlp == 0 && lp && p == 0)
-							Whiteboard.circle(lp.x, lp.y, 2, 0, 360, color_str);
-						xlp = lp;
-						lp = p;
+						if (p.length === 1) {
+							Whiteboard.circle(p[0].x, p[0].y, 2, 0, 360, color_str);
+						} else if (p.length > 1) {
+							Whiteboard.line(p, color_str, -1);
+						}
 					});
 				}
 			}
 		}
 	}
+	function update_sidebar() { if (get_global_object().Sidebar) {
+		if (Sessions.signedin()) {
+			Sidebar.set({
+				uid: module_name,
+				title: translate( module_name ),
+				icon: 'iconcall',
+			});
+		} else {
+			Sidebar.remove(module_name);
+		}
+	} }
 	SocketIO.on('error', function (error) {
 		$.log.e('socket_io error', error);
 		connection_status = 0;
@@ -8896,6 +8964,9 @@ var SocketIO = io({
 	SocketIO.on('connect', function () {
 		$.log.w('socket_io connect');
 		connection_status = 1;
+		if (is_in_call) {
+			join_room();
+		}
 		on_view_ready();
 	});
 	SocketIO.on('reconnect', function (attempt) { 
@@ -8910,7 +8981,27 @@ var SocketIO = io({
 	});
 	SocketIO.on('join', after_others_join);
 	SocketIO.on('leave', after_leaving);
-	SocketIO.on('pointer', function (data) {
+	SocketIO.on('pointer', on_pointer);
+	SocketIO.on('pointer_contact', on_pointer_contact);
+	SocketIO.on('undo', on_undo);
+	function join_room() {
+		SocketIO.emit(
+			'join',
+			get_session_details(),
+			after_others_join
+		);
+	}
+	function leave_room() {
+		SocketIO.emit(
+			'leave',
+			get_session_details(),
+			after_leaving
+		);
+		if (!is_in_call) {
+			clear_all_callers();
+		}
+	}
+	function on_pointer (data) {
 		var session_uid = data[0];
 		var converted = percentage_to_pixels(data[1], data[2]);
 		data[1] = converted[0];
@@ -8921,19 +9012,26 @@ var SocketIO = io({
 		p_data.x = data[1];
 		p_data.y = data[2];
 		var lines;
-		lines = p_data.lines = p_data.lines || [];
+		lines = p_data.lines = p_data.lines || []; 
 		if (p_data.contact) {
-			var lp = lines[ lines.length-1 ];
+			var shape = lines[ lines.length-1 ];
 			var should_add;
-			if (!lp)
+			if (!shape) {
 				should_add = 1;
-			if (lp) {
-				if (lp.x != data[1] || lp.y != data[2]) {
+				lines.push([]);
+				shape = lines[ lines.length-1 ];
+			} else {
+				var lp = shape[ shape.length-1 ]; 
+				if (lp) {
+					if (lp.x != data[1] || lp.y != data[2]) {
+						should_add = 1;
+					}
+				} else {
 					should_add = 1;
 				}
 			}
 			if ( should_add ) {
-				lines.push( { x: data[1], y: data[2] } );
+				shape.push( { x: data[1], y: data[2] } );
 				var caller = call_list.adapter.get(p_data.uid);
 				if (caller) {
 					caller.points = lines.length;
@@ -8942,8 +9040,8 @@ var SocketIO = io({
 			}
 		}
 		redraw_whiteboard_if_needed();
-	});
-	SocketIO.on('pointer_contact', function (data) {
+	}
+	function on_pointer_contact (data) {
 		$.log.w('pointer_contact', data);
 		var p_data;
 		p_data = pointer_data[ data[0] ] = pointer_data[ data[0] ] || {};
@@ -8951,8 +9049,12 @@ var SocketIO = io({
 		var lines;
 		lines = p_data.lines = p_data.lines || [];
 		if (lines.length && data[1] === 0) {
-			lines.push(0);
-			lines = p_data.lines = simplify_line(lines, 1);
+			var shape = lines[ lines.length-1 ];
+			if (shape) {
+				shape = lines[ lines.length-1 ] = simplify_line(shape, 1.2);
+			}
+			if (shape && shape.length) 
+				lines.push([]); 
 			var caller = call_list.adapter.get(p_data.uid);
 			if (caller) {
 				caller.points = lines.length;
@@ -8960,7 +9062,21 @@ var SocketIO = io({
 			}
 		}
 		redraw_whiteboard_if_needed();
-	});
+	}
+	function on_undo (data) {
+		var session_uid = data[0];
+		var p_data = pointer_data[ session_uid ];
+		if (p_data) {
+			var lines = p_data.lines;
+			if (lines.length > 1) {
+				var shape = lines[ lines.length-1 ];
+				if (shape.length === 0) {
+					lines.splice( lines.length-2, 1 );
+					redraw_whiteboard_if_needed();
+				}
+			}
+		}
+	}
 	function get_session_details() {
 		var details = {
 			key: Sessions.signedin(),
@@ -8986,7 +9102,7 @@ var SocketIO = io({
 	}
 	function after_others_join(result) {
 		$.log.w('socket_io join', result);
-		should_call = 2;
+		is_in_call = 2;
 		on_view_ready();
 		if (isarr(result)) {
 			result.forEach(function (o) {
@@ -8996,15 +9112,15 @@ var SocketIO = io({
 				if (o.browser_version) details_str += ' '+o.browser_version;
 				if (o.platform) details_str += ' on '+o.platform;
 				call_list.set({
-					icon: 'iconperson',
+					icon : 'iconperson',
 					uid: o.uid,
 					color : o.color,
-					name: '@'+o.name,
+					name : '@'+o.name,
 					displayname: o.displayname,
 					details: details_str.trim(),
 				});
 				var keys = call_list.get_item_keys( o.uid );
-				keys.color_tag.style.background = pen_colors[o.color] || 'white';
+				keys.color_tag.style.background = Themes.get(pen_colors[o.color] || 'text');
 			});
 		}
 	}
@@ -9020,30 +9136,39 @@ var SocketIO = io({
 		if (connection_status === 2) return 'Reconnected'
 		if (connection_status === -1) return 'Error';
 	}
-	function on_view_ready(subtitle) {
+	function on_view_ready(subtitle) { 
 		if (view.is_active(module_name)) {
 			if (get_global_object().Sidebar) Sidebar.choose(module_name);
-			webapp.header([[module_name], subtitle || get_connection_string() || '', 'iconequalizer']);
+			webapp.header([[module_name], subtitle || get_connection_string() || '', 'iconcall']);
 		}
 	}
+	var undo_softkey_object = { n: 'Undo',
+		k: 'u',
+		alt: 1,
+		i: 'iconundo',
+		c: function (k, e) {
+			SocketIO.emit( 'undo', 0 );
+			on_undo([Sessions.get_session_uid()]);
+			e && e.preventDefault();
+		}
+	};
 	function set_call_softkey() {
-		softkeys.add({ n: should_call ? 'Hangup' : 'Call',
+		Softkeys.add({ n: is_in_call ? 'Leave' : 'Join',
 			k: K.en,
-			i: should_call ? 'iconcallend' : 'iconcall',
+			i: is_in_call ? 'iconcallend' : 'iconcall',
 			c: function (k, e) {
-				SocketIO.emit(
-					should_call ? 'leave' : 'join',
-					get_session_details(),
-					should_call ? after_leaving : after_others_join
-				);
-				if (!should_call) {
-					clear_all_callers();
+				if (is_in_call) {
+					leave_room();
+				} else {
+					join_room();
 				}
-				should_call = !should_call;
+				is_in_call = !is_in_call;
 				set_call_softkey();
 				e && e.preventDefault();
 			}
 		});
+		if (undo_softkey_object.uid && !is_in_call) Softkeys.remove(undo_softkey_object.uid);
+		if (is_in_call) Softkeys.add(undo_softkey_object);
 	}
 	function resize_whiteboard() {
 		$.taxeer('resize_whiteboard', function () {
@@ -9051,6 +9176,7 @@ var SocketIO = io({
 			whiteboardui.width = w;
 			whiteboardui.height = w;
 			Whiteboard.o.font = '14px sans-serif';
+			Whiteboard.linewidth(3);
 		}, 30);
 	}
 	function clear_all_callers() {
@@ -9069,40 +9195,39 @@ var SocketIO = io({
 		];
 	}
 	var soundAllowed, soundNotAllowed;
+	Hooks.set('sessionchange', function (signedin) {
+		update_sidebar();
+	});
 	Hooks.set('ready', function (args) {
-		if (get_global_object().Sidebar) {
-			Sidebar.set({
-				uid: module_name,
-				title: translate('call_screen'),
-				icon: 'iconequalizer',
-			});
-		}
 		Webapp.add_minimal_view( module_name );
 		Whiteboard = Canvas(whiteboardui);
 		whiteboardui.onpointerdown = function () {
 			if (!pointer_held) {
 				pointer_held = 1;
 				SocketIO.emit( 'pointer_contact', 1 );
+				on_pointer_contact([Sessions.get_session_uid(), 1]);
 			}
 		};
-		function up_or_cancel() {
-			if (pointer_held) {
-				pointer_held = 0;
-				SocketIO.emit( 'pointer_contact', 0 );
-			}
-		}
+		function up_or_cancel() { if (pointer_held) {
+			pointer_held = 0;
+			SocketIO.emit( 'pointer_contact', 0 );
+			on_pointer_contact([Sessions.get_session_uid(), 0]);
+		} }
 		listener('pointerup', up_or_cancel);
 		listener('pointercancel', up_or_cancel);
 		whiteboardui.onpointermove =
 		(e) => {
 			if (connection_status > 0) {
-				SocketIO.emit( 'pointer', pixels_to_percentage( e.offsetX, e.offsetY ) );
+				var pcts = pixels_to_percentage( e.offsetX, e.offsetY );
+				SocketIO.emit( 'pointer', pcts );
+				on_pointer([Sessions.get_session_uid(), pcts[0], pcts[1]]);
 			}
 		};
 		resize_whiteboard();
 		SocketIO.connect();
 		var dom_keys = view.dom_keys( module_name );
-		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).grid(4);
+		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).grid(4)
+					.prevent_focus(1);
 		 
 	});
 	listener('resize', function () {

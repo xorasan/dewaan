@@ -1896,7 +1896,7 @@ var Web;
 					name: "Dewaan"
 				});
 				print_prop( 'Public Path', public_path );
-				print_prop( 'Build', 1108 );
+				print_prop( 'Build', 1184 );
 				print_prop( 'Server Port', Config.port );
 				if (isfun(callback)) callback();
 			});
@@ -2348,7 +2348,7 @@ Sessions = sessions = {
 Network.favor(PRIMARY).intercept('sessions', 'key', function (response) {
 	Sessions.get_session_account(response.value, function (result) {
 		if (result) {
-			response.intercept(true);
+			response.intercept(result.session.uid);
 			Sessions.account2extra(result.session, result.account, response);
 			response.finish();
 		} else {
@@ -3274,7 +3274,7 @@ var MongoDB;
 ;(function () {
 	'use strict';
 	const { MongoClient, ObjectId } = require('./deps/mongodb');
-	const uri = 'mongodb://localhost/';
+	const uri = process.env.DEWAAN_MONGO_URI || 'mongodb://localhost/';
 	const client = new MongoClient( uri );
 	var db, tbl_pops = 'pops', debug_mongodb = 0;
 	function generate_uid() { return new ObjectId().toString(); }
@@ -3573,7 +3573,7 @@ var Polling;
 		o.browser = data.browser;
 		o.browser_version = data.browser_version;
 		if (isundef(o.color)) {
-			o.color = count_connections();
+			o.color = count_connections()-1;
 		}
 		return o;
 	}
@@ -3608,6 +3608,11 @@ var Polling;
 	function count_connections() {
 		return Object.keys(connections).length;
 	}
+	function get_room_size(name) {
+		var o = SocketIO.sockets.adapter.rooms.get( default_room );
+		if (o) return o.size;
+		else return 0;
+	}
 	Hooks.set('socket', (socket) => {
 		$.log('a user connected', socket.id);
 		socket.on('join', (data, callback) => {
@@ -3626,6 +3631,7 @@ var Polling;
 							callback(arr);
 						}
 						$.log('user joined', result.account.name);
+						$.log('room size', get_room_size( default_room ) );
 					} else {
 						$.log('user failed to auth for joining', data, result);
 					}
@@ -3640,6 +3646,7 @@ var Polling;
 						socket.leave( default_room );
 						if (isfun(callback)) { callback( result.session.uid ); }
 						$.log('user left', result.account.name);
+						$.log('room size', get_room_size( default_room ) );
 					} else {
 						$.log('user failed to auth for leaving', data, result);
 					}
@@ -3652,7 +3659,7 @@ var Polling;
 				if (conn) { 
 					var result = connections[conn];
 					if (result) {
-						SocketIO.to( default_room ).emit( 'pointer', [result.session.uid, data[0], data[1]] );
+						socket.to( default_room ).emit( 'pointer', [result.session.uid, data[0], data[1]] );
 					}
 				}
 			}
@@ -3663,8 +3670,17 @@ var Polling;
 				if (conn) { 
 					var result = connections[conn];
 					if (result) {
-						SocketIO.to( default_room ).emit( 'pointer_contact', [result.session.uid, data] );
+						socket.to( default_room ).emit( 'pointer_contact', [result.session.uid, data] );
 					}
+				}
+			}
+		});
+		socket.on('undo', (data, callback) => {
+			var conn = get_connection(socket.id);
+			if (conn) { 
+				var result = connections[conn];
+				if (result) {
+					socket.to( default_room ).emit( 'undo', [result.session.uid] );
 				}
 			}
 		});

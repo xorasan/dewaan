@@ -19,7 +19,7 @@
 		o.browser = data.browser;
 		o.browser_version = data.browser_version;
 		if (isundef(o.color)) {
-			o.color = count_connections();
+			o.color = count_connections()-1;
 		}
 		return o;
 	}
@@ -54,6 +54,11 @@
 	function count_connections() {
 		return Object.keys(connections).length;
 	}
+	function get_room_size(name) {
+		var o = SocketIO.sockets.adapter.rooms.get( default_room );
+		if (o) return o.size;
+		else return 0;
+	}
 	
 	Hooks.set('socket', (socket) => {
 		$.log('a user connected', socket.id);
@@ -75,6 +80,7 @@
 							callback(arr);
 						}
 						$.log('user joined', result.account.name);
+						$.log('room size', get_room_size( default_room ) );
 					} else {
 						$.log('user failed to auth for joining', data, result);
 					}
@@ -89,6 +95,7 @@
 						socket.leave( default_room );
 						if (isfun(callback)) { callback( result.session.uid ); }
 						$.log('user left', result.account.name);
+						$.log('room size', get_room_size( default_room ) );
 					} else {
 						$.log('user failed to auth for leaving', data, result);
 					}
@@ -101,7 +108,9 @@
 				if (conn) { // TODO verify it's allowed to use pointer
 					var result = connections[conn];
 					if (result) {
-						SocketIO.to( default_room ).emit( 'pointer', [result.session.uid, data[0], data[1]] );
+						// only send to others
+						// client draws self pointer without a server trip
+						socket.to( default_room ).emit( 'pointer', [result.session.uid, data[0], data[1]] );
 					}
 				}
 			}
@@ -112,8 +121,17 @@
 				if (conn) { // TODO verify it's allowed to use pointer
 					var result = connections[conn];
 					if (result) {
-						SocketIO.to( default_room ).emit( 'pointer_contact', [result.session.uid, data] );
+						socket.to( default_room ).emit( 'pointer_contact', [result.session.uid, data] );
 					}
+				}
+			}
+		});
+		socket.on('undo', (data, callback) => {
+			var conn = get_connection(socket.id);
+			if (conn) { // TODO verify it's allowed
+				var result = connections[conn];
+				if (result) {
+					socket.to( default_room ).emit( 'undo', [result.session.uid] );
 				}
 			}
 		});

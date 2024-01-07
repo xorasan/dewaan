@@ -49,6 +49,7 @@ iconarrowback        iconarrowback
 iconbugreport        iconbugreport
 icondaterange        icondaterange
 iconequalizer        iconequalizer
+iconexittoapp        iconexittoapp
 iconpersonadd        iconpersonadd
 iconplayarrow        iconplayarrow
 _replacements        _replacements
@@ -221,6 +222,7 @@ icondone             icondone
 iconhelp             iconhelp
 iconhome             iconhome
 iconmenu             iconmenu
+iconundo             iconundo
 _minutes             _minutes
 _seconds             _seconds
 _hours12             _hours12
@@ -377,7 +379,7 @@ spaces               spaces
 inline               inline
 center               center
 dimmer               dimmer
-itlaa3               itlaa3
+webapp               webapp
 skdots               skdots
 baidaa               baidaa
 bardaa               bardaa

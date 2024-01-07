@@ -1,16 +1,17 @@
+// TODO animate pointer release; requires framed animation support
 var SocketIO = io({
 	autoConnect: false,
 }), call_list, Whiteboard, pointer_data;
 ;(function(){
 	var module_name = 'call_screen', connection_status, connection_status_string,
-		should_call;
+		is_in_call;
 	
-	var pen_colors = [ // TODO dark/bright
-		'white',
-		'#f66', // red
-		'#6f6', // green
-		'#ff6', // yellow
-		'#69f', // cyan
+	var pen_colors = [ // TODO dark/bright extend support to colors
+		'text',
+		'red',
+		'green',
+		'yellow',
+		'cyan',
 	];
 	var pointer_held = 0;
 	
@@ -24,24 +25,35 @@ var SocketIO = io({
 			var x = data.x, y = data.y;
 			if (caller) {
 				color = caller.color;
-				var color_str = pen_colors[color] || 'white';
+				var color_str = Themes.get(pen_colors[color] || 'text');
 				Whiteboard.circle(x, y, 10, 0, 360, color_str);
-				Whiteboard.text(x+14, y+4, caller.name+' '+data.contact, -1, color_str);
+				
+				var contact_str = data.contact ? 'pressed' : '';
+				Whiteboard.text(x+14, y+4, caller.name+' '+contact_str, -1, color_str);
 				var lines = data.lines;
 				if (isarr(lines)) {
-					var xlp, lp; // last point
 					lines.forEach(function (p) {
-						if (lp && p)
-							Whiteboard.line([ lp, p ], color_str);
-						if (xlp == 0 && lp && p == 0)
-							Whiteboard.circle(lp.x, lp.y, 2, 0, 360, color_str);
-						xlp = lp;
-						lp = p;
+						if (p.length === 1) {
+							Whiteboard.circle(p[0].x, p[0].y, 2, 0, 360, color_str);
+						} else if (p.length > 1) {
+							Whiteboard.line(p, color_str, -1);
+						}
 					});
 				}
 			}
 		}
 	}
+	function update_sidebar() { if (get_global_object().Sidebar) {
+		if (Sessions.signedin()) {
+			Sidebar.set({
+				uid: module_name,
+				title: translate( module_name ),
+				icon: 'iconcall',
+			});
+		} else {
+			Sidebar.remove(module_name);
+		}
+	} }
 	
 	SocketIO.on('error', function (error) {
 		$.log.e('socket_io error', error);
@@ -51,6 +63,9 @@ var SocketIO = io({
 	SocketIO.on('connect', function () {
 		$.log.w('socket_io connect');
 		connection_status = 1;
+		if (is_in_call) {
+			join_room();
+		}
 		on_view_ready();
 	});
 	SocketIO.on('reconnect', function (attempt) { // only fired upon successful reconnect
@@ -65,7 +80,29 @@ var SocketIO = io({
 	});
 	SocketIO.on('join', after_others_join);
 	SocketIO.on('leave', after_leaving);
-	SocketIO.on('pointer', function (data) {
+	SocketIO.on('pointer', on_pointer);
+	SocketIO.on('pointer_contact', on_pointer_contact);
+	SocketIO.on('undo', on_undo);
+
+	function join_room() {
+		SocketIO.emit(
+			'join',
+			get_session_details(),
+			after_others_join
+		);
+	}
+	function leave_room() {
+		SocketIO.emit(
+			'leave',
+			get_session_details(),
+			after_leaving
+		);
+		if (!is_in_call) {
+			clear_all_callers();
+		}
+	}
+
+	function on_pointer (data) {
 		var session_uid = data[0];
 		var converted = percentage_to_pixels(data[1], data[2]);
 		data[1] = converted[0];
@@ -76,19 +113,27 @@ var SocketIO = io({
 		p_data.x = data[1];
 		p_data.y = data[2];
 		var lines;
-		lines = p_data.lines = p_data.lines || [];
+		lines = p_data.lines = p_data.lines || []; // [ [{x, y}, {x, y}, ...], [], ... ]
 		if (p_data.contact) {
-			var lp = lines[ lines.length-1 ];
+			// get latest line/dot/shape object or create one
+			var shape = lines[ lines.length-1 ];
 			var should_add;
-			if (!lp)
+			if (!shape) {
 				should_add = 1;
-			if (lp) {
-				if (lp.x != data[1] || lp.y != data[2]) {
+				lines.push([]);
+				shape = lines[ lines.length-1 ];
+			} else {
+				var lp = shape[ shape.length-1 ]; // last point
+				if (lp) {
+					if (lp.x != data[1] || lp.y != data[2]) {
+						should_add = 1;
+					}
+				} else {
 					should_add = 1;
 				}
 			}
 			if ( should_add ) {
-				lines.push( { x: data[1], y: data[2] } );
+				shape.push( { x: data[1], y: data[2] } );
 				var caller = call_list.adapter.get(p_data.uid);
 				if (caller) {
 					caller.points = lines.length;
@@ -97,8 +142,8 @@ var SocketIO = io({
 			}
 		}
 		redraw_whiteboard_if_needed();
-	});
-	SocketIO.on('pointer_contact', function (data) {
+	}
+	function on_pointer_contact (data) {
 		$.log.w('pointer_contact', data);
 		var p_data;
 		p_data = pointer_data[ data[0] ] = pointer_data[ data[0] ] || {};
@@ -106,8 +151,15 @@ var SocketIO = io({
 		var lines;
 		lines = p_data.lines = p_data.lines || [];
 		if (lines.length && data[1] === 0) {
-			lines.push(0);
-			lines = p_data.lines = simplify_line(lines, 1);
+			// get latest line/dot/shape object or create one
+			var shape = lines[ lines.length-1 ];
+			if (shape) {
+				shape = lines[ lines.length-1 ] = simplify_line(shape, 1.2);
+			}
+
+			if (shape && shape.length) // if the previous shape isn't empty
+				lines.push([]); // insert next shape
+
 			var caller = call_list.adapter.get(p_data.uid);
 			if (caller) {
 				caller.points = lines.length;
@@ -115,8 +167,22 @@ var SocketIO = io({
 			}
 		}
 		redraw_whiteboard_if_needed();
-	});
-	
+	}
+	function on_undo (data) {
+		var session_uid = data[0];
+		var p_data = pointer_data[ session_uid ];
+		if (p_data) {
+			var lines = p_data.lines;
+			if (lines.length > 1) {
+				var shape = lines[ lines.length-1 ];
+				if (shape.length === 0) {
+					lines.splice( lines.length-2, 1 );
+					redraw_whiteboard_if_needed();
+				}
+			}
+		}
+	}
+
 	function get_session_details() {
 		var details = {
 			key: Sessions.signedin(),
@@ -140,9 +206,10 @@ var SocketIO = io({
 		}
 		return details;
 	}
+
 	function after_others_join(result) {
 		$.log.w('socket_io join', result);
-		should_call = 2;
+		is_in_call = 2;
 		on_view_ready();
 		if (isarr(result)) {
 			result.forEach(function (o) {
@@ -152,15 +219,16 @@ var SocketIO = io({
 				if (o.browser_version) details_str += ' '+o.browser_version;
 				if (o.platform) details_str += ' on '+o.platform;
 				call_list.set({
-					icon: 'iconperson',
-					uid : o.uid,
+					icon  : 'iconperson',
+					uid   : o.uid,
 					color : o.color,
-					name: '@'+o.name,
+					name  : '@'+o.name,
 					displayname: o.displayname,
 					details: details_str.trim(),
 				});
 				var keys = call_list.get_item_keys( o.uid );
-				keys.color_tag.style.background = pen_colors[o.color] || 'white';
+				// TODO add support for changing this color on theme change
+				keys.color_tag.style.background = Themes.get(pen_colors[o.color] || 'text');
 			});
 		}
 	}
@@ -170,43 +238,58 @@ var SocketIO = io({
 		delete pointer_data[ result ];
 		redraw_whiteboard_if_needed();
 	}
+
 	function get_connection_string() {
 		if (connection_status ===  0) return 'Disconnected';
 		if (connection_status ===  1) return 'Connected';
 		if (connection_status ===  2) return 'Reconnected'
 		if (connection_status === -1) return 'Error';
 	}
-	function on_view_ready(subtitle) {
+
+	function on_view_ready(subtitle) { // TODO rename to set_sidebar_and_header
 		if (view.is_active(module_name)) {
 			if (get_global_object().Sidebar) Sidebar.choose(module_name);
-			webapp.header([[module_name], subtitle || get_connection_string() || '', 'iconequalizer']);
+			webapp.header([[module_name], subtitle || get_connection_string() || '', 'iconcall']);
 		}
 	}
+	var undo_softkey_object = { n: 'Undo',
+		k: 'u',
+		alt: 1,
+		i: 'iconundo',
+		c: function (k, e) {
+			SocketIO.emit( 'undo', 0 );
+			on_undo([Sessions.get_session_uid()]);
+
+			e && e.preventDefault();
+		}
+	};
 	function set_call_softkey() {
-		softkeys.add({ n: should_call ? 'Hangup' : 'Call',
+		Softkeys.add({ n: is_in_call ? 'Leave' : 'Join',
 			k: K.en,
-			i: should_call ? 'iconcallend' : 'iconcall',
+			i: is_in_call ? 'iconcallend' : 'iconcall',
 			c: function (k, e) {
-				SocketIO.emit(
-					should_call ? 'leave' : 'join',
-					get_session_details(),
-					should_call ? after_leaving : after_others_join
-				);
-				if (!should_call) {
-					clear_all_callers();
+				if (is_in_call) {
+					leave_room();
+				} else {
+					join_room();
 				}
-				should_call = !should_call;
+				is_in_call = !is_in_call;
 				set_call_softkey();
 				e && e.preventDefault();
 			}
 		});
+
+		if (undo_softkey_object.uid && !is_in_call) Softkeys.remove(undo_softkey_object.uid);
+		if (is_in_call) Softkeys.add(undo_softkey_object);
 	}
+
 	function resize_whiteboard() {
 		$.taxeer('resize_whiteboard', function () {
 			var w = headerui.clientWidth-64;
 			whiteboardui.width = w;
 			whiteboardui.height = w;
 			Whiteboard.o.font = '14px sans-serif';
+			Whiteboard.linewidth(3);
 		}, 30);
 	}
 	function clear_all_callers() {
@@ -226,15 +309,10 @@ var SocketIO = io({
 	}
 	
 	var soundAllowed, soundNotAllowed;
+	Hooks.set('sessionchange', function (signedin) {
+		update_sidebar();
+	});
 	Hooks.set('ready', function (args) {
-		if (get_global_object().Sidebar) {
-			Sidebar.set({
-				uid: module_name,
-				title: translate('call_screen'),
-				icon: 'iconequalizer',
-			});
-		}
-
 		Webapp.add_minimal_view( module_name );
 
 		Whiteboard = Canvas(whiteboardui);
@@ -242,21 +320,23 @@ var SocketIO = io({
 			if (!pointer_held) {
 				pointer_held = 1;
 				SocketIO.emit( 'pointer_contact', 1 );
+				on_pointer_contact([Sessions.get_session_uid(), 1]);
 			}
 		};
-		function up_or_cancel() {
-			if (pointer_held) {
-				pointer_held = 0;
-				SocketIO.emit( 'pointer_contact', 0 );
-			}
-		}
+		function up_or_cancel() { if (pointer_held) {
+			pointer_held = 0;
+			SocketIO.emit( 'pointer_contact', 0 );
+			on_pointer_contact([Sessions.get_session_uid(), 0]);
+		} }
 		listener('pointerup', up_or_cancel);
 		listener('pointercancel', up_or_cancel);
 		whiteboardui.onpointermove =
 //		whiteboardui.onmousemove =
 		(e) => {
 			if (connection_status > 0) {
-				SocketIO.emit( 'pointer', pixels_to_percentage( e.offsetX, e.offsetY ) );
+				var pcts = pixels_to_percentage( e.offsetX, e.offsetY );
+				SocketIO.emit( 'pointer', pcts );
+				on_pointer([Sessions.get_session_uid(), pcts[0], pcts[1]]);
 			}
 		};
 		resize_whiteboard();
@@ -267,7 +347,8 @@ var SocketIO = io({
 		SocketIO.connect();
 
 		var dom_keys = view.dom_keys( module_name );
-		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).grid(4);
+		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).grid(4)
+					.prevent_focus(1);
 
 		/*
 		var visualizer = document.getElementById('visualizer');

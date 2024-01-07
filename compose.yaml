@@ -8,14 +8,27 @@ services:
       - type: volume
         target: /data/db
         source: dewaan-mongodb-data
+    networks:
+      - dewaan-network
+    command: --quiet
   web:
     image: dewaan:latest
     container_name: dewaan-web
     init: true
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - 3060:3060
+    networks:
+      - dewaan-network
+    environment:
+      DEWAAN_MONGO_URI: ${DEWAAN_MONGO_URI}
+    volumes:
+      - ./released:/dewaan
 volumes:
   dewaan-mongodb-data:
+networks:
+  dewaan-network:
+    driver: bridge

@@ -2,7 +2,7 @@ FROM node:20.5.1-bookworm-slim
 
 WORKDIR /dewaan
 
-COPY released .
+#COPY released .
 
 EXPOSE 3060
 

@@ -20,7 +20,8 @@
 //	width			100%
 //	height			50vh
 	touch-action	pinch-zoom
-	cursor			none
+	cursor			crosshair
+	border-radius	15px
 
 .call_list_item .icon svg
 	width			64px

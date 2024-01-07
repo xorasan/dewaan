@@ -65,11 +65,13 @@ icons
 	people
 	person
 	personadd
+	exittoapp
 	add
 	appinstall
 	
 	call
 	callend
+	undo
 	
 	notifications
 	notificationsoff
