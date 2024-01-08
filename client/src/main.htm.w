@@ -14,7 +14,7 @@ body
 		canvas [id=whiteboard] #whiteboardui
 		[id=list]
 	
-	[template=call_list_item] .flex .listitem .call_list_item .pad .padv
+	[template=call_list_item] .inlineflex .listitem .call_list_item .pad .padv
 		.shrink .pad
 			.icon [id=icon]
 		.grow .pad

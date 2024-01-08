@@ -8,9 +8,13 @@ services:
       - type: volume
         target: /data/db
         source: dewaan-mongodb-data
+#      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - dewaan-network
-    command: --quiet
+    command: [--quiet]
+    environment: # to change these you have to delete the mongodb data volume
+      MONGODB_INITDB_ROOT_USERNAME: ${DEWAAN_MONGO_USER}
+      MONGODB_INITDB_ROOT_PASSWORD: ${DEWAAN_MONGO_PASS}
   web:
     image: dewaan:latest
     container_name: dewaan-web

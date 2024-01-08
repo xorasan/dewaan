@@ -2565,7 +2565,7 @@ var Network, network, sessions = sessions || 0;
 		payload = payload || {};
 		payload = Object.assign(payload, {
 			broadcast : 1 , 
-			e$ : 1184 , 
+			e$ : 1188 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		error_log(payload);
@@ -2610,7 +2610,7 @@ var Network, network, sessions = sessions || 0;
 		if (Object.keys(pending_gets).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 1184 , 
+			e$ : 1188 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.get = payload.get || {};
@@ -2668,7 +2668,7 @@ var Network, network, sessions = sessions || 0;
 		if (Object.keys(synced).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 1184 , 
+			e$ : 1188 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.sync = payload.sync || {};
@@ -2699,7 +2699,7 @@ var Network, network, sessions = sessions || 0;
 	var upload = function (name, need, value, payload_raw, intercession) {
 		var payload = {};
 		payload = Object.assign(payload, {
-			e$ : 1184 , 
+			e$ : 1188 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.upload = {};
@@ -3648,21 +3648,21 @@ var Preferences, preferences;
 		},
 	};
 	var buildnum = preferences.get('#', 1);
-	if ( buildnum != 1184 ) {
+	if ( buildnum != 1188 ) {
 		preferences.pop(3); 
 		preferences.pop('@'); 
 		preferences.pop(4); 
 		preferences.pop(6); 
 	}
-	preferences.set('#', 1184);
+	preferences.set('#', 1188);
 	Hooks.set('ready', function () {
-		if ( buildnum != 1184 ) {
+		if ( buildnum != 1188 ) {
 			$.taxeer('seeghahjadeedah', function () {
 				Hooks.run('seeghahjadeedah', buildnum);
 			}, 2000);
 		}
 	});
-	$.log.s( 1184 );
+	$.log.s( 1188 );
 })();
 var activity;
 ;(function(){
@@ -4171,7 +4171,7 @@ var Settings, settings, currentad;
 		open('https://github.com/xorasan/mudeer', '_blank');
 	}, 'iconmudeer']);
 	if (Config.repo) {
-		add([Config.appname+' '+1184, function () {
+		add([Config.appname+' '+1188, function () {
 			return Config.sub;
 		}, function () {
 			open(Config.repo, '_blank');
@@ -7002,7 +7002,7 @@ var Offline, offline;
 	};
 	var createstores = function () {
 		if (debug_offline) $.log.w('Offline createstores', maxaazin);
-		var request = indexedDB.open(database, 1184);
+		var request = indexedDB.open(database, 1188);
 		request.onerror = function(event) {
 			if (event.target.error.name === 'VersionError') {
 				 
@@ -9102,7 +9102,6 @@ var SocketIO = io({
 	}
 	function after_others_join(result) {
 		$.log.w('socket_io join', result);
-		is_in_call = 2;
 		on_view_ready();
 		if (isarr(result)) {
 			result.forEach(function (o) {
@@ -9204,20 +9203,24 @@ var SocketIO = io({
 		whiteboardui.onpointerdown = function () {
 			if (!pointer_held) {
 				pointer_held = 1;
-				SocketIO.emit( 'pointer_contact', 1 );
-				on_pointer_contact([Sessions.get_session_uid(), 1]);
+				if (is_in_call) {
+					SocketIO.emit( 'pointer_contact', 1 );
+					on_pointer_contact([Sessions.get_session_uid(), 1]);
+				}
 			}
 		};
 		function up_or_cancel() { if (pointer_held) {
 			pointer_held = 0;
-			SocketIO.emit( 'pointer_contact', 0 );
-			on_pointer_contact([Sessions.get_session_uid(), 0]);
+			if (is_in_call) {
+				SocketIO.emit( 'pointer_contact', 0 );
+				on_pointer_contact([Sessions.get_session_uid(), 0]);
+			}
 		} }
 		listener('pointerup', up_or_cancel);
 		listener('pointercancel', up_or_cancel);
 		whiteboardui.onpointermove =
 		(e) => {
-			if (connection_status > 0) {
+			if (connection_status > 0 && is_in_call) {
 				var pcts = pixels_to_percentage( e.offsetX, e.offsetY );
 				SocketIO.emit( 'pointer', pcts );
 				on_pointer([Sessions.get_session_uid(), pcts[0], pcts[1]]);
@@ -9226,12 +9229,13 @@ var SocketIO = io({
 		resize_whiteboard();
 		SocketIO.connect();
 		var dom_keys = view.dom_keys( module_name );
-		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).grid(4)
+		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).freeflow(1)
 					.prevent_focus(1);
 		 
 	});
 	listener('resize', function () {
 		resize_whiteboard();
+		$.taxeer('redraw-whiteboard', redraw_whiteboard_if_needed, 60);
 	});
 	Hooks.set('viewready', function (args) {
 		if (view.is_active(module_name)) {

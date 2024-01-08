@@ -1,4 +1,4 @@
-var dataCacheName = 'def-v1184';
+var dataCacheName = 'def-v1188';
 var cacheName = 'def';
 var filesToCache = [
 	'/',
@@ -10,7 +10,7 @@ var filesToCache = [
 
 self.addEventListener('install', function(e) {
 //	console.log('sw install');
-	console.log('sw 1184');
+	console.log('sw 1188');
 	e.waitUntil(
 		caches.open(cacheName).then(function(cache) {
 //			console.log('sw caches.open');
@@ -29,7 +29,7 @@ self.addEventListener('activate', function(e) {
 //			console.log('sw caches.keys');
 			self.clients.matchAll().then(function (clients) {
 				clients.forEach(function (client) {
-					client.postMessage(1184);
+					client.postMessage(1188);
 				});
 			});
 			return Promise.all(keyList.map(function(key) {

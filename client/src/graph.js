@@ -1,4 +1,5 @@
 // TODO animate pointer release; requires framed animation support
+// TODO clicking outside or pointer leaving WB should hide pointer
 var SocketIO = io({
 	autoConnect: false,
 }), call_list, Whiteboard, pointer_data;
@@ -209,7 +210,6 @@ var SocketIO = io({
 
 	function after_others_join(result) {
 		$.log.w('socket_io join', result);
-		is_in_call = 2;
 		on_view_ready();
 		if (isarr(result)) {
 			result.forEach(function (o) {
@@ -319,21 +319,25 @@ var SocketIO = io({
 		whiteboardui.onpointerdown = function () {
 			if (!pointer_held) {
 				pointer_held = 1;
-				SocketIO.emit( 'pointer_contact', 1 );
-				on_pointer_contact([Sessions.get_session_uid(), 1]);
+				if (is_in_call) {
+					SocketIO.emit( 'pointer_contact', 1 );
+					on_pointer_contact([Sessions.get_session_uid(), 1]);
+				}
 			}
 		};
 		function up_or_cancel() { if (pointer_held) {
 			pointer_held = 0;
-			SocketIO.emit( 'pointer_contact', 0 );
-			on_pointer_contact([Sessions.get_session_uid(), 0]);
+			if (is_in_call) {
+				SocketIO.emit( 'pointer_contact', 0 );
+				on_pointer_contact([Sessions.get_session_uid(), 0]);
+			}
 		} }
 		listener('pointerup', up_or_cancel);
 		listener('pointercancel', up_or_cancel);
 		whiteboardui.onpointermove =
 //		whiteboardui.onmousemove =
 		(e) => {
-			if (connection_status > 0) {
+			if (connection_status > 0 && is_in_call) {
 				var pcts = pixels_to_percentage( e.offsetX, e.offsetY );
 				SocketIO.emit( 'pointer', pcts );
 				on_pointer([Sessions.get_session_uid(), pcts[0], pcts[1]]);
@@ -347,7 +351,7 @@ var SocketIO = io({
 		SocketIO.connect();
 
 		var dom_keys = view.dom_keys( module_name );
-		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).grid(4)
+		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).freeflow(1)
 					.prevent_focus(1);
 
 		/*
@@ -398,6 +402,7 @@ var SocketIO = io({
 	});
 	listener('resize', function () {
 		resize_whiteboard();
+		$.taxeer('redraw-whiteboard', redraw_whiteboard_if_needed, 60);
 	});
 
 	Hooks.set('viewready', function (args) {
