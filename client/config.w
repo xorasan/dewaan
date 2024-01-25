@@ -76,8 +76,20 @@ icons
 	notifications
 	notificationsoff
 
+	m
+	mnone
+	moff
+
+	headset
+	headsetoff
+
 	visibility
 	visibilityoff
+
+	phoneandroid
+	linux
+	windows
+	apple
 langs
 	en
 include
@@ -90,11 +102,13 @@ include
 	webapp.13inch
 //	webapp.sw
 	webapp.notify
+	offline
 	sidebar
 	network
 	manifest
 	list
 	backstack
+	backstack.history
 	preferences
 	activity
 	view
@@ -113,7 +127,6 @@ include
 	webapp.touch
 	softkeys.touch
 	sessions
-	offline
 	profile
 	accounts
 	polling.client

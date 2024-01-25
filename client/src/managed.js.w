@@ -5,11 +5,13 @@
 +include linked/webapp.3inch.js
 +include linked/webapp.13inch.js
 +include linked/webapp.notify.js
++include linked/offline.js
 +include linked/sidebar.js
 +include linked/network.js
 +include linked/manifest.js
 +include linked/list.js
 +include linked/backstack.js
++include linked/backstack.history.js
 +include linked/preferences.js
 +include linked/activity.js
 +include linked/view.js
@@ -28,7 +30,6 @@
 +include linked/webapp.touch.js
 +include linked/softkeys.touch.js
 +include linked/sessions.js
-+include linked/offline.js
 +include linked/profile.js
 +include linked/accounts.js
 +include linked/polling.client.js

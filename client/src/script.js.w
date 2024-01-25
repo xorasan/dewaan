@@ -3,5 +3,5 @@
 +include managed.js.w
 +include simplify.line.js
 +include socket.io.min.js
-+include graph.js
++include call_screen.js
 +include main.js

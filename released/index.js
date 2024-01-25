@@ -1553,36 +1553,52 @@ var Config = {};
 var Hooks, hooks;
 ;(function (){
 	'use strict';
+	var getargs = function (start_at, oldargs) {
+		var args = [];
+		for (var i = start_at || 0; i < oldargs.length; ++i) {
+			args.push( oldargs[i] );
+		}
+		return args;
+	};
 	Hooks = {
+		_registry_first: {},
 		_registry: {},
 		_map: {},
 		_uid: 0,
-		set: function (hook, id, fn) {
+		set: function (hook, id, fn, priority) {
 			if (hook instanceof Array) {
 				hook.forEach(function (item) {
-					Hooks.set(item, id, fn);
+					Hooks.set(item, id, fn, priority);
 				});
 				return;
 			}
+			var registry = Hooks._registry;
+			if (priority) registry = Hooks._registry_first;
 			if (typeof id === 'function')
 				fn = id, id = new Date().getTime();
 			if (typeof fn === 'function') {
-				if (Hooks._registry[hook] === undefined) {
-					Hooks._registry[hook] = [];
+				if (registry[hook] === undefined) {
+					registry[hook] = [];
 				}
 				++Hooks._uid;
-				Hooks._registry[hook][Hooks._uid] = fn;
+				registry[hook][Hooks._uid] = fn;
 				Hooks._map[hook+'_'+id] = Hooks._uid;
 				return true;
 			}
 			return false;
 		},
+		set_first: function (hook, id, fn) {
+			return this.set(hook, id, fn, 1);
+		},
 		run: function (hook, extras) {
+			var args = getargs(1, arguments);
+			var handlers_first = Hooks._registry_first[hook];
 			var handlers = Hooks._registry[hook];
-			if (handlers instanceof Array) {
+			if (handlers_first instanceof Array || handlers instanceof Array) {
+				handlers = ( handlers_first || [] ).concat( handlers || [] );
 				for (var i in handlers) {
 					if (typeof handlers[i] === 'function') {
-						handlers[i](extras);
+						handlers[i].apply(handlers[i], args);
 					}
 				}
 				return true;
@@ -1590,11 +1606,14 @@ var Hooks, hooks;
 			return false;
 		},
 		rununtilconsumed: function (hook, extras) {
+			var args = getargs(1, arguments);
+			var handlers_first = Hooks._registry_first[hook];
 			var handlers = Hooks._registry[hook];
-			if (handlers instanceof Array) {
+			if (handlers_first instanceof Array || handlers instanceof Array) {
+				handlers = ( handlers_first || [] ).concat( handlers || [] );
 				for (var i in handlers) {
 					if (typeof handlers[i] === 'function') {
-						var returnedvalue = handlers[i](extras);
+						var returnedvalue = handlers[i].apply(handlers[i], args);
 						if (returnedvalue) {
 							return returnedvalue;
 						}
@@ -1604,6 +1623,10 @@ var Hooks, hooks;
 			return false;
 		},
 		pop: function (hook, id) {
+			if (Hooks._registry_first[hook]) {
+				delete Hooks._registry_first[hook][ Hooks._map[hook+'_'+id] ];
+				return true;
+			}
 			if (Hooks._registry[hook]) {
 				delete Hooks._registry[hook][ Hooks._map[hook+'_'+id] ];
 				return true;
@@ -1611,9 +1634,11 @@ var Hooks, hooks;
 			return false;
 		},
 		hook: function (hook) {
+			Hooks._registry_first[hook] = [];
 			Hooks._registry[hook] = [];
 		},
 		unhook: function (hook) {
+			delete Hooks._registry_first[hook];
 			delete Hooks._registry[hook];
 		}
 	};
@@ -1896,7 +1921,7 @@ var Web;
 					name: "Dewaan"
 				});
 				print_prop( 'Public Path', public_path );
-				print_prop( 'Build', 1188 );
+				print_prop( 'Build', 1830 );
 				print_prop( 'Server Port', Config.port );
 				if (isfun(callback)) callback();
 			});
@@ -2186,7 +2211,7 @@ Sessions = sessions = {
 			)
 		);
 	},
-	get_session_account: function (key, callback) {
+	get_session_account: function (key, callback) { 
 		if (!isfun(callback)) {
 			$.log.e(' get_session_account needs a callback ');
 			return false;
@@ -2532,6 +2557,7 @@ Network.sync('accounts', 'nearby', function (response) {
 		.finish();
 });
 ;(function(){
+var module_name = 'manifest';
 function get_manifest_as_json(cb) {
 	var path = Web.get_public_path();
 	Files.get.file(path+'manifest.w', function (data, err) {
@@ -2552,20 +2578,58 @@ function get_manifest_as_json(cb) {
 		if (isfun(cb)) cb(manifest);
 	});
 }
-Network.get('manifest', 'read', function (response) {
-	get_manifest_as_json(function (manifest) {
-		if (manifest) response.get(manifest);
-		response.finish();
-	});
+Network.intercept(module_name, function (response) {
+	if (response.account) { 
+		MongoDB.query( Config.database.name, module_name, {
+			$or: [ { updated: { $gte: response.time || 0 } }, { created: { $gte: response.time || 0 } } ]
+		}, function (result) {
+			var arr = [];
+			result.rows.forEach(function (o) {
+				arr.push(o);
+			});
+			if (arr.length) response.get(arr).consumed();
+			else response.finish();
+		});
+	} else response.finish();
+});
+Network.sync(module_name, function (response) {
+	var value = response.value;
+	if (!response.account) { response.finish(); return; } 
+	if (!value) { response.finish(); return; } 
+	var arr = [];
+	value.name = value.name || '';
+	value.short_name = value.short_name || '';
+	value.description = value.description || '';
+	if (isstr(value.name)) {
+		arr.push( uid_with_value('name', value.name) );
+	}
+	if (isstr(value.short_name)) {
+		arr.push( uid_with_value('short_name', value.short_name) );
+	}
+	if (isstr(value.description)) {
+		arr.push( uid_with_value('description', value.description) );
+	}
+	if (arr.length) {
+		MongoDB.set(Config.database.name, module_name, arr, function (j) {
+			Polling.finish_all([response.account.uid]);
+			var out_arr = [];
+			j.rows.forEach(function (o) {
+				out_arr.push(o);
+			});
+			response.sync(out_arr).finish();
+		});
+	}
+	else response.finish();
 });
 Web.during_init(function (done, queue) {
 	Server.get('/manifest.json', function (req, res) {
 		var path = Web.get_public_path();
-		get_manifest_as_json(function (manifest) {
+		MongoDB.query( Config.database.name, module_name, 0, function (result) {
+			var manifest = {};
+			result.rows.forEach(function (o) {
+				manifest[o.uid] = o.value;
+			});
 			var name = "Dewaan";
-			if (manifest && manifest.name) {
-				name = manifest.name;
-			}
 			Files.get.file(path+'manifest.json', function (data, err) {
 				if (err) {
 					$.log.s( err );
@@ -2575,8 +2639,10 @@ Web.during_init(function (done, queue) {
 					res.setHeader('Last-Modified', new Date().toUTCString() );
 					try {
 						data = JSON.parse(data);
-						data.name = name;
-						data.short_name = name;
+						data.name = manifest.name || name;
+						data.short_name = manifest.short_name || name;
+						if (manifest.description)
+							data.description= manifest.description;
 						res.json(data);
 					} catch (ignore) {
 						$.log.e( ignore );
@@ -2658,120 +2724,154 @@ Network.sync('profile', function (response) {
 var Rooms, rooms,
 	tbl_mklmt = 'rooms';
 ;(function(){
-	'use strict';
-	var maxba = {}; 
-	Rooms = rooms = {
-		raakib: function (members) { 
-			if (isarr(members))
-			for (var i = 0; i < members.length; ++i) {
-				var v = members[i];
-				if (v[1] !== 1) return v;
+'use strict';
+var module_name = 'rooms';
+var maxba = {}; 
+Rooms = rooms = {
+	raakib: function (members) { 
+		if (isarr(members))
+		for (var i = 0; i < members.length; ++i) {
+			var v = members[i];
+			if (v[1] !== 1) return v;
+		}
+	},
+	is_other: function (members, suid) { 
+		if (isarr(members))
+		for (var i = 0; i < members.length; ++i) {
+			var v = members[i];
+			if (v[0] !== suid) return v;
+		}
+	},
+	is_you: function (members, suid) { 
+		if (isarr(members))
+		for (var i = 0; i < members.length; ++i) {
+			var v = members[i];
+			if (v[0] === suid) return v;
+		}
+	},
+	maxba: function (uid, k, v) {
+		if (arguments.length === 0) return maxba;
+		var m = maxba[uid];
+		if (k && v && !m) m = maxba[uid] = {};
+		if (m) {
+			if (isundef(k)) { 
+				delete maxba[uid];
+			} else
+			if (isundef(v)) {
+				return m[k];
+			} else {
+				m[k] = v;
 			}
-		},
-		is_other: function (members, suid) { 
-			if (isarr(members))
-			for (var i = 0; i < members.length; ++i) {
-				var v = members[i];
-				if (v[0] !== suid) return v;
-			}
-		},
-		is_you: function (members, suid) { 
-			if (isarr(members))
-			for (var i = 0; i < members.length; ++i) {
-				var v = members[i];
-				if (v[0] === suid) return v;
-			}
-		},
-		maxba: function (uid, k, v) {
-			if (arguments.length === 0) return maxba;
-			var m = maxba[uid];
-			if (k && v && !m) m = maxba[uid] = {};
-			if (m) {
-				if (isundef(k)) { 
-					delete maxba[uid];
-				} else
-				if (isundef(v)) {
-					return m[k];
-				} else {
-					m[k] = v;
-				}
-			}
-		},
-		slow_mode: function (uid, caaniyaat) {
-			var v = rooms.maxba(uid, 'slow_mode');
-			var c = new Date().getTime();
-			if (isundef(v) || v < c) v = c;
-			v += caaniyaat*1000;
-			rooms.maxba(uid, 'slow_mode', v);
-			rooms.maxba(uid, 'updated', c);
+		}
+	},
+	slow_mode: function (uid, caaniyaat) {
+		var v = rooms.maxba(uid, 'slow_mode');
+		var c = new Date().getTime();
+		if (isundef(v) || v < c) v = c;
+		v += caaniyaat*1000;
+		rooms.maxba(uid, 'slow_mode', v);
+		rooms.maxba(uid, 'updated', c);
+		rooms.finish_all(uid);
+		return v;
+	},
+	members: function (uid, members) {
+		var v = rooms.maxba(uid, 'members');
+		if (!areobjectsequal(v, members) && members) {
+			rooms.maxba(uid, 'members', members);
+			rooms.maxba(uid, 'updated', new Date().getTime());
 			rooms.finish_all(uid);
-			return v;
-		},
-		members: function (uid, members) {
+		}
+	},
+	members_to_string: function (arr) {
+		var str = '';
+		arr.forEach(function (o) {
+			str += ' '+o[0]+':'+o[1];
+		});
+		return str;
+	},
+	to_members: function (str) {
+		var members = [];
+		str.trim().split(' ').forEach(function (v) {
+			v = intify(v.split(':'));
+			members.push( [v[0], v[1]] );
+		});
+		return members;
+	},
+	is_member: function (room, uid, type) { 
+		if (room) {
+			if (isstr(room.members)) {
+				if (room.members.match(' '+uid+':'+(type||'')))
+					return 1;
+			} else if (room.members) {
+				if (room.members[uid]) {
+					if (type) return room.members[uid] === type;
+					else return 1;
+				}
+			}
+		}
+	},
+	are_both_members: function (room, uid) { 
+		if (room) {
+			if (isstr(room.members)) {
+				if (room.members.match(' '+uid+':1')
+				&& room.members.match(/\:1/g).length >= 2)
+					return 1;
+			} else if (room.members) {
+				var v = Object.values(room.members);
+				if (room.members[uid] === 1 && v[0] === 1 && v[1] === 1) {
+					return 1;
+				}
+			}
+		}
+	},
+	finish_all: function (uid) {
+		$.taxeer('mlkmtinahaa'+uid, function () {
 			var v = rooms.maxba(uid, 'members');
-			if (!areobjectsequal(v, members) && members) {
-				rooms.maxba(uid, 'members', members);
-				rooms.maxba(uid, 'updated', new Date().getTime());
-				rooms.finish_all(uid);
+			if (v) {
+				v = Object.keys(v);
+				if (v.length) {
+					v = intify( v ); 
+					Polling.finish_all(v);
+				}
 			}
-		},
-		members_to_string: function (arr) {
-			var str = '';
-			arr.forEach(function (o) {
-				str += ' '+o[0]+':'+o[1];
+		}, 50);
+	},
+};
+Network.intercept(module_name, function (response) {
+	if (response.account) {
+		var arr = [], objs = [], limit = 100, maxba = rooms.maxba(), yes;
+		arr = Object.values(objs);
+		MongoDB.query(Config.database.name, module_name, {
+			$or: [ { updated: { $gte: response.time || 0 } }, { created: { $gte: response.time || 0 } } ]
+		}, function (outcome) {
+			outcome.rows.forEach(function (o, i) {
+				var x = objs[o.uid] || {}, members = [], membersobj = {};
+				if (o.members)
+				o.members.split(' ').forEach(function (v) {
+					v = v.split(':');
+					var a = parseint(v[0]),
+						b = parseint(v[1]);
+					if (isnum(a) && isnum(b)) {
+						membersobj[ a ] = b;
+						members.push([ a, b ]);
+					}
+				});
+				rooms.members(o.uid, membersobj);
+				x.uid = o.uid;
+				x.name = o.name;
+				x.link = o.link;
+				x.members = members;
+				x.created = o.created;
+				x.updated = o.updated;
+				objs[o.uid] = x;
 			});
-			return str;
-		},
-		to_members: function (str) {
-			var members = [];
-			str.trim().split(' ').forEach(function (v) {
-				v = intify(v.split(':'));
-				members.push( [v[0], v[1]] );
-			});
-			return members;
-		},
-		is_member: function (room, uid, type) { 
-			if (room) {
-				if (isstr(room.members)) {
-					if (room.members.match(' '+uid+':'+(type||'')))
-						return 1;
-				} else if (room.members) {
-					if (room.members[uid]) {
-						if (type) return room.members[uid] === type;
-						else return 1;
-					}
-				}
-			}
-		},
-		are_both_members: function (room, uid) { 
-			if (room) {
-				if (isstr(room.members)) {
-					if (room.members.match(' '+uid+':1')
-					&& room.members.match(/\:1/g).length >= 2)
-						return 1;
-				} else if (room.members) {
-					var v = Object.values(room.members);
-					if (room.members[uid] === 1 && v[0] === 1 && v[1] === 1) {
-						return 1;
-					}
-				}
-			}
-		},
-		finish_all: function (uid) {
-			$.slow_mode('mlkmtinahaa'+uid, function () {
-				var v = rooms.maxba(uid, 'members');
-				if (v) {
-					v = Object.keys(v);
-					if (v.length) {
-						v = intify( v ); 
-						Polling.finish_all(v);
-					}
-				}
-			}, 50);
-		},
-	};
-})();
-Network.intercept('rooms', function (response) {
+			arr = Object.values(objs);
+			if (arr.length) response.sync(arr), yes = 1;
+			if (yes) response.consumed(); else response.finish();
+		});
+	} else if (yes) response.consumed(); else response.finish();
+});
+Network.intercept('-rooms', function (response) {
 	if (response.account) {
 		var arr = [], objs = [], limit = 100, maxba = rooms.maxba(), yes;
 		for (var i in maxba) {
@@ -2813,7 +2913,26 @@ Network.intercept('rooms', function (response) {
 		});
 	} else if (yes) response.consumed(); else response.finish();
 });
-Network.sync('rooms', function (response) {
+Network.sync(module_name, function (response) {
+	var value = response.value;
+	if (!response.account) { response.finish(); return; } 
+	if (!value) { response.finish(); return; } 
+	if (isarr(value)) {
+		var arr = [];
+		value.forEach(function ({ uid, name, link, members }) {
+			arr.push({ uid, name, link, members });
+		});
+		MongoDB.set( Config.database.name, module_name, arr, function (result) {
+			var out = [];
+			result.rows.forEach(function ({ uid, ruid, name, link, members }) {
+				out.push({ uid, ruid, name, link, members });
+			});
+			response.sync(out)
+					.finish();
+		} );
+	}
+});
+Network.sync('-rooms', function (response) {
 	var value = response.value;
 	if (!response.account) { response.finish(); return; } 
 	if (!value) { response.finish(); return; } 
@@ -2978,6 +3097,7 @@ Network.batch('rooms', function () {
 		});
 	});
 });
+})();
 var Messages, messages,
 	tbl_rsl = 'messages',
 	musicmetadata = require('./deps/music-metadata');
@@ -3273,11 +3393,15 @@ Network.sync('messages', function (response) {
 	});
 });
  
-var Databases;
+var Databases, uid_with_value;
 ;(function () {
 	'use strict';
 	Databases = {
+		uid_value: function (u, v) {
+			return { uid: u, value: v };
+		}
 	};
+	uid_with_value = Databases.uid_value;
 	module.exports = Databases;
 })();
  
@@ -3310,7 +3434,20 @@ var MongoDB;
 		var out_error;
 		try {
 			const collection = use_db( db ).collection( collection_name );
-			var created = get_time_now(), uid = doc.uid || generate_uid();
+			var created = get_time_now(), uid, ruid;
+			if (doc.uid) {
+				if (isnum(doc.uid) && doc.uid < 0) {
+					ruid = uid;
+					uid = generate_uid();
+				} else {
+					uid = doc.uid;
+				}
+			} else {
+				doc.uid = generate_uid();
+			}
+			delete doc.ruid; 
+			delete doc.uid; 
+			doc.updated = created; 
 			delete doc.created; 
 			const update = {
 				$set: doc, 
@@ -3324,10 +3461,11 @@ var MongoDB;
 			if (result.upsertedCount > 0) {
 				doc.uid = result.upsertedId;
 				doc.created = created;
-			} else {
-				doc.uid = doc._id;
-				delete doc._id;
+			} else { 
+				doc.uid = doc._id || uid;
+				delete doc._id; 
 			}
+			if (ruid) doc.ruid = ruid;
 		} catch (error) {
 			$.log.e(' Error during upsert:', error);
 		} finally {
@@ -3572,13 +3710,40 @@ var Polling;
 	'use strict';
 	var main = {
 	};
+	Web.during_init(function (done, queue) {
+		Server.get('/libs/*', function (req, res) {
+			var path = Web.get_public_path();
+			var filename = req.path.slice('/libs/'.length);
+			var options = {
+				root: __dirname+'/libs',
+				dotfiles: 'deny',
+				headers: {
+					'x-timestamp': get_time_now(),
+					'x-sent': true
+				}
+			};
+			if (filename.length)
+				res.sendFile(filename, options, function (err) {
+					if (err) {
+						req.next();
+					}
+				});
+			else
+				req.next();
+		});
+		done(queue);
+	});
 	Web.init(() => {
 	});
 	var default_room = 'default_room';
-	var connections = {};
-	function add_connection(socket_id, key, value, data) {
-		var o = connections[ key ] = Object.assign(connections[ key ] || {}, value || {});
+	var connections = {}; 
+	function add_connection(socket_id, session_key, value, data, socket) {
+		var o = connections[ session_key ] = Object.assign(connections[ session_key ] || {}, value || {});
 		o.socket_id = socket_id;
+		o.created = get_time_now();
+		o.socket = socket;
+		o.listen = data.listen;
+		o.mic = data.mic;
 		o.mobile = data.mobile;
 		o.platform = data.platform;
 		o.browser = data.browser;
@@ -3597,10 +3762,11 @@ var Polling;
 		}
 	}
 	function remove_connection(socket_id) {
+		$.log('trying to remove connection', socket_id);
 		var key = get_connection(socket_id);
 		if (key) {
 			delete connections[ key ];
-			$.log('removed connection', socket_id, '->', key);
+			$.log('removed connection', socket_id, '->', key.slice(0, 8)+'...');
 		} else {
 			$.log('un-authenticated user disconnected');
 		}
@@ -3609,7 +3775,11 @@ var Polling;
 		return {
 			uid: o.session.uid,
 			color: o.color,
+			created: o.created,
 			name: o.account.name,
+			listen: o.listen,
+			mic: o.mic,
+			order: o.order,
 			mobile: o.mobile,
 			platform: o.platform,
 			browser: o.browser,
@@ -3624,21 +3794,50 @@ var Polling;
 		if (o) return o.size;
 		else return 0;
 	}
+	function is_socket_in_room(socket, room) {
+		return Object.keys(socket.rooms).includes(room);
+	}
+	function redo_colors_in_room(room) {
+		var socketsInRoom = SocketIO.sockets.adapter.rooms.get( room );
+		var color = 0;
+		socketsInRoom.forEach(function (socket_id) {
+			var c = get_connection(socket_id);
+			if (c) {
+				connections[c].color = color++;
+			}
+		});
+	}
+	setInterval(function () {
+		var socketsInRoom = SocketIO.sockets.adapter.rooms.get( default_room );
+		if (socketsInRoom)
+		socketsInRoom.forEach(function (socket_id) {
+			var c = get_connection(socket_id);
+			if (c) {
+				connections[c].socket.emit( 'latency', get_time_now() );
+			}
+		});
+	}, 5000);
 	Hooks.set('socket', (socket) => {
 		$.log('a user connected', socket.id);
 		socket.on('join', (data, callback) => {
 			if (isstr(data.key) && data.key.length) {
 				Sessions.get_session_account(data.key, (result) => {
 					if (result) {
-						var result_object = add_connection( socket.id, data.key, result, data );
-						result_object = export_connection( result_object );
+						var result_object = add_connection( socket.id, data.key, result, data, socket );
 						socket.join( default_room );
+						redo_colors_in_room( default_room );
+						result_object.order = get_room_size( default_room );
+						result_object = export_connection( result_object );
 						SocketIO.to( default_room ).emit( 'join', [ result_object ] );
-						if (isfun(callback)) { 
-							var arr = [];
-							for (var i in connections) {
-								arr.push( export_connection(connections[i]) );
+						var arr = [];
+						var socketsInRoom = SocketIO.sockets.adapter.rooms.get( default_room );
+						socketsInRoom.forEach(function (socket_id, color) {
+							var c = get_connection(socket_id);
+							if (c) {
+								arr.push( export_connection( connections[c] ) );
 							}
+						});
+						if (isfun(callback)) { 
 							callback(arr);
 						}
 						$.log('user joined', result.account.name);
@@ -3658,6 +3857,7 @@ var Polling;
 						if (isfun(callback)) { callback( result.session.uid ); }
 						$.log('user left', result.account.name);
 						$.log('room size', get_room_size( default_room ) );
+						remove_connection(socket.id);
 					} else {
 						$.log('user failed to auth for leaving', data, result);
 					}
@@ -3695,13 +3895,86 @@ var Polling;
 				}
 			}
 		});
+		socket.on('mic', (data, callback) => {
+			var conn = get_connection(socket.id);
+			if (conn) { 
+				var result = connections[conn];
+				if (result && result.session && result.session.uid) {
+					result.mic = data ? 1 : 0;
+					$.log( 'mic', result.account.name, data );
+					socket.to( default_room ).emit( 'mic', [result.session.uid, result.mic] );
+				}
+			}
+		});
+		socket.on('audio', (data, callback) => {
+			var conn = get_connection(socket.id);
+			if (conn) { 
+				var result = connections[conn];
+				if (result && result.session && result.session.uid) {
+					var socketsInRoom = SocketIO.sockets.adapter.rooms.get( default_room );
+					socketsInRoom.forEach(function (socket_id) {
+						var c = get_connection(socket_id);
+						if (c) {
+							if (connections[c].listen)
+								connections[c].socket.emit( 'audio', [ result.session.uid, data ] );
+						}
+					});
+				}
+			}
+		});
+		socket.on('listen', (data, callback) => {
+			var conn = get_connection(socket.id);
+			if (conn) { 
+				var result = connections[conn];
+				if (result && result.session && result.session.uid) {
+					result.listen = data ? 1 : 0;
+					$.log( 'listen', result.account.name, data );
+					socket.to( default_room ).emit( 'listen', [ result.session.uid, data ] );
+				}
+			}
+		});
 		socket.on('disconnect', () => {
 			var conn = get_connection(socket.id);
 			if (conn) {
-				var conn_object = connections[conn];
-				socket.to( default_room ).emit( 'leave', conn_object.session.uid );
+				var result = connections[conn];
+				socket.to( default_room ).emit( 'leave', result.session.uid );
 				socket.leave( default_room );
+				$.log('user left', result.account.name);
+				$.log('room size', get_room_size( default_room ) );
 				remove_connection(socket.id);
+			}
+		});
+		socket.on('signal', (data) => {
+			if (data && isstr(data.key) && data.key.length) {
+				Sessions.get_session_account(data.key, (result) => {
+					if (result) {
+						var connection = connections[data.key];
+						socket.to( default_room ).emit( 'signal', {
+							uid: connection.session.uid,
+							sdp: data.sdp,
+						} );
+						$.log(connection.account.name, 'emitted session description offer');
+					} else {
+						$.log('user failed to auth for session description offer', data, result);
+					}
+				});
+			}
+		});
+		socket.on('ice_candidate', (data) => {
+			if (data && isstr(data.key) && data.key.length) {
+				Sessions.get_session_account(data.key, (result) => {
+					if (result) {
+						var connection = connections[data.key];
+						socket.to(default_room).emit('ice_candidate', {
+							uid: connection.session.uid,
+							label: data.label,
+							candidate: data.candidate,
+						});
+						$.log(connection.account.name, 'emitted candidate');
+					} else {
+						$.log('user failed to auth for candidate', data, result);
+					}
+				});
 			}
 		});
 	});

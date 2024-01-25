@@ -39,7 +39,7 @@
 			view.run('intro');
 		}
 		if (get_global_object().Sidebar) Sidebar.choose(module_name);
-		webapp.header([Config.appname, Config.desc, '/e.png']);
+		Webapp.header([Config.appname, Config.desc, '/e.png']);
 	}
 	
 	Hooks.set('sessionchange', function (key) {

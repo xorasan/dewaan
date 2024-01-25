@@ -5,11 +5,13 @@
 +include linked/webapp.3inch.htm.w
 +include linked/webapp.13inch.htm.w
 +include linked/webapp.notify.htm.w
++include linked/offline.htm.w
 +include linked/sidebar.htm.w
 +include linked/network.htm.w
 +include linked/manifest.htm.w
 +include linked/list.htm.w
 +include linked/backstack.htm.w
++include linked/backstack.history.htm.w
 +include linked/preferences.htm.w
 +include linked/activity.htm.w
 +include linked/view.htm.w
@@ -28,7 +30,6 @@
 +include linked/webapp.touch.htm.w
 +include linked/softkeys.touch.htm.w
 +include linked/sessions.htm.w
-+include linked/offline.htm.w
 +include linked/profile.htm.w
 +include linked/accounts.htm.w
 +include linked/polling.client.htm.w

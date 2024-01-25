@@ -5,11 +5,13 @@
 +include linked/webapp.3inch.css.w
 +include linked/webapp.13inch.css.w
 +include linked/webapp.notify.css.w
++include linked/offline.css.w
 +include linked/sidebar.css.w
 +include linked/network.css.w
 +include linked/manifest.css.w
 +include linked/list.css.w
 +include linked/backstack.css.w
++include linked/backstack.history.css.w
 +include linked/preferences.css.w
 +include linked/activity.css.w
 +include linked/view.css.w
@@ -28,7 +30,6 @@
 +include linked/webapp.touch.css.w
 +include linked/softkeys.touch.css.w
 +include linked/sessions.css.w
-+include linked/offline.css.w
 +include linked/profile.css.w
 +include linked/accounts.css.w
 +include linked/polling.client.css.w

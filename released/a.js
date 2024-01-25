@@ -449,11 +449,14 @@ return 'body {'
 +'\n#whiteboardui {'
 +'\n	border:2px dashed '+o.tertiary+';'
 +'\n}'
-+'\n.call_list_item .icon svg {'
++'\n.call_list_item .profile_tag {'
 +'\n	background:'+o.secondary+';'
 +'\n}'
 +'\n.call_list_item .color_tag {'
 +'\n	background:'+o.textd+';'
++'\n}'
++'\n.call_list_item .status_icon svg {'
++'\n	background:'+o.tertiaryt+';'
 +'\n}';
 };
 
@@ -1062,40 +1065,56 @@ $.unload = function (mods, fn) {
 $._r();
 $.b = 2;
 'use strict';
-var taraajim = {"en":{"call_screen":"Call Screen","rasaail":"Messages","norasaail":"No Messages","deleting":"Deleting...","willdelete":"Will delete","offlinesince":"Offline since","pagerasmaa":"Tab Names","profile":"Profile","name":"User Name","displayname":"Display Name","shape":"Appearance, Accessories, Clothes...","lifestory":"Life Story","birthday":"Birthday","kind":"Type, Rank","possession":"Possessions, Real estate, Pets...","gender":"Gender","family":"Family","relatives":"Relatives","blocks":"Blocks","friends":"Friends","jobs":"Jobs, Hobbies, Interests...","wants":"Wants","phone":"Phone","status":"Status","connected":"Connected When","joined":"Joined When (after invitation)","latitude":"Latitude","longitude":"Longitude","created":"Created When","updated":"Updated When","taptoremove":"Tap to Remove","taptoadd":"Tap to Add","taptochange":"Tap to Change","taptoselect":"Tap to Select","chosen":"Chosen","moneymorein":"Get More in the Profile Tab","mowdoo3":"topic, theme, title...","autodeleteold":"Will auto-delete old messages","notimelimit":"No time limit","xulwah":"Privacy","najwaa":"Private","a3daa":"Members","adaafa3daa":"Add members","muddah":"Duration","maxmembershit":"Maximum members added","mklmhda3aw":"Invite %1 to the conversation","mklmhtad3oot":"You've invited %1 to the conversation","mklmhyad3aak":"%1 has invited you","mklmhmas3oob":"%1 has blocked the conversation","mklmhtas3oob":"You've blocked the conversation","mklmhmatrood":"%1 has rejected your invitation","mklmhtatrood":"You've rejected %1's invitation","asa3ab":"Do you want to block this conversation?","sessions":"Sessions","signin":"Sign In","signup":"Join","signout":"Log Out","signoutconfirm":"Do you want to log out?","username":"Username","password":"Password","captcha":"Human Validation","fetchingcaptcha":"Fetching Human Validation Question...","answer":"Answer","usernamedetails":"Your username will be:","usernametip":"Keep it between 3 and 24 characters, alphabets & numbers are allowed","passwordtip":"Keep it between 8 and 64 characters, hard to guess yet easy to remember","checkingusername":"Verifying Username...","usernameover":"Too long, pick a shorter one","usernameunder":"Too short, add a few characters","usernametaken":"Already exists, pick a different username","usernameavailable":"Username Available!","passwordover":"Too long, pick a shorter one","passwordunder":"Too short, add a few characters","passwordwrong":"Wrong, try again","answerblank":"Answer is blank","answerwrong":"Your answer was wrong, try again","loggingin":"Signing In...","loggedin":"Signed In","loggingout":"Logging Out...","loggedout":"Logged Out","settings":"Settings","requestfeat":"Request Feature","reportbug":"Report Bug","author":"Author","build":"Build","openad":"Ad","quality":"Quality","largetext":"Large Text","transparency":"Transparency","calendar":"Calendar","hijri":"Hijri","gregorian":"Gregorian","builton":"Built On","skhelp":"Press # for actions","softkeystouchdpad":"Touch D-Pad","theme":"Theme","black":"Black","white":"White","contrast":"Contrast","high":"High","low":"Low","infuture":"in","justnow":"just now","sseconds":"s","secondsago":"secs","aminuteago":"a min","minute":"min","sminutes":"m","minutes":"mins","minutesago":"mins","anhourago":"an hr","hourago":"hr","hoursago":"hrs","yesterday":"yesterday","tomorrow":"tomorrow","adayago":"a day","dayago":"d","daysago":"d","lastmonth":"last month","monthago":"mo","monthsago":"mo","lastyear":"last year","yearago":"y","yearsago":"y","alongtime":"a long time","sunday":"sunday","monday":"monday","tuesday":"tuesday","wednesday":"wednesday","thursday":"thursday","friday":"friday","saturday":"saturday",",":",","am":"am","pm":"pm","st":"st","nd":"nd","rd":"rd","th":"th","timeformat":"Time Format","hours24":"24 hour","hours12":"12 hour","language":"Language","en":"English","ar":"Arabic","ur":"Urdu","ru":"Russian","de":"German","es":"Spanish","loading":"Loading...","exiting":"Exiting...","newversionfound":"New version found","appcachefailed":"Failed to cache app, you can still use it but it will be slow to start","unsupported":"Your device can't run this app","swunsupported":"Your browser doesn't support Service Workers","appcachedoffline":"App cached offline, it will load faster next time!","off":"Off","on":"On","animations":"Animations","webapptouchdir":"Touch affects direction"}};
+var taraajim = {"en":{"call_screen":"Call Screen","account":"Account","accounts":"Accounts","rasaail":"Messages","norasaail":"No Messages","deleting":"Deleting...","willdelete":"Will delete","offlinesince":"Offline since","pagerasmaa":"Tab Names","profile":"Profile","name":"Name","displayname":"Display Name","shape":"Appearance, Accessories, Clothes...","lifestory":"Life Story","birthday":"Birthday","kind":"Type, Rank","possession":"Possessions, Real estate, Pets...","gender":"Gender","family":"Family","relatives":"Relatives","blocks":"Blocks","friends":"Friends","jobs":"Jobs, Hobbies, Interests...","wants":"Wants","phone":"Phone","status":"Status","connected":"Connected When","joined":"Joined When (after invitation)","latitude":"Latitude","longitude":"Longitude","created":"Created When","updated":"Updated When","taptoremove":"Tap to Remove","taptoadd":"Tap to Add","taptochange":"Tap to Change","taptoselect":"Tap to Select","chosen":"Chosen","moneymorein":"Get More in the Profile Tab","mowdoo3":"topic, theme, title...","autodeleteold":"Will auto-delete old messages","notimelimit":"No time limit","xulwah":"Privacy","najwaa":"Private","a3daa":"Members","adaafa3daa":"Add members","muddah":"Duration","maxmembershit":"Maximum members added","mklmhda3aw":"Invite %1 to the conversation","mklmhtad3oot":"You've invited %1 to the conversation","mklmhyad3aak":"%1 has invited you","mklmhmas3oob":"%1 has blocked the conversation","mklmhtas3oob":"You've blocked the conversation","mklmhmatrood":"%1 has rejected your invitation","mklmhtatrood":"You've rejected %1's invitation","asa3ab":"Do you want to block this conversation?","sessions":"Sessions","signin":"Sign In","signup":"Join","signout":"Log Out","signoutconfirm":"Do you want to log out?","username":"Username","password":"Password","captcha":"Human Validation","fetchingcaptcha":"Fetching Human Validation Question...","answer":"Answer","usernamedetails":"Your username will be:","usernametip":"Keep it between 3 and 24 characters, alphabets & numbers are allowed","passwordtip":"Keep it between 8 and 64 characters, hard to guess yet easy to remember","checkingusername":"Verifying Username...","usernameover":"Too long, pick a shorter one","usernameunder":"Too short, add a few characters","usernametaken":"Already exists, pick a different username","usernameavailable":"Username Available!","passwordover":"Too long, pick a shorter one","passwordunder":"Too short, add a few characters","passwordwrong":"Wrong, try again","answerblank":"Answer is blank","answerwrong":"Your answer was wrong, try again","loggingin":"Signing In...","loggedin":"Signed In","loggingout":"Logging Out...","loggedout":"Logged Out","settings":"Settings","requestfeat":"Request Feature","reportbug":"Report Bug","author":"Author","build":"Build","openad":"Ad","quality":"Quality","largetext":"Large Text","transparency":"Transparency","calendar":"Calendar","hijri":"Hijri","gregorian":"Gregorian","builton":"Built On","skhelp":"Press # for actions","softkeystouchdpad":"Touch D-Pad","theme":"Theme","black":"Black","white":"White","contrast":"Contrast","high":"High","low":"Low","infuture":"in","justnow":"just now","sseconds":"s","secondsago":"secs","aminuteago":"a min","minute":"min","sminutes":"m","minutes":"mins","minutesago":"mins","anhourago":"an hr","hourago":"hr","hoursago":"hrs","yesterday":"yesterday","tomorrow":"tomorrow","adayago":"a day","dayago":"d","daysago":"d","lastmonth":"last month","monthago":"mo","monthsago":"mo","lastyear":"last year","yearago":"y","yearsago":"y","alongtime":"a long time","sunday":"sunday","monday":"monday","tuesday":"tuesday","wednesday":"wednesday","thursday":"thursday","friday":"friday","saturday":"saturday",",":",","am":"am","pm":"pm","st":"st","nd":"nd","rd":"rd","th":"th","timeformat":"Time Format","hours24":"24 hour","hours12":"12 hour","language":"Language","en":"English","ar":"Arabic","ur":"Urdu","ru":"Russian","de":"German","es":"Spanish","loading":"Loading...","exiting":"Exiting...","newversionfound":"New version found","appcachefailed":"Failed to cache app, you can still use it but it will be slow to start","unsupported":"Your device can't run this app","swunsupported":"Your browser doesn't support Service Workers","appcachedoffline":"App cached offline, it will load faster next time!","off":"Off","on":"On","animations":"Animations","webapptouchdir":"Touch affects direction"}};
 var Hooks, hooks;
 ;(function (){
 	'use strict';
+	var getargs = function (start_at, oldargs) {
+		var args = [];
+		for (var i = start_at || 0; i < oldargs.length; ++i) {
+			args.push( oldargs[i] );
+		}
+		return args;
+	};
 	Hooks = {
+		_registry_first: {},
 		_registry: {},
 		_map: {},
 		_uid: 0,
-		set: function (hook, id, fn) {
+		set: function (hook, id, fn, priority) {
 			if (hook instanceof Array) {
 				hook.forEach(function (item) {
-					Hooks.set(item, id, fn);
+					Hooks.set(item, id, fn, priority);
 				});
 				return;
 			}
+			var registry = Hooks._registry;
+			if (priority) registry = Hooks._registry_first;
 			if (typeof id === 'function')
 				fn = id, id = new Date().getTime();
 			if (typeof fn === 'function') {
-				if (Hooks._registry[hook] === undefined) {
-					Hooks._registry[hook] = [];
+				if (registry[hook] === undefined) {
+					registry[hook] = [];
 				}
 				++Hooks._uid;
-				Hooks._registry[hook][Hooks._uid] = fn;
+				registry[hook][Hooks._uid] = fn;
 				Hooks._map[hook+'_'+id] = Hooks._uid;
 				return true;
 			}
 			return false;
 		},
+		set_first: function (hook, id, fn) {
+			return this.set(hook, id, fn, 1);
+		},
 		run: function (hook, extras) {
+			var args = getargs(1, arguments);
+			var handlers_first = Hooks._registry_first[hook];
 			var handlers = Hooks._registry[hook];
-			if (handlers instanceof Array) {
+			if (handlers_first instanceof Array || handlers instanceof Array) {
+				handlers = ( handlers_first || [] ).concat( handlers || [] );
 				for (var i in handlers) {
 					if (typeof handlers[i] === 'function') {
-						handlers[i](extras);
+						handlers[i].apply(handlers[i], args);
 					}
 				}
 				return true;
@@ -1103,11 +1122,14 @@ var Hooks, hooks;
 			return false;
 		},
 		rununtilconsumed: function (hook, extras) {
+			var args = getargs(1, arguments);
+			var handlers_first = Hooks._registry_first[hook];
 			var handlers = Hooks._registry[hook];
-			if (handlers instanceof Array) {
+			if (handlers_first instanceof Array || handlers instanceof Array) {
+				handlers = ( handlers_first || [] ).concat( handlers || [] );
 				for (var i in handlers) {
 					if (typeof handlers[i] === 'function') {
-						var returnedvalue = handlers[i](extras);
+						var returnedvalue = handlers[i].apply(handlers[i], args);
 						if (returnedvalue) {
 							return returnedvalue;
 						}
@@ -1117,6 +1139,10 @@ var Hooks, hooks;
 			return false;
 		},
 		pop: function (hook, id) {
+			if (Hooks._registry_first[hook]) {
+				delete Hooks._registry_first[hook][ Hooks._map[hook+'_'+id] ];
+				return true;
+			}
 			if (Hooks._registry[hook]) {
 				delete Hooks._registry[hook][ Hooks._map[hook+'_'+id] ];
 				return true;
@@ -1124,9 +1150,11 @@ var Hooks, hooks;
 			return false;
 		},
 		hook: function (hook) {
+			Hooks._registry_first[hook] = [];
 			Hooks._registry[hook] = [];
 		},
 		unhook: function (hook) {
+			delete Hooks._registry_first[hook];
 			delete Hooks._registry[hook];
 		}
 	};
@@ -1723,10 +1751,10 @@ var Webapp, webapp, appname = 'Dewaan' || '',
 				}
 			}
 			if (err) {
-				webapp.header( translate && translate('unsupported') );
+				Webapp.header( translate && translate('unsupported') );
 				return 0;
 			} else {
-				webapp.header();
+				Webapp.header();
 				return 1;
 			}
 		},
@@ -1751,7 +1779,6 @@ var Webapp, webapp, appname = 'Dewaan' || '',
 			if (align == 1) header.dataset.align = '1';
 			else if (align == 2) header.dataset.align = '2';
 			else delete header.dataset.align;
-			if (backstack.darajah <= 1) {
 				if (text) {
 					if (header_title instanceof Array && header_title[0]) {
 						title.dataset.i18n = header_title[0];
@@ -1784,10 +1811,8 @@ var Webapp, webapp, appname = 'Dewaan' || '',
 					innerhtml(icon, '');
 				}
 				if (!original_keys) this.header(text, align, tall_header_keys);
-			} else if (backstack.darajah === 2) {
-				sheet.header(text);
-			}
 			translate.update();
+			document.title = title.innerText + ( subtitle.innerText ? (' - ' + subtitle.innerText) : '' );
 		},
 		sahhar: function (what) { 
 			if (navigator && navigator.requestWakeLock) {
@@ -2062,7 +2087,7 @@ var Webapp, webapp, appname = 'Dewaan' || '',
 		if (Offline && Offline.init) {
 			Offline.init(function () {
 				Hooks.run('ready', 1);
-				backstack.main();
+				Backstack.main(2);
 				loadingbox.hidden = 1;
 			});
 		}
@@ -2071,7 +2096,7 @@ var Webapp, webapp, appname = 'Dewaan' || '',
 			$.taxeer('loadingbox', function () {
 				loadingbox.hidden = 1;
 			});
-			backstack.main();
+			Backstack.main(2);
 		}
 		$.taxeer('on_scroll', function () {
 			on_scroll();
@@ -2175,53 +2200,6 @@ var datepicker = datepicker || 0;
 		if (level === 1) Webapp.dimmer();
 		if (level === 0) Webapp.header(), Webapp.dimmer();
 	});
-	Hooks.set('backstackdialog', function (args) {
-		var date = 0;
-		if (datepicker && args instanceof HTMLElement) date = 1;
-		webapp.dimmer(600);
-		Softkeys.clear();
-		Softkeys.add({ k: K.sl,
-			i: 'icondone',
-			c: function () {
-				if (date) datepicker.okay && datepicker.okay(args);
-				else dialog.okay && dialog.okay();
-			}
-		});
-		Softkeys.add({ k: K.sr,
-			i: 'iconclose',
-			c: function () {
-				if (date) datepicker.cancel && datepicker.cancel();
-				else dialog.cancel && dialog.cancel();
-			}
-		});
-		if (date) datepicker.show(args);
-		else dialog.show(args);
-	});
-	Hooks.set('backstacksheet', function (args) {
-		webapp.dimmer(400);
-		softkeys.clear();
-		if (args.callback || args.c) {
-			softkeys.set(K.sl, function () {
-				sheet.okay && sheet.okay();
-			}, 0, 'icondone');
-		}
-		softkeys.set(K.sr, function () {
-			sheet.cancel && sheet.cancel();
-		}, 0, 'iconarrowback');
-		sheet.show(args);
-		softkeys.showhints();
-	});
-	Hooks.set('backstackview', function (name) {
-		Webapp.dimmer();
-		Softkeys.clear();
-		Softkeys.P.empty();
-		Softkeys.set(K.sr, function () {
-			Hooks.run('back');
-		}, 0, 'iconarrowback');
-		View.run(name);
-		Softkeys.showhints();
-		return 1; 
-	});
 	Hooks.set('backstackmain', function (name) {
 		Softkeys.clear();
 		Softkeys.P.empty();
@@ -2313,10 +2291,771 @@ function url_content_to_data_uri(url){
 		}
 	});
 })();
+ 
+var Offline, offline;
+;(function(){
+	'use strict';
+	var database = 'db', db = false, maxaazin = {},
+		unsavedname = 'unsaved'+'default',
+		exclusions = [unsavedname],
+		delaydefault = 30*1000,
+		gcallback,
+		debug_offline = 1;
+	var ajraa = function (callback) {
+		Offline.getall( Offline.allstores(), {
+			filter: {
+				pending: 1,
+			},
+			format: true,
+		}, function (kinds) {
+			for (var i in kinds) {
+				var m = maxaazin[i];
+				var things = kinds[i], ixraaj = 0;
+				if (m.keyvalue) { 
+					ixraaj = {};
+					for (var j in things) {
+						var uid = things[j].uid;
+						delete things[j].uid;
+						delete things[j].created;
+						delete things[j].updated;
+						ixraaj[ uid ] = things[j].value;
+					}
+				}
+				 
+				Network.sync(m.name, m.need, ixraaj || things);
+			}
+		});
+	};
+	var ijtama3 = function (callback) {
+		$.taxeer('offline-ajraa', function () {
+			ajraa();
+		}, 3000);
+	};
+	var createstores = function () {
+		if (debug_offline) $.log.w('Offline createstores', maxaazin);
+		var request = indexedDB.open(database, 1830);
+		request.onerror = function(event) {
+			if (event.target.error.name === 'VersionError') {
+				 
+				Offline.recreate();
+			} else {
+			}
+		};
+		request.onupgradeneeded = function(event) {
+			db = event.target.result;
+			Offline.allstores().forEach(function (name) {
+				db.deleteObjectStore(name);
+			});
+			Object.values(maxaazin).forEach(function (store) {
+				store.time = 0; 
+				var name = store.name+store.need;
+				if ( db.objectStoreNames.contains(name) )
+					db.deleteObjectStore(name);
+				Offline._createstore(name, store.mfateeh);
+			});
+		};
+		request.onsuccess = function(event) {
+			db = event.target.result;
+			db.onversionchange = Offline.warning;
+			Offline.ready = 1;
+			if (gcallback) {
+				gcallback();
+				gcallback = 0;
+			} else {
+				Hooks.run('offline-ready', 1);
+			}
+		};
+	};
+	var fillmissingkeys = function (store, object) {
+		store = maxaazin[store];
+		store.mfateeh.forEach(function (m) {
+			object[m] = object[m] === undefined ? 0 : object[m];
+		});
+	};
+	 
+	Offline = offline = {
+		ruid: function () {
+			var ruid = parseInt( preferences.get(3) || -1 );
+			preferences.set(3, ruid - 1);
+			return (ruid - 1);
+		},
+		mundarij: {
+			add: {},
+			remove: {},
+			get: {},
+		},
+		ready: false,
+		response: {
+			add: function (name, need, cb) {
+				if (typeof need == 'function') cb = need, need = 0;
+				need = need || 'default';
+				Offline.mundarij.add[ name ] = Offline.mundarij.add[ name ] || {};
+				Offline.mundarij.add[ name ][ need ] = cb;
+			},
+			remove: function (name, need, cb) {
+				if (typeof need == 'function') cb = need, need = 0;
+				need = need || 'default';
+				Offline.mundarij.remove[ name ] = Offline.mundarij.remove[ name ] || {};
+				Offline.mundarij.remove[ name ][ need ] = cb;
+			},
+			get: function (name, need, cb) {
+				 
+				if (typeof need == 'function') cb = need, need = 0;
+				need = need || 'default';
+				Offline.mundarij.get[ name ] = Offline.mundarij.get[ name ] || {};
+				Offline.mundarij.get[ name ][ need ] = cb;
+				Network.response.get(name, need, function (response) {
+					cb( shallowcopy(response) );
+					var store = maxaazin[name+need];
+					if (store) store.time = Time.now();
+					Offline.save(name, need, response);
+				});
+			},
+		},
+		add: function (name, need, value) { 
+			if (debug_offline) $.log.w('Offline.add', name, need);
+			if (arguments.length === 2) value = need, need = 0;
+			need = need || 'default';
+			if (!(value instanceof Array)) value = [value];
+			if (value instanceof Array) {
+				Offline.set(name+need, value, function (needssync) {
+					var m = maxaazin[ name+need ];
+					if (m.keyvalue) {
+						var kind = Offline.mundarij.get;
+						if (kind[name] && typeof kind[name][need] == 'function')
+							kind[name][need]( shallowcopy(value) );
+					}
+					if (needssync) ijtama3();
+				});
+			}
+		},
+		remove: function (name, need, value) { 
+			if (arguments.length === 2) value = need, need = 0;
+			need = need || 'default';
+			if (!(value instanceof Array)) value = [value];
+			if (value instanceof Array) {
+				value.forEach(function (item) {
+					item.pending = 1;
+					item.remove = 1;
+				});
+				Offline.set(name+need, value, function (needssync) {
+					var m = maxaazin[ name+need ];
+					if (m.keyvalue) {
+						var kind = Offline.mundarij.get;
+						if (kind[name] && typeof kind[name][need] == 'function')
+							kind[name][need]( shallowcopy(value) );
+					}
+					if (needssync) ijtama3();
+				});
+			}
+		},
+		create: function (name, need, o) { 
+			if (debug_offline) $.log.w('Offline.create', name, need);
+			o = o || {};
+			o.delay = o.delay || undefined;
+			o.nazzaf = o.nazzaf || undefined;
+			o.mfateeh = o.mfateeh || [];
+			need = need || 'default';
+			 
+			['uid', 'created', 'updated', 'pending'].forEach(function (v) {
+				if (!o.mfateeh.includes(v)) o.mfateeh.push(v);
+			});
+			maxaazin[ name+need ] = {
+				name: name,
+				need: need,
+				mfateeh: o.mfateeh,
+				nazzaf: o.nazzaf,
+				delay: o.delay,
+				tashkeel: o.tashkeel,
+				keyvalue: o.keyvalue,
+			};
+			$.taxeer('offline-init', function () {
+				createstores();
+			}, 250);
+		},
+		get: function (name, need, value, time) {
+			if (debug_offline) $.log.w('Offline.get', name, need);
+			need = need || 'default';
+			 
+			var expired = 0;
+			if (time !== undefined) {
+				var store = maxaazin[name+need];
+				if (store) {
+					var delay = store.delay || delaydefault;
+					if (delay !== -1) {
+						store.time = store.time || Time.now() - (delay*2);
+						if (time - store.time > delay) expired = 1;
+					}
+				}
+			}
+			if (expired) {
+				Network.get(name, need, value);
+			} else {
+				Offline.getall(name+need, value, function (response) {
+					var kind = Offline.mundarij.get;
+					if (kind[name] && isfun(kind[name][need])) {
+						kind[name][need](response.toNative());
+					}
+				});
+			}
+		},
+		getforun: function (name, need, value, cb) {
+			need = need || 'default';
+			if (isfun(cb))
+			Offline.getall(name+need, value, function (response) {
+				cb(response.toNative());
+			});
+		},
+		save: function (name, need, value) { 
+			if (debug_offline) $.log.w( 'Offline save', name, need, value );
+			for (var uid in value) {
+				var val = value[uid], kind = Offline.mundarij.add;
+				val.uid = val.uid || uid;
+				val.pending = 0;
+				if (val.remove === -1) { 
+					kind = Offline.mundarij['remove'];
+					Offline.pop(name+need, val.uid);
+					val = val.uid;
+				} else {
+					Offline.set(name+need, [val]);
+				}
+				if (kind[name] && typeof kind[name][need] == 'function') {
+					kind[name][need]( shallowcopy(val) );
+				}
+			}
+		},
+		 
+		filter: function (filter, rawitems) {
+			if (typeof filter === 'object' && Object.keys(filter).length) {
+				 
+				var filtered = $.array(), keys = Object.keys(filter);
+				rawitems.each(function (rawitem) {
+					var matchedprops = 0,
+						totalprops = keys.length;
+					var doadd, count = 0, i, prop;
+					while (count < totalprops) {
+						i = keys[count], prop = i, doadd = 0;
+						if ( i.endsWith('$i') ) { 
+							prop = (rawitem[ i.slice(0,-2) ] ) || 0;
+							if ( typeof prop === 'string' && prop.toLowerCase().includes( filter[i] ) )
+								doadd += 1;
+						}
+						if ( i.endsWith('$s') ) { 
+							prop = i.slice(0,-2);
+							if ( (rawitem[ prop ] ).startsWith( filter[i] ) )
+								doadd += 1;
+						}
+						if ( i.endsWith('$e') ) { 
+							prop = i.slice(0,-2);
+							if ( (rawitem[ prop ] ).endsWith( filter[i] ) )
+								doadd += 1;
+						}
+						if ( i.endsWith('$gt') ) { 
+							prop = i.slice(0,-3);
+							if ( rawitem[ prop ] > filter[i] )
+								doadd += 1;
+						}
+						if ( i.endsWith('$st') ) { 
+							prop = i.slice(0,-3);
+							if ( rawitem[ prop ] < filter[i] )
+								doadd += 1;
+						}
+						if ( i.endsWith('$ge') ) { 
+							prop = i.slice(0,-3);
+							if ( rawitem[ prop ] >= filter[i] )
+								doadd += 1;
+						}
+						if ( i.endsWith('$se') ) { 
+							prop = i.slice(0,-3);
+							if ( rawitem[ prop ] <= filter[i] )
+								doadd += 1;
+						}
+						if ( i.endsWith('$ne') ) { 
+							prop = i.slice(0,-3);
+							if ( rawitem[ prop ] != filter[i] )
+								doadd += 1;
+						}
+						if ( i.endsWith('$ma') ) { 
+							prop = i.slice(0,-3);
+							var tags = (rawitem[ prop ] || '');
+							if (filter[i] === '') doadd += 1;
+							else if (filter[i] == ',') {
+								if (tags === '') doadd += 1;
+							} else {
+								tags.split(',').forEach(function (tag) {
+									if (tag.trim() == filter[i])
+										doadd += 1;
+								});
+							}
+						}
+						if ( i.endsWith('$ee') ) { 
+							prop = i.slice(0,-3);
+							if ( rawitem[ prop ] === filter[i] )
+								doadd += 1;
+						}
+						else if ( rawitem[i] == filter[i] ) doadd += 1;
+						++count;
+						if (doadd) ++matchedprops;
+					}
+					if (matchedprops === totalprops)
+						filtered.set( rawitem.uid, rawitem );
+				});
+				return filtered;
+			} else return rawitems;
+		},
+		_createstore: function (name, keys) {
+			var objectstore = db.createObjectStore(name, { keyPath: 'uid' });
+			for (var i in keys) {
+				objectstore.createIndex(keys[i], keys[i]);
+			}
+		},
+		_get: function (store, uid, callback) {
+			if (db) {
+				try {
+					db.transaction(store).objectStore(store).get(uid)
+						.onsuccess = function(event) {
+							typeof callback === 'function' && callback(event.target.result);
+						};
+				} catch (error) {
+					$.log('Offline.get', store, uid);
+					$.log.e(error);
+				}
+			} else {
+			}
+		},
+		count: function (store, callback) {
+			var i = 0;
+			db.transaction(store).objectStore(store).openCursor().onsuccess = function (event) {
+				var cursor = event.target.result;
+				if (cursor) {
+					++i;
+					cursor.continue();
+				} else {
+					typeof callback === 'function' && callback(i);
+				}
+			};
+		},
+		filteredcount: function (store, bound, direction, callback) {
+			var i = 0;
+			db.transaction(store).objectStore(store).openCursor(bound, direction).onsuccess = function (event) {
+				var cursor = event.target.result;
+				if (cursor) {
+					++i;
+					cursor.continue();
+				} else {
+					typeof callback === 'function' && callback(i);
+				}
+			};
+		},
+		parsevalue: function (value) {
+			if (value === true) value = 1;
+			if (value === false) value = 0;
+			if (value instanceof Array) {
+				for (var i in value) {
+					value[i] = Offline.parsevalue(value[i] );
+				}
+			}
+			return value;
+		},
+		 
+		format: function (obj, store) {
+			obj = obj || {};
+			var newobj = {};
+				delete obj._store;
+				delete obj.pending;
+				newobj = shallowcopy(obj);
+			var m = maxaazin[store];
+			if (m && isfun(m.tashkeel)) newobj = m.tashkeel(newobj);
+			return newobj;
+		},
+		 
+		_getall: function (store, options, callback) {
+			var objectStore = db.transaction(store).objectStore(store),
+				unsavedStore = db.transaction(unsavedname).objectStore(unsavedname),
+				i = 0,
+				filteredcount = 0, 
+				objects = $.array(),
+				filters = options.filter || {},
+				bound = null,
+				direction = 'prev',
+				extra = {
+						pages: false,
+						count: false,
+						limit: options.limit,
+					};
+			if (extra.limit === undefined || extra.limit === true) {
+				extra.limit = true;
+			}
+			options.key = [];
+			options.only = [];
+			if (filters.cache)
+				filters.cache = undefined;
+			if ( Object.keys(filters).length > 1 ) {
+				var keys = Object.keys(filters);
+				var only = Object.values(filters);
+				for (var i in only) {
+					if (only[i] !== undefined) {
+						options.key.push( keys[i] );
+						options.only.push( only[i] );
+					}
+				}
+			}
+			if ( Object.keys(filters).length <= 1
+			|| options.key.length <= 1 ) {
+				options.key = Object.keys(filters)[0];
+				options.only = Object.values(filters)[0];
+				if (options.only === undefined)
+					options.key = undefined;
+			}
+			if (options.key) {
+				objectStore = objectStore.index( options.key );
+				options.only = Offline.parsevalue( options.only );
+				bound = IDBKeyRange.only( options.only );
+			}
+			if (extra.limit !== true) {
+				extra.limit = extra.limit || 20;
+				var page = options.page || 0;
+				if (page) page = page - 1;
+				var startat = page * extra.limit;
+			}
+			objectStore.openCursor(bound, direction).onsuccess = function (event) {
+				var cursor = event.target.result;
+				if (cursor) {
+					var key = cursor.value.uid;
+					if (extra.limit === true || options.perm) {
+						var item = cursor.value;
+						if (options.format)
+							item = Offline.format( cursor.value, store );
+						objects.set(key, item);
+					} else {
+						if ( i >= startat && objects.length < extra.limit ) {
+							var item = cursor.value;
+							if (options.format)
+								item = Offline.format( cursor.value, store );
+							objects.set(key, item);
+						} else {
+							if (bound)
+								++filteredcount;
+						}
+					}
+					++i;
+					cursor.continue();
+				} else {
+					Offline._getallpending(store, function (unsaved) {
+						unsaved.each(function (item) {
+							if (options.format)
+								item = Offline.format( item, store );
+							return item;
+						});
+						var andfinally = function (objects) {
+							 
+							if (options.perm) {
+								objects.sort(options.reversed || 0, (options.orderby || 'uid'), 'uid');
+								if (typeof options.multifilter === 'object' && Object.keys(options.multifilter).length)
+									objects = Offline.filter(options.multifilter, objects);
+							}
+							if (extra.limit === true) {
+								extra.count = objects.length;
+								extra.pages = false;
+								typeof callback === 'function' && callback(objects, extra, unsaved);
+							} else {
+								Offline.count(store, function (count) {
+									if (bound) {
+										extra.count = objects.length+filteredcount;
+									} else {
+										extra.count = count;
+									}
+									extra.pages = Math.ceil(extra.count / extra.limit);
+									 
+									if (options.perm) {
+										extra.count = objects.length;
+										extra.pages = Math.ceil(extra.count / extra.limit);
+										extra.filteredcount = objects.length;
+										objects = objects.slice(startat, startat+options.limit-1);
+									}
+									typeof callback === 'function' && callback(objects, extra, unsaved);
+								});
+							}
+						};
+						 
+						if (typeof options.uponfillin === 'function') {
+							options.uponfillin(objects, function (objects) {
+								andfinally(objects);
+							}, 1);
+						} else
+							andfinally(objects);
+					});
+				}
+			};
+		},
+		_getallpending: function (store, callback) {
+			var unsavedStore = db.transaction(unsavedname).objectStore(unsavedname),
+				bound = IDBKeyRange.only( store ),
+				objects = $.array();
+			unsavedStore.index( '_store' ).openCursor(bound).onsuccess = function (event) {
+				var cursor = event.target.result;
+				if (cursor) {
+					 
+					cursor.value.uid = cursor.value.uid * -1;
+					objects.set(cursor.value.uid, cursor.value);
+					cursor.continue();
+				} else {
+					typeof callback === 'function' && callback(objects);
+				}
+			};
+		},
+		 
+		getpendingitem: function (uid, callback) {
+			var unsavedStore = db.transaction(unsavedname).objectStore(unsavedname),
+				bound = IDBKeyRange.only( uid * -1 ),
+				objects = $.array();
+			unsavedStore.index( 'uid' ).openCursor(bound).onsuccess = function (event) {
+				var cursor = event.target.result;
+				if (cursor) {
+					cursor.value.uid = cursor.value.uid * -1;
+					objects.set(cursor.value.uid, cursor.value);
+					cursor.continue();
+				} else {
+					typeof callback === 'function' && callback(objects);
+				}
+			};
+		},
+		getallpending: function (store, callback) {
+			 
+			if (store instanceof Array) {
+				var types = {},
+					i = 0,
+					total = 0,
+					q = $.queue();
+				store.forEach(function () {
+					q.set(function (done, queue) {
+						Offline._getallpending(store[i], function (objects) {
+							if (objects.length) {
+								types[ store[i] ] = objects.toNative();
+								++total;
+							}
+							++i;
+							done(queue);
+						});
+					});
+				});
+				q.run(function () {
+					if (total === 0) types = false;
+					typeof callback === 'function' && callback(types);
+				});
+			} else {
+				Offline._getallpending(store, callback);
+			}
+		},
+		getall: function (store, options, callback) {
+			options = options || {};
+			 
+			if (store instanceof Array) {
+				var types = {},
+					i = 0,
+					total = 0,
+					q = $.queue();
+				store.forEach(function () {
+					q.set(function (done, queue) {
+						Offline._getall(store[i], options, function (objects, ignore, unsaved) {
+							if (objects.length || unsaved.length) {
+								if (options.filter
+								&& options.filter.pending
+								&& store[i].endsWith('_archive')) {
+									store[i] = store[i].slice(0, -'_archive'.length);
+								}
+								if (types[ store[i] ]) {
+									types[ store[i] ].concat( objects.toNative().concat( unsaved.toNative() ) )
+								} else {
+									types[ store[i] ] = objects.toNative().concat( unsaved.toNative() );
+								}
+								++total;
+							}
+							++i;
+							done(queue);
+						});
+					});
+				});
+				q.run(function () {
+					if (total === 0) types = false;
+					typeof callback === 'function' && callback(types);
+				});
+			} else {
+				Offline._getall(store, options, callback);
+			}
+		},
+		 
+		set: function (store, arr, callback) {
+			if (debug_offline) $.log.w('Offline.set', store);
+			if (!db) {
+				if (debug_offline) $.log.e('Offline db not created yet', db);
+				return;
+			}
+			 
+			if (arr.length === 0) {
+				typeof callback === 'function' && callback();
+				return;
+			}
+			var needssync = 0;
+			var stores = [store, unsavedname];
+			try {
+				var transaction = db.transaction(stores, 'readwrite');
+			} catch (e) {
+				$.log.e(e);
+				return;
+			}
+			transaction.oncomplete = function(event) {
+				typeof callback === 'function' && callback(needssync);
+			};
+			var objectStore = transaction.objectStore(store);
+			var unsavedStore = transaction.objectStore(unsavedname);
+			arr.forEach(function(obj) {
+				 
+				if (obj.pending === true) obj.pending = 1;
+				if (obj.pending === false) obj.pending = 0;
+				if (obj.uid < 0 || obj.pending) needssync = 1;
+				 
+				if (obj.uid > 0 && obj.ruid < 0) {
+					unsavedStore.delete( obj.ruid * -1 ).onsuccess = function () {
+						delete obj.ruid;
+						delete obj._store;
+						fillmissingkeys(store, obj);
+						objectStore.put(obj);
+					};
+				}
+				else if (obj.uid < 0 && obj.ruid === undefined) {
+					obj.uid = obj.uid * -1;
+					obj._store = store;
+					unsavedStore.get(obj.uid || 0).onsuccess = function(event) {
+						var oldobj = event.target.result;
+						if (oldobj) {
+							oldobj = Object.assign(oldobj, obj);
+							obj = oldobj;
+						}
+						fillmissingkeys(unsavedname, obj);
+						unsavedStore.put(obj);
+					};
+				} else {
+					objectStore.get(obj.uid || 0).onsuccess = function(event) {
+						var oldobj = event.target.result;
+						if (oldobj) {
+							oldobj = Object.assign(oldobj, obj);
+							obj = oldobj;
+						} else {
+							if (obj.pending === false
+							|| obj.pending === undefined
+							|| obj.pending === null)
+								obj.pending = 0;
+						}
+						fillmissingkeys(store, obj);
+						objectStore.put(obj);
+					};
+				}
+			});
+		},
+		pop: function (store, uid, callback) {
+			if (uid < 0) {
+				store = unsavedname;
+				uid = uid * -1;
+			}
+			db.transaction(store, 'readwrite').objectStore(store).delete(uid)
+				.onsuccess = function(event) {
+					typeof callback === 'function' && callback(event.target.result);
+				};
+		},
+		popall: function (store, arr, callback) {
+			var stores = [store, unsavedname];
+			var transaction = db.transaction(stores, 'readwrite');
+			var objectStore = transaction.objectStore(store);
+			var unsavedStore = transaction.objectStore(unsavedname);
+			transaction.oncomplete = function(event) {
+				typeof callback === 'function' && callback();
+			};
+			var objectStore = transaction.objectStore(store);
+			arr.forEach(function(obj) {
+				if (obj.uid < 0) unsavedStore.delete(obj.uid * -1);
+				else objectStore.delete(obj.uid);
+			});
+		},
+		allstores: function () {
+			var oldstores = [];
+			 
+			for (var i in db.objectStoreNames) {
+				if ( db.objectStoreNames.hasOwnProperty(i) ) {
+					var name = db.objectStoreNames[i];
+					if ( db.objectStoreNames.contains(name) ) {
+						if (!exclusions.includes(name))
+							oldstores.push(name);
+					}
+				}
+			}
+			return oldstores;
+		},
+		recreate: function (callback) {
+			db && db.close && db.close();
+			var request = indexedDB.deleteDatabase(database);
+			request.onsuccess = function () {
+				Offline.init(callback);
+			};
+			 
+		},
+		 
+		warning: function (event) {
+			 
+			db.close();
+			dom.setloading( 'appneedsreload' );
+		},
+		init: function (callback) {
+			if (debug_offline) $.log.w('Offline.init');
+			gcallback = callback;
+			Offline.create('unsaved', 'default', {
+				mfateeh: ['_store']
+			});
+		}
+	};
+	Hooks.set('response-sync', function (payload) {
+		if (debug_offline) $.log.w( 'Offline response-sync', payload );
+		for (var name in payload) {
+			for (var need in payload[name]) {
+				var value = payload[name][need];
+				Offline.save(name, need, value);
+				var m = maxaazin[ name+need ];
+				if (m.keyvalue) {
+					var kind = Offline.mundarij.get;
+					if (kind[name] && typeof kind[name][need] == 'function')
+						kind[name][need]( shallowcopy(value) );
+				}
+			}
+		}
+	});
+	Hooks.set('network-connection', function (yes) {
+		if (yes)
+		$.taxeer('offline-sync', function () {
+			ijtama3();
+		}, 250);
+	});
+})();
 var Sidebar, sidebar_sheet_list;
 ;(function(){
-	var sidebar_list, debug_sidebar = 1;
+	var sidebar_list, debug_sidebar = 0;
+	var sidebar_softkey = { n: 'Sidebar',
+		k: 'contextmenu',
+		last: 1,
+		ctrl: 1,
+		i: 'iconmenu',
+		c: function (k, e) {
+			Sidebar.open();
+			e && e.preventDefault();
+		}
+	};
 	Sidebar = {
+		set_softkey: function () {
+			Softkeys.add( sidebar_softkey );
+		},
+		remove_softkey: function () {
+			if (sidebar_softkey.uid)
+				Softkeys.remove( sidebar_softkey.uid );
+		},
 		set: function (options) { if (sidebar_list) {
 			if (debug_sidebar) $.log.w( 'Sidebar.set', options.uid );
 			var old_options = sidebar_list.adapter.get(options.uid);
@@ -2364,26 +3103,12 @@ var Sidebar, sidebar_sheet_list;
 			sidebar_list.select_by_uid( uid, 1, 1, 1 );
 		},
 	};
-	var sidebar_softkey = { n: 'Sidebar',
-		k: 'contextmenu',
-		last: 1,
-		ctrl: 1,
-		i: 'iconmenu',
-		c: function (k, e) {
-			Sidebar.open();
-			e && e.preventDefault();
-		}
-	};
-	function set_sidebar_softkey() {
-		softkeys.add( sidebar_softkey );
-	}
 	listener('resize', function () {
 		$.taxeer('sidebar-softkey', function () {
 			if (innerwidth() > 1024) {
-				if (sidebar_softkey.uid)
-					softkeys.remove( sidebar_softkey.uid );
+				Sidebar.remove_softkey();
 			} else {
-				softkeys.add( sidebar_softkey );
+				Sidebar.set_softkey();
 			}
 		});
 	});
@@ -2391,7 +3116,10 @@ var Sidebar, sidebar_sheet_list;
 		sidebar_list = List( templates.keys(sidebarui).list ).idprefix('sdbr')
 						.listitem('sidebar_item');
 		sidebar_list.after_set = function (o, c, k) {
-			if (o.count) izhar(k.count_tag); else ixtaf(k.count_tag);
+			if (Templates.has_property(o, 'count'))
+				izhar(k.count_tag);
+			else
+				ixtaf(k.count_tag);
 		};
 		sidebar_list.onpress = function (o) {
 			sidebar_list.uponclick( o );
@@ -2410,12 +3138,15 @@ var Sidebar, sidebar_sheet_list;
 	});
 	Hooks.set('viewready', function (args) {
 		if (Backstack.darajah <= 1 && innerwidth() <= 1024) {
-			set_sidebar_softkey();
+			Sidebar.set_softkey();
 		}
 	});
-	Hooks.set('restore', function (args) {
-		if (Backstack.darajah <= 1 && innerwidth() <= 1024) {
-			set_sidebar_softkey();
+	Hooks.set('restore', function (level) {
+		if (level <= 1) {
+			if (innerwidth() <= 1024) {
+			} else {
+				Sidebar.remove_softkey();
+			}
 		}
 	});
 })();
@@ -2539,7 +3270,8 @@ var Network, network, sessions = sessions || 0;
 					}
 				}
 			}
-			Hooks.run('responseget', response.sync);
+			Hooks.run('responseget', response.sync); 
+			Hooks.run('response-get', response.sync);
 		}
 		if (response.sync) {
 			for (var name in response.sync) {
@@ -2554,7 +3286,8 @@ var Network, network, sessions = sessions || 0;
 					}
 				}
 			}
-			Hooks.run('responsesync', response.sync);
+			Hooks.run('responsesync', response.sync); 
+			Hooks.run('response-sync', response.sync);
 		}
 	};
 	var cachedkey, broadcast_state = 0, broadcast_delay = 500;
@@ -2565,7 +3298,7 @@ var Network, network, sessions = sessions || 0;
 		payload = payload || {};
 		payload = Object.assign(payload, {
 			broadcast : 1 , 
-			e$ : 1188 , 
+			e$ : 1830 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		error_log(payload);
@@ -2610,7 +3343,7 @@ var Network, network, sessions = sessions || 0;
 		if (Object.keys(pending_gets).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 1188 , 
+			e$ : 1830 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.get = payload.get || {};
@@ -2668,7 +3401,7 @@ var Network, network, sessions = sessions || 0;
 		if (Object.keys(synced).length === 0) return;
 		payload = payload || {};
 		payload = Object.assign(payload, {
-			e$ : 1188 , 
+			e$ : 1830 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.sync = payload.sync || {};
@@ -2699,7 +3432,7 @@ var Network, network, sessions = sessions || 0;
 	var upload = function (name, need, value, payload_raw, intercession) {
 		var payload = {};
 		payload = Object.assign(payload, {
-			e$ : 1188 , 
+			e$ : 1830 , 
 		});
 		if (intercession) payload = Object.assign(payload, intercession);
 		payload.upload = {};
@@ -2830,59 +3563,79 @@ var Network, network, sessions = sessions || 0;
 })();
 ;(function(){
 	var manifest_list;
+	var module_name = 'manifest';
 	var sheet_name = 'Manifest';
 	var fields = {
 		name: 'App Name',
 		short_name: 'Short Name',
 		description: 'Description',
-	};
+	}, temporary_answers = {};
+	Offline.create(module_name, 0, {
+		delay: -1, 
+		keyvalue: 1
+	});
 	Hooks.set('ready', function () {
 		Settings.adaaf(sheet_name, 0, function () {
-			open_list_sheet(sheet_name, function (l) {
-				manifest_list = l;
-				softkeys.list.basic(l);
-				l.before_set = function (o) {
-					o.title = fields[o.name];
-					return o;
-				};
-				l.onpress = function (o) {
-					Hooks.run('dialog', {
-						x: 2048,
-						c: function (new_value) {
-							o.value = new_value;
-							l.set(o);
-						},
-						m: fields[o.name],
-						a: o.value,
-						q: fields[o.name]
-					});
-				};
-				for (var i in fields) {
-					manifest_list.set({
-						uid: i,
-						name: i,
-					});
-				}
-				Network.get('manifest', 'read', 1);
-			}, function (l) {
-				l.adapter.each(function (o) {
-					$.log( o.name, o.value );
-				});
+			Hooks.run('sheet', {
+				uid: 'manifest',
 			});
 		}, 'iconsettings');
-	});
-	Network.response.get('manifest', 'read', function (response) {
-		if (manifest_list && response && sheet.get_active_title() == sheet_name) {
-			for (var i in response) {
-				manifest_list.set({
-					uid: i,
-					name: i,
-					value: response[i],
+		Network.intercept(module_name, function (finish) {
+			 
+			finish( sessions.signedin() ? 1 : undefined );
+		});
+		Offline.response.get(module_name, function (response) {
+			if (manifest_list && response && sheet.get_active_title() == sheet_name) {
+				response.forEach(function (o) {
+					manifest_list.set({
+						uid: o.uid,
+						name: o.uid,
+						value: isstr(temporary_answers[o.uid]) ? temporary_answers[o.uid] : o.value,
+					});
 				});
+				manifest_list.select(0);
 			}
-			manifest_list.select(0);
-		}
+		});
 	});
+	Hooks.set('sheet-ready', function (args, keys, l) { if (args.uid == module_name) {
+		Sheet.set_title(sheet_name);
+		manifest_list = l;
+		Softkeys.list.basic(l);
+		l.before_set = function (o) {
+			o.title = fields[o.name];
+			return o;
+		};
+		l.onpress = function (o) {
+			Hooks.run('dialog', {
+				x: 2048,
+				c: function (new_value) {
+					temporary_answers[o.uid] = new_value;
+				},
+				m: fields[o.name],
+				a: o.value,
+				q: fields[o.name]
+			});
+		};
+		for (var i in fields) {
+			manifest_list.set({
+				uid: i,
+				name: i,
+			});
+		}
+		Offline.get(module_name, 0, 0, Time.now());
+	} });
+	Hooks.set('sheet-okay', function (args, keys, l) { if (args.uid == module_name) {
+		l.adapter.each(function (o) {
+			Offline.add(module_name, {
+				uid: o.name,
+				value: o.value,
+				pending: 1,
+			});
+		});
+	} });
+	Hooks.set('sheet-cancel', function (args, keys, l) { if (args.uid == module_name) {
+		temporary_answers = {};
+	} });
 })();
  
 var List, list;
@@ -3523,6 +4276,7 @@ var Backstack, backstack;
 	};
 	 
 	Backstack = backstack = {
+		storage: storage,
 		darajah: 0,
 		states: {
 			dialog : 0, 
@@ -3537,23 +4291,25 @@ var Backstack, backstack;
 			if (key) return storage[backstack.darajah][key] ;
 			else return storage[backstack.darajah] ;
 		},
-		dialog: function (args) {
+		dialog: function (args, backing) {
 			savefocus();
 			s.dialog = args || 1;
 			do_level();
 			storage[backstack.darajah] = {};
 			Hooks.rununtilconsumed('backstackdialog', args);
+			if (!backing) Hooks.run('backstack-dialog', args);
 			Hooks.run('backstack', backstack.darajah);
 		},
-		sheet: function (args) {
+		sheet: function (args, backing) {
 			savefocus();
 			s.sheet = args || 1;
 			do_level();
 			storage[backstack.darajah] = {};
 			Hooks.rununtilconsumed('backstacksheet', args);
+			if (!backing) Hooks.run('backstack-sheet', args);
 			Hooks.run('backstack', backstack.darajah);
 		},
-		view: function (args) {
+		view: function (args, backing) {
 			if (args == 'main') {
 				s.view = 0;
 				this.main(args);
@@ -3564,18 +4320,30 @@ var Backstack, backstack;
 			do_level();
 			storage[backstack.darajah] = {};
 			Hooks.rununtilconsumed('backstackview', args);
+			if (!backing) Hooks.run('backstack-view', args);
 			Hooks.run('backstack', backstack.darajah);
 		},
-		main: function (args) {
+		main: function (args) { 
 			savefocus();
 			s.main = args || 1;
 			do_level();
 			storage[backstack.darajah] = {};
+			Hooks.run('backstack-main', s.main);
 			Hooks.rununtilconsumed('backstackmain', args);
 			Hooks.run('backstack', backstack.darajah);
 		},
+		is_main_in_startup: function () {
+			return s.main === 2 ? 1 : 0;
+		},
+		close_all: function () { 
+			if (s.dialog)
+				s.dialog = 0, do_level(), Hooks.run('closeall', 3);
+			if (s.sheet)
+				s.sheet = 0, do_level(), Hooks.run('closeall', 2);
+			if (s.view)
+				s.view = 0, s.main = 1, do_level(), Hooks.run('closeall', 1);
+		},
 		back: function () {
-			 
 			if (s.dialog)
 				s.dialog = 0, do_level(), Hooks.run('closeall', 3);
 			else if (s.sheet)
@@ -3584,28 +4352,280 @@ var Backstack, backstack;
 				s.view = 0, s.main = 1, do_level(), Hooks.run('closeall', 1);
 			else
 				s.main = 0, do_level(), Hooks.run('closeall', 0);
-			 
-			Hooks.run('restore', backstack.darajah);
-			Hooks.run('backstack', backstack.darajah);
+			Hooks.run('restore', Backstack.darajah);
+			Hooks.run('backstack', Backstack.darajah);
 			restorefocus();
 		},
 	};
 	Hooks.set('back', function () {
-		backstack.back();
+		Backstack.back();
 	});
 	Hooks.set('dialog', function (args) {
-		backstack.dialog(args);
+		Backstack.dialog(args);
 	});
 	Hooks.set('sheet', function (args) {
-		backstack.sheet(args);
+		Backstack.sheet(args);
 	});
 	Hooks.set('view', function (args) {
-		backstack.view(args);
+		Backstack.view(args);
 	});
 	Hooks.set('main', function (args) {
-		backstack.main(args);
+		Backstack.main(args);
 	});
-	s = backstack.states;
+	s = Backstack.states;
+})();
+ 
+;(function(){
+	'use strict';
+	var exiting = 0, backcount = 0, lasturiuponpop, evenlasturiuponpop, uuid = 0;
+	 
+	var backstack = {
+		chronicle: [],
+		nochanges: 0,
+		onpopevent: function (e) {
+			if (backstack.nochanges)
+				backstack.nochanges = 0;
+			if (backstack.locked)
+				backstack.popandlock();
+			else
+				backstack.chronicle.pop();
+		},
+		 
+		locked: 0,
+		crumbs: [],
+		callback: 0,
+		popandlock: function () {
+			if (backstack.chronicle.length) {
+				backstack.chronicle.pop();
+				history.back();
+			} else {
+				typeof backstack.callback === 'function' && backstack.callback();
+				backstack.callback = 0;
+			}
+		},
+		 
+		reconstruct: function (crumbs, callback) {
+			callback = callback || appui.setchanges;
+			backstack.locked = 1;
+			crumbs = crumbs || [''];
+			backstack.crumbs = crumbs;
+			if (crumbs.length) {
+				backstack.callback = function () {
+					if (backstack.chronicle.length === 0) {
+						backstack.pushstate('/');
+						crumbs.forEach(function (crumb, i) {
+							var currentcrumb = crumbs.slice(0, i+1);
+							backstack.pushstate('/'+currentcrumb.join('/'));
+						});
+						backstack.locked = 0;
+						typeof callback === 'function' && callback( crumbs );
+					} else
+						history.back();
+				};
+				backstack.popandlock();
+			} else {
+				backstack.callback = function () {
+					if (backstack.chronicle.length === 0) {
+						backstack.locked = 0;
+						typeof callback === 'function' && callback( crumbs );
+					} else
+						history.back();
+				};
+				backstack.popandlock();
+			}
+		},
+		pushstate: function (href, force) {
+			href = href || location.pathname;
+			if (location.pathname !== href || force) {
+				lasturiuponpop = href;
+				history.pushState(null, null, href);
+				backstack.chronicle.push(href);
+			}
+		},
+		replacestate: function (href) {
+			history.replaceState(null, null, href);
+		},
+		 
+		back: function (nochanges) {
+			backstack.nochanges = 1;
+			backstack.chronicle.pop();
+			history.back();
+		},
+	};
+	Hooks.set('dompopstate', 'backstack', function (e) {
+		backstack.onpopevent(e);
+	});
+	var chronicle = [];
+	Backstack.entries = function () { 
+		return [].concat(chronicle);
+	};
+	Backstack.entries_length = function () {
+		return chronicle.length;
+	};
+	var original_back_function = Backstack.back;
+	Backstack.back = function () {
+		if (chronicle.length || history.state) {
+			$.log.w( 'history.back()' );
+			history.back();
+		}
+		else {
+			$.log.w( 'original_back_function()' );
+			original_back_function();
+		}
+	};
+	function get_last_entry() {
+		return chronicle[ chronicle.length-2 ];
+	}
+	function get_current_entry() {
+		return chronicle[ chronicle.length-1 ];
+	}
+	function parse_link(link) {
+		var is_main = link == '/', is_view, view_uid, is_sheet, sheet_uid, is_dialog, dialog_uid;
+		var crumbs = location.pathname.split('/'), last_crumb = '';
+		crumbs.forEach(function (crumb, i) {
+			if (crumb.startsWith('-')) is_sheet = crumb.slice(1);
+			else if (crumb.startsWith('?')) is_dialog = crumb.slice(1);
+			else {
+				if (last_crumb.startsWith('-')) {
+					if (isundef(sheet_uid)) {
+						sheet_uid = crumb;
+					}
+				} else if (last_crumb.startsWith('?')) {
+					if (isundef(dialog_uid)) {
+						dialog_uid = crumb;
+					}
+				} else if (i == 1) {
+					is_view = crumb;
+				} else if (i == 2 && isundef(view_uid)) {
+					view_uid = crumb;
+				}
+			}
+			last_crumb = crumb;
+		});
+		return { is_main, is_view, view_uid, is_sheet, sheet_uid, is_dialog, dialog_uid };
+	}
+	Backstack.parse = parse_link;
+	function restore_crumbs(crumbs) {
+		Hooks.run('backstack-crumbs', crumbs);
+		if (crumbs.is_view) {
+			Backstack.view({
+				name: crumbs.is_view,
+				uid: crumbs.view_uid,
+			}, 1);
+		} else if (crumbs.is_main) {
+			if (!Backstack.is_main_in_startup()) {
+				original_back_function();
+			}
+			Backstack.states.view = 0;
+			Backstack.states.main = 1;
+		}
+		if (crumbs.is_sheet) {
+			Backstack.sheet({
+				name: crumbs.is_sheet,
+				uid: crumbs.sheet_uid,
+			}, 1);
+		} else {
+			Backstack.states.sheet = 0;
+		}
+		if (crumbs.is_dialog) {
+			Backstack.dialog({
+				name: crumbs.is_dialog,
+				uid: crumbs.dialog_uid,
+			}, 1);
+		} else {
+			Backstack.states.dialog = 0;
+		}
+	}
+	var ignore_once; 
+	listener('popstate', function (event) {
+		var crumbs = parse_link( location.pathname );
+		$.log.w( 'Backstate popstate', crumbs );
+		if (chronicle.length) chronicle.pop();
+		if (ignore_once) {
+			ignore_once = 0;
+			return;
+		}
+		if (event.state) {
+			if (event.state.uuid > uuid) { 
+			} else { 
+			}
+		} else { 
+		}
+		var state = (event.state||{});
+		uuid = state.uuid||uuid;
+		restore_crumbs(crumbs);
+	});
+	function push_state() {
+		$.log.w( 'Backstack push_state' );
+		var states = Backstack.states;
+		var link = '/';
+		var state = {
+			uuid: ++uuid,
+		};
+		if (states.view) { 
+			var view_name = View.get();
+			var view_uid = View.get_uid();
+			state.view = view_name;
+			link += view_name+'/';
+			if (view_uid) { 
+				state.view_uid = view_uid;
+				link += view_uid+'/';
+			}
+		}
+		if (states.sheet) { 
+			var sheet_name = '-'+(Sheet.get_active() || 'missing-name');
+			state.sheet = sheet_name;
+			link += sheet_name+'/';
+			var sheet_uid = Sheet.get_active_uid();
+			if (sheet_uid) { 
+				state.sheet_uid = sheet_uid;
+				link += sheet_uid+'/';
+			}
+		}
+		if (states.dialog) { 
+			var dialog_name = '?'+(Dialog.get_name() || 'missing-name');
+			state.dialog = dialog_name;
+			link += dialog_name+'/';
+			var dialog_uid = Dialog.get_uid();
+			if (dialog_uid) { 
+				state.dialog_uid = dialog_uid;
+				link += dialog_uid+'/';
+			}
+		}
+		var current_entry = get_current_entry();
+		if (current_entry && current_entry.link && current_entry.link == link || location.pathname == link) {
+			$.log.w( 'Backstack staying at current entry silenty' );
+			return;
+		}
+		chronicle.push({ state, link });
+		history.pushState( state, '', link );
+	}
+	Hooks.set('backstack-dialog', function (args) {
+		$.log.w( 'Backstack Dialog', args );
+		push_state();
+	});
+	Hooks.set('backstack-sheet', function (args) {
+		$.log.w( 'Backstack Sheet', args );
+		push_state();
+	});
+	Hooks.set('backstack-view', function (args) {
+		$.log.w( 'Backstack View', args );
+		push_state();
+	});
+	Hooks.set('backstack-main', function (args) {
+		$.log.w( 'Backstack Main', Backstack.is_main_in_startup() ? 'Startup' : '' );
+		if (Backstack.is_main_in_startup()) {
+		} else {
+			push_state();
+		}
+	});
+	Hooks.set('ready', function () {
+		$.log.w( 'Backstack History Ready' );
+		$.taxeer('backstack-history-ready', function () {
+			var crumbs = parse_link( location.pathname );
+			restore_crumbs(crumbs);
+		}, 100);
+	});
 })();
 var Preferences, preferences;
 ;(function(){
@@ -3648,21 +4668,21 @@ var Preferences, preferences;
 		},
 	};
 	var buildnum = preferences.get('#', 1);
-	if ( buildnum != 1188 ) {
+	if ( buildnum != 1830 ) {
 		preferences.pop(3); 
 		preferences.pop('@'); 
 		preferences.pop(4); 
 		preferences.pop(6); 
 	}
-	preferences.set('#', 1188);
+	preferences.set('#', 1830);
 	Hooks.set('ready', function () {
-		if ( buildnum != 1188 ) {
+		if ( buildnum != 1830 ) {
 			$.taxeer('seeghahjadeedah', function () {
 				Hooks.run('seeghahjadeedah', buildnum);
 			}, 2000);
 		}
 	});
-	$.log.s( 1188 );
+	$.log.s( 1830 );
 })();
 var activity;
 ;(function(){
@@ -3712,16 +4732,17 @@ var View, view;
 			if (element) return templates.keys(element);
 			return false;
 		},
-		ishtaghal: function (name) { 
+		ishtaghal: function (name, uid) { 
 			var level = backstack.level ,
-				exists = view.get_element(name) ;
+				exists = View.get_element(name) ;
 			if (isundef(exists)) {
 				$.log.w('View not found: "'+name+'"');
 			} else {
 				var element = view.get(name) ,
 					keys = templates.keys(element) ;
-				Hooks.run('viewready', {
+				Hooks.run('viewready', { 
 					name: name,
+					uid: uid,
 					element: element,
 					keys: keys,
 					level: level,
@@ -3730,6 +4751,11 @@ var View, view;
 		},
 		get_element: function (name) { 
 			return this.get(name, 1);
+		},
+		get_uid: function () {
+			if (Backstack.states.view) {
+				return Backstack.states.view.uid;
+			}
 		},
 		axav: function (name, onlyelement) { 
 			if (!name) {
@@ -3767,9 +4793,27 @@ var View, view;
 			return index;
 		},
 	};
-	view.get = view.axav;
-	view.run = view.ishtaghal;
-	view.dom_keys = view.mfateeh;
+	View.get = View.axav;
+	View.run = View.ishtaghal;
+	View.dom_keys = View.mfateeh;
+	Hooks.set('backstackview', function (args) {
+		var name, uid;
+		if (isstr(args)) {
+			name = args;
+		} else if (args) {
+			name = args.name;
+			uid = args.uid;
+		}
+		Webapp.dimmer();
+		Softkeys.clear();
+		Softkeys.P.empty();
+		Softkeys.set(K.sr, function () {
+			Hooks.run('back');
+		}, 0, 'iconarrowback');
+		View.run(name, uid);
+		Softkeys.showhints();
+		return 1; 
+	});
 })();
 var Time, time;
 ;(function(){
@@ -4171,7 +5215,7 @@ var Settings, settings, currentad;
 		open('https://github.com/xorasan/mudeer', '_blank');
 	}, 'iconmudeer']);
 	if (Config.repo) {
-		add([Config.appname+' '+1188, function () {
+		add([Config.appname+' '+1830, function () {
 			return Config.sub;
 		}, function () {
 			open(Config.repo, '_blank');
@@ -4442,10 +5486,10 @@ var translate, taraajim = taraajim || {}, xlate;
 	xlate = translate;
 })();
  
-var templates, namaavij;
+var Templates, templates, namaavij;
 ;(function(){
 	var index = {};
-	templates = {
+	Templates = templates = {
 		mfateeh: function (element) {
 			return templates.keys(element);
 		},
@@ -4460,6 +5504,14 @@ var templates, namaavij;
 				}
 			}
 			return keys;
+		},
+		has_property: function (o, prop) {
+			for (var i in o) {
+				var name = i.split('$')[0];
+				if (name == prop)
+					return o[i];
+			}
+			return false;
 		},
 		set: function (clone, o, template) {
 			var keys = templates.keys(clone);
@@ -4486,6 +5538,8 @@ var templates, namaavij;
 						delete keys[i].dataset.i18n;
 					}
 				}
+				var is_icon = !isundef( o[i+'$icon'] );
+				var is_image = !isundef( o[i+'$image'] );
 				var has_time = i+'$time';
 				if (!isundef( o[has_time] )) {
 					if (isundef( o[has_time] )) {
@@ -4494,7 +5548,7 @@ var templates, namaavij;
 					} else
 						setdata(keys[i], 'time', o[has_time]);
 				}
-				if ( !isundef(o[i]) || !isundef(o[i+'$h']) || !isundef(o[i+'$t']) ) {
+				if ( !isundef(o[i]) || !isundef(o[i+'$h']) || !isundef(o[i+'$t']) || is_icon || is_image ) {
 					if (o[i] == 'ixtaf') {
 						keys[i].hidden = 1;
 					} else
@@ -4546,13 +5600,17 @@ var templates, namaavij;
 							keys[i].innerHTML = '';
 						}
 					} else
-					if (['icon', 'eqonah'].includes(i)) { 
-						if (typeof o[i] === 'string' && o[i].length) {
+					if (['icon', 'eqonah'].includes(i) || is_icon || is_image) { 
+						var icon_src = o[i];
+						if (is_icon || is_image) {
+							icon_src = o[i+'$icon'] || o[i+'$image'];
+						}
+						if (isstr(icon_src) && icon_src.length) {
 							keys[i].hidden = 0;
-							if (o[i].startsWith('/')) {
-								innerhtml(keys[i], '<img src="'+o[i]+'" />');
+							if (icon_src.startsWith('/') || is_image) {
+								innerhtml(keys[i], '<img src="'+icon_src+'" />');
 							} else {
-								var e = icons.querySelector('#'+o[i]);
+								var e = icons.querySelector('#'+icon_src);
 								if (e)
 									keys[i].innerHTML = '<svg viewBox="0 0 48 48">'+e.cloneNode(1).innerHTML+'</svg>';
 							}
@@ -5191,7 +6249,7 @@ var Softkeys, softkeys, K, P;
 		dialog: {},
 		list: {},
 	};
-	var global_keys = ['f1', 'f2', 'f5', 'escape', K.sl, K.sr], debug_softkeys = 1;
+	var global_keys = ['f1', 'f2', 'f5', 'escape', K.sl, K.sr], debug_softkeys = 0;
 	var hfizM = {}, M = {}, 
 	current,
 	inlongpress, lastkey, lastkeytime, repeatmode,
@@ -5315,8 +6373,8 @@ var Softkeys, softkeys, K, P;
 				} else {
 					talaf(name);
 				}
-				softkeys.update();
-				backstack.set('softkeys', M);
+				Softkeys.update();
+				Backstack.set('softkeys', M);
 			}
 			return softkeys;
 		},
@@ -5378,8 +6436,8 @@ var Softkeys, softkeys, K, P;
 				} else {
 					adaaf(name, callback, label, icon, status);
 				}
-				softkeys.update(name);
-				backstack.set('softkeys', M);
+				Softkeys.update(name);
+				Backstack.set('softkeys', M);
 			}
 			return this;
 		},
@@ -5394,7 +6452,7 @@ var Softkeys, softkeys, K, P;
 						o.key;
 				M[ o.uid ] = o;
 				updatekey(o.uid);
-				backstack.set('softkeys', M);
+				Backstack.set('softkeys', M);
 			}
 			return this;
 		},
@@ -5431,7 +6489,7 @@ var Softkeys, softkeys, K, P;
 		press: function (k, e, longpress) {
 			var caught, pd = function () { preventdefault(e); };
 			kraw = k;
-			k = k.toLowerCase();
+			if (isstr(k)) k = k.toLowerCase();
 			if (e && e.type && e.type == 'mousewheel') {
 				if (e.y <= -1) k = K.up;
 				if (e.y >= 1) k = K.dn;
@@ -5556,8 +6614,8 @@ var Softkeys, softkeys, K, P;
 			}
 		},
 	};
-	softkeys.showhints();
-	softkeys.M = function () {
+	Softkeys.showhints();
+	Softkeys.M = function () {
 		return M;
 	};
 	var autoheight = function (a) {
@@ -5567,7 +6625,7 @@ var Softkeys, softkeys, K, P;
 				setcss(a, 'height', a.scrollHeight+3+'px');
 		}
 	};
-	softkeys.autoheight = autoheight;
+	Softkeys.autoheight = autoheight;
 	var resize = function () {
 		var w = innerwidth(), sl = index[K.sl], sr = index[K.sr];
 		if (w > 720) {
@@ -5629,7 +6687,7 @@ var Softkeys, softkeys, K, P;
 			}, 100);
 		} else {
 		}
-		Hooks.rununtilconsumed('softkey', [e.key.toLowerCase(), e || {}, e && e.type, 0]);
+		Hooks.rununtilconsumed('softkey', [(e.key||'').toLowerCase(), e || {}, e && e.type, 0]);
 		preventdefault(e);
 	});
 	Hooks.set('keydown', function (e) {
@@ -5652,7 +6710,8 @@ var Softkeys, softkeys, K, P;
 				c.hidden = 1;
 		}
 	});
-	Hooks.set('restore', function (args) {
+	Hooks.set_first('restore', function (args) {
+		$.log.w( 'Softkeys restore hook' );
 		var oldM = backstack.get('softkeys');
 		if (oldM) {
 			M = Object.assign({}, oldM);
@@ -5691,17 +6750,23 @@ var Softkeys, softkeys, K, P;
 						e && e.preventDefault();
 					}
 				});
-				softkeys.set(K.rt, function (k, e) {
-					if (LV.element.dataset.focussed) {
-						LV.right();
-						e && e.preventDefault();
-					}
+				Softkeys.add({
+					k: K.rt,
+					c: function (k, e) {
+						if (LV.element.dataset.focussed) {
+							LV.right();
+							e && e.preventDefault();
+						}
+					},
 				});
-				softkeys.set(K.lf, function (k, e) {
-					if (LV.element.dataset.focussed) {
-						LV.left();
-						e && e.preventDefault();
-					}
+				Softkeys.add({
+					k: K.lf,
+					c: function (k, e) {
+						if (LV.element.dataset.focussed) {
+							LV.left();
+							e && e.preventDefault();
+						}
+					},
 				});
 			} else {
 				softkeys.talaf([K.en, K.up, K.dn, K.rt, K.lf]);
@@ -5711,7 +6776,8 @@ var Softkeys, softkeys, K, P;
 })();
 var Sheet, sheet;
 ;(function(){
-	var index = {}, header, container, active_sheet_name, ae, murakkaz;
+	var index = {}, header, container, active_sheet_name, active_sheet_uid, active_args, active_keys, new_list,
+		ae, murakkaz;
 	Sheet = sheet = {
 		okay: 0,
 		cancel: 0,
@@ -5725,8 +6791,17 @@ var Sheet, sheet;
 		get_active: function () {
 			return active_sheet_name;
 		},
+		get_active_uid: function () {
+			return active_sheet_uid;
+		},
 		get_active_title: function () {
 			return header.innerText;
+		},
+		get_title: function () {
+			return header.innerText;
+		},
+		set_title: function (text) {
+			return this.header(text);
 		},
 		bardaa: function (v) {
 			if (!container.firstElementChild) return;
@@ -5758,22 +6833,28 @@ var Sheet, sheet;
 		},
 		header: function (text) {
 			if (text) {
-				if (text instanceof Array) {
+				if (isarr(text)) {
 					header.dataset.i18n = text[0];
 				} else {
 					header.innerText = text;
 				}
 				header.hidden = 0;
-			} else
-				delete headerui.dataset.i18n,
-				header.innerText = '',
+			} else {
+				delete headerui.dataset.i18n;
+				header.innerText = '';
 				header.hidden = 1;
+			}
 		},
 		hide: function () {
+			$.log.w( 'Sheet hide' );
 			sheetui.hidden = 1;
 			sheet.okay = 0;
 			sheet.cancel = 0;
-			active_sheet_name = 0;
+			active_sheet_name = undefined;
+			active_sheet_uid = undefined;
+			active_args = undefined;
+			active_keys = undefined;
+			new_list = undefined;
 		},
 		show: function (args) {
 			ae = murakkaz = 0;
@@ -5783,19 +6864,26 @@ var Sheet, sheet;
 				args = {
 					name: args,
 				};
+			active_args = args;
 			var name = args.name || args.n,
 				title = args.title || args.t || '',
+				uid = args.uid || args.u,
 				minqabl = args.minqabl || args.b,
 				callback = args.callback || args.c,
 				oncancel = args.oncancel || args.x,
-				ayyihaal = args.ayyihaal|| args.a,
+				ayyihaal = args.ayyihaal || args.a,
 				init = args.init || args.i,
 				keys;
+			name = name || 'list_sheet';
+			new_list; 
+			args.n = args.name = name;
+			args.u = args.uid = uid;
 			header.innerText = title;
 			sheet.onshow && sheet.onshow(name);
 			var ui = index[name];
 			if (ui) {
 				active_sheet_name = name;
+				active_sheet_uid = uid;
 				var node = ui.cloneNode(true);
 				if (node) {
 					delete node.dataset.sheet;
@@ -5805,34 +6893,48 @@ var Sheet, sheet;
 					sheetui.focus();
 					translate && translate.update( sheetui );
 					Hooks.rununtilconsumed('widgets', sheetui);
-					keys = templates.keys(container);
-					init && init( keys );
+					active_keys = keys = templates.keys(container);
+					if (name == 'list_sheet') {
+						new_list = list( keys.list ).listitem( 'list_sheet_item' ).idprefix( 'list_sheet_item' );
+						new_list.after_set = function (o, c, k) {
+							if (o.count) izhar(k.count_tag); else ixtaf(k.count_tag);
+						};
+						init && init( keys, uid, args, new_list );
+						var original_callback = callback;
+						callback = function () {
+							if (isfun(original_callback)) original_callback(new_list);
+						};
+					} else {
+						init && init( keys, uid, args );
+					}
+					Hooks.run('sheet-ready', args, keys, new_list);
 					Hooks.rununtilconsumed('widgets', sheetui);
 				}
 			}
-			if (callback)
-			sheet.okay = function (args) {
+			Sheet.okay = function () {
 				callback && callback( args || keys );
 				ayyihaal && ayyihaal( args || keys );
-				webapp.blur();
+				Hooks.run('sheet-okay', args, keys, new_list);
+				Hooks.run('sheet-anyway', args, keys, new_list);
+				Webapp.blur();
 				Hooks.run('back');
 			};
-			else
-			sheet.okay = 0;
-			sheet.bardaa();
+			Sheet.bardaa();
 			if (isfun(minqabl)) {
-				var oldokay = sheet.okay;
-				sheet.okay = function (args) {
-					sheet.bardaa(1);
+				var oldokay = Sheet.okay;
+				Sheet.okay = function (args) {
+					Sheet.bardaa(1);
 					minqabl(args || keys, function (args) {
 						oldokay(args || keys);
 					});
 				};
 			}
-			sheet.cancel = function (args) {
+			Sheet.cancel = function () {
 				oncancel && oncancel( args || keys );
 				ayyihaal && ayyihaal( args || keys );
-				webapp.blur();
+				Hooks.run('sheet-cancel', args, keys, new_list);
+				Hooks.run('sheet-anyway', args, keys, new_list);
+				Webapp.blur();
 				Hooks.run('back');
 			};
 		},
@@ -5852,17 +6954,47 @@ var Sheet, sheet;
 		},
 	};
 	Hooks.set('ready', function () {
-		sheet.index();
+		Sheet.index();
 		var mfateeh = templates.keys(sheetui);
 		header = mfateeh.header;
 		container = mfateeh.container;
 	});
+	Hooks.set('backstacksheet', function (args) {
+		Webapp.dimmer(400);
+		Softkeys.clear();
+		if (args.callback || args.c) {
+			Softkeys.set(K.sl, function () {
+				Sheet.okay && Sheet.okay();
+			}, 0, 'icondone');
+		}
+		Softkeys.set(K.sr, function () {
+			Sheet.cancel && Sheet.cancel();
+		}, 0, 'iconarrowback');
+		Sheet.show(args);
+		Softkeys.showhints();
+	});
+	Hooks.set('backstack-crumbs', function (crumbs) {
+		if (!crumbs.is_sheet) {
+			if (!isundef(active_sheet_uid)) { 
+				Hooks.run('sheet-cancel', active_args, active_keys, new_list);
+				Hooks.run('sheet-anyway', active_args, active_keys, new_list);
+			}
+			Sheet.hide(); 
+			Webapp.blur();
+		}
+	});
 })();
-function open_list_sheet(name, init, callback) { 
+function open_list_sheet(args, init, callback) { 
+	var name, uid;
+	if (typeof args === 'string')
+		args = {
+			name: args,
+		};
 	var new_list;
-	backstack.sheet({
+	Backstack.sheet({
 		n: 'list_sheet', 
 		t: name,
+		u: args.u || args.uid,
 		i: function (k) {
 			new_list = list( k.list ).listitem( 'list_sheet_item' ).idprefix( 'list_sheet_item' );
 			new_list.after_set = function (o, c, k) {
@@ -6113,9 +7245,10 @@ var Themes, themes;
 		}
 	});
 })();
-var dialog;
+var Dialog, dialog;
 ;(function(){
-	dialog = {
+	var current_name, current_uid;
+	Dialog = dialog = {
 		okay: 0,
 		cancel: 0,
 		onshow: 0,
@@ -6123,12 +7256,22 @@ var dialog;
 			dialogui.hidden = 1;
 			dialog.okay = 0;
 			dialog.cancel = 0;
+			current_name = undefined;
+			current_uid = undefined;
+		},
+		get_name: function () {
+			return current_name;
+		},
+		get_uid: function () {
+			return current_uid;
 		},
 		show: function (args) {
 			args = args || {};
 			markooz() && markooz().blur();
 			dialogui.hidden = 0;
 			var k = templates.keys(dialogui) ,
+				name = args.name || args.n ,
+				uid = args.uid || args.u ,
 				max = args.max || args.x ,
 				callback = args.callback || args.c ,
 				message = args.message || args.m ,
@@ -6136,6 +7279,8 @@ var dialog;
 				question = args.question || args.q ,
 				multiline = args.multiline,
 				input_element;
+			current_name = args.n = args.name = name;
+			current_uid = args.u = args.uid = uid;
 			k.input.value = '';
 			k.textarea.value = '';
 			if (multiline) {
@@ -6147,15 +7292,15 @@ var dialog;
 				izhar(k.input);
 				input_element = k.input;
 			}
-			dialog.onshow && dialog.onshow(name);
-			dialog.okay = function () {
+			Dialog.onshow && Dialog.onshow(name);
+			Dialog.okay = function () {
 				var answer = input_element.value;
 				if (max) answer = answer.slice(0, max);
 				callback && callback(answer);
 				document.activeElement && document.activeElement.blur();
 				Hooks.run('back');
 			};
-			dialog.cancel = function () {
+			Dialog.cancel = function () {
 				document.activeElement && document.activeElement.blur();
 				Hooks.run('back');
 			};
@@ -6172,6 +7317,37 @@ var dialog;
 			translate.update(dialogui);
 		},
 	};
+	Hooks.set('backstackdialog', function (args) {
+		var date = 0;
+		if (datepicker && args instanceof HTMLElement) date = 1;
+		Webapp.dimmer(600);
+		Softkeys.clear();
+		Softkeys.add({ k: K.sl,
+			i: 'icondone',
+			c: function () {
+				if (date) datepicker.okay && datepicker.okay(args);
+				else Dialog.okay && Dialog.okay();
+			}
+		});
+		Softkeys.add({ k: K.sr,
+			i: 'iconclose',
+			c: function () {
+				if (date) datepicker.cancel && datepicker.cancel();
+				else Dialog.cancel && Dialog.cancel();
+			}
+		});
+		if (date) datepicker.show(args);
+		else Dialog.show(args);
+	});
+	Hooks.set('backstack-crumbs', function (crumbs) {
+		if (!crumbs.is_dialog) {
+			if (!isundef(current_uid)) { 
+				Hooks.run('dialog-cancel', current_name, current_uid);
+				Hooks.run('dialog-anyway', current_name, current_uid);
+			}
+			Dialog.hide(); 
+		}
+	});
 })();
  
 ;(function(){
@@ -6182,7 +7358,7 @@ var dialog;
 		 
 	});
 	Hooks.set('keyup', function (e) {
-		var k = e.key.toLowerCase();
+		var k = tolower(e.key||'');
 		if (k === 'r' && e.ctrlKey)
 			location.reload(), preventdefault(e);
 		if (['escape', 'f11'].includes(k) && document.fullscreenElement)
@@ -6960,748 +8136,6 @@ var Sessions, sessions,
 		}
 	});
 })();
- 
-var Offline, offline;
-;(function(){
-	'use strict';
-	var database = 'db', db = false, maxaazin = {},
-		unsavedname = 'unsaved'+'default',
-		exclusions = [unsavedname],
-		delaydefault = 30*1000,
-		gcallback,
-		debug_offline = 1;
-	var ajraa = function (callback) {
-		Offline.getall( Offline.allstores(), {
-			filter: {
-				pending: 1,
-			},
-			format: true,
-		}, function (kinds) {
-			for (var i in kinds) {
-				var m = maxaazin[i];
-				var things = kinds[i], ixraaj = 0;
-				if (m.keyvalue) { 
-					ixraaj = {};
-					for (var j in things) {
-						var uid = things[j].uid;
-						delete things[j].uid;
-						delete things[j].created;
-						delete things[j].updated;
-						ixraaj[ uid ] = things[j].value;
-					}
-				}
-				 
-				Network.sync(m.name, m.need, ixraaj || things);
-			}
-		});
-	};
-	var ijtama3 = function (callback) {
-		$.taxeer('offline-ajraa', function () {
-			ajraa();
-		}, 3000);
-	};
-	var createstores = function () {
-		if (debug_offline) $.log.w('Offline createstores', maxaazin);
-		var request = indexedDB.open(database, 1188);
-		request.onerror = function(event) {
-			if (event.target.error.name === 'VersionError') {
-				 
-				Offline.recreate();
-			} else {
-			}
-		};
-		request.onupgradeneeded = function(event) {
-			db = event.target.result;
-			Offline.allstores().forEach(function (name) {
-				db.deleteObjectStore(name);
-			});
-			Object.values(maxaazin).forEach(function (store) {
-				store.time = 0; 
-				var name = store.name+store.need;
-				if ( db.objectStoreNames.contains(name) )
-					db.deleteObjectStore(name);
-				Offline._createstore(name, store.mfateeh);
-			});
-		};
-		request.onsuccess = function(event) {
-			db = event.target.result;
-			db.onversionchange = Offline.warning;
-			Offline.ready = 1;
-			if (gcallback) {
-				gcallback();
-				gcallback = 0;
-			} else {
-				Hooks.run('offline-ready', 1);
-			}
-		};
-	};
-	var fillmissingkeys = function (store, object) {
-		store = maxaazin[store];
-		store.mfateeh.forEach(function (m) {
-			object[m] = object[m] === undefined ? 0 : object[m];
-		});
-	};
-	 
-	Offline = offline = {
-		ruid: function () {
-			var ruid = parseInt( preferences.get(3) || -1 );
-			preferences.set(3, ruid - 1);
-			return (ruid - 1);
-		},
-		mundarij: {
-			add: {},
-			remove: {},
-			get: {},
-		},
-		ready: false,
-		response: {
-			add: function (name, need, cb) {
-				if (typeof need == 'function') cb = need, need = 0;
-				need = need || 'default';
-				Offline.mundarij.add[ name ] = Offline.mundarij.add[ name ] || {};
-				Offline.mundarij.add[ name ][ need ] = cb;
-			},
-			remove: function (name, need, cb) {
-				if (typeof need == 'function') cb = need, need = 0;
-				need = need || 'default';
-				Offline.mundarij.remove[ name ] = Offline.mundarij.remove[ name ] || {};
-				Offline.mundarij.remove[ name ][ need ] = cb;
-			},
-			get: function (name, need, cb) {
-				 
-				if (typeof need == 'function') cb = need, need = 0;
-				need = need || 'default';
-				Offline.mundarij.get[ name ] = Offline.mundarij.get[ name ] || {};
-				Offline.mundarij.get[ name ][ need ] = cb;
-				Network.response.get(name, need, function (response) {
-					cb( shallowcopy(response) );
-					var store = maxaazin[name+need];
-					if (store) store.time = Time.now();
-					Offline.save(name, need, response);
-				});
-			},
-		},
-		add: function (name, need, value) { 
-			if (debug_offline) $.log.w('Offline.add', name, need);
-			if (arguments.length === 2) value = need, need = 0;
-			need = need || 'default';
-			if (!(value instanceof Array)) value = [value];
-			if (value instanceof Array) {
-				Offline.set(name+need, value, function (needssync) {
-					var m = maxaazin[ name+need ];
-					if (m.keyvalue) {
-						var kind = Offline.mundarij.get;
-						if (kind[name] && typeof kind[name][need] == 'function')
-							kind[name][need]( shallowcopy(value) );
-					}
-					if (needssync) ijtama3();
-				});
-			}
-		},
-		remove: function (name, need, value) { 
-			if (arguments.length === 2) value = need, need = 0;
-			need = need || 'default';
-			if (!(value instanceof Array)) value = [value];
-			if (value instanceof Array) {
-				value.forEach(function (item) {
-					item.pending = 1;
-					item.remove = 1;
-				});
-				Offline.set(name+need, value, function (needssync) {
-					var m = maxaazin[ name+need ];
-					if (m.keyvalue) {
-						var kind = Offline.mundarij.get;
-						if (kind[name] && typeof kind[name][need] == 'function')
-							kind[name][need]( shallowcopy(value) );
-					}
-					if (needssync) ijtama3();
-				});
-			}
-		},
-		create: function (name, need, o) { 
-			if (debug_offline) $.log.w('Offline.create', name, need);
-			o = o || {};
-			o.delay = o.delay || undefined;
-			o.nazzaf = o.nazzaf || undefined;
-			o.mfateeh = o.mfateeh || [];
-			need = need || 'default';
-			 
-			['uid', 'created', 'updated', 'pending'].forEach(function (v) {
-				if (!o.mfateeh.includes(v)) o.mfateeh.push(v);
-			});
-			maxaazin[ name+need ] = {
-				name: name,
-				need: need,
-				mfateeh: o.mfateeh,
-				nazzaf: o.nazzaf,
-				delay: o.delay,
-				tashkeel: o.tashkeel,
-				keyvalue: o.keyvalue,
-			};
-			$.taxeer('offline-init', function () {
-				createstores();
-			}, 250);
-		},
-		get: function (name, need, value, time) {
-			if (debug_offline) $.log.w('Offline.get', name, need);
-			need = need || 'default';
-			 
-			var expired = 0;
-			if (time !== undefined) {
-				var store = maxaazin[name+need];
-				if (store) {
-					var delay = store.delay || delaydefault;
-					if (delay !== -1) {
-						store.time = store.time || Time.now() - (delay*2);
-						if (time - store.time > delay) expired = 1;
-					}
-				}
-			}
-			if (expired) {
-				Network.get(name, need, value);
-			} else {
-				Offline.getall(name+need, value, function (response) {
-					var kind = Offline.mundarij.get;
-					if (kind[name] && isfun(kind[name][need])) {
-						kind[name][need](response.toNative());
-					}
-				});
-			}
-		},
-		getforun: function (name, need, value, cb) {
-			need = need || 'default';
-			if (isfun(cb))
-			Offline.getall(name+need, value, function (response) {
-				cb(response.toNative());
-			});
-		},
-		save: function (name, need, value) { 
-			for (var uid in value) {
-				var val = value[uid], kind = Offline.mundarij.add;
-				val.uid = val.uid || uid;
-				val.pending = 0;
-				if (val.remove === -1) { 
-					kind = Offline.mundarij['remove'];
-					Offline.pop(name+need, val.uid);
-					val = val.uid;
-				} else {
-					Offline.set(name+need, [val]);
-				}
-				if (kind[name] && typeof kind[name][need] == 'function') {
-					kind[name][need]( shallowcopy(val) );
-				}
-			}
-		},
-		 
-		filter: function (filter, rawitems) {
-			if (typeof filter === 'object' && Object.keys(filter).length) {
-				 
-				var filtered = $.array(), keys = Object.keys(filter);
-				rawitems.each(function (rawitem) {
-					var matchedprops = 0,
-						totalprops = keys.length;
-					var doadd, count = 0, i, prop;
-					while (count < totalprops) {
-						i = keys[count], prop = i, doadd = 0;
-						if ( i.endsWith('$i') ) { 
-							prop = (rawitem[ i.slice(0,-2) ] ) || 0;
-							if ( typeof prop === 'string' && prop.toLowerCase().includes( filter[i] ) )
-								doadd += 1;
-						}
-						if ( i.endsWith('$s') ) { 
-							prop = i.slice(0,-2);
-							if ( (rawitem[ prop ] ).startsWith( filter[i] ) )
-								doadd += 1;
-						}
-						if ( i.endsWith('$e') ) { 
-							prop = i.slice(0,-2);
-							if ( (rawitem[ prop ] ).endsWith( filter[i] ) )
-								doadd += 1;
-						}
-						if ( i.endsWith('$gt') ) { 
-							prop = i.slice(0,-3);
-							if ( rawitem[ prop ] > filter[i] )
-								doadd += 1;
-						}
-						if ( i.endsWith('$st') ) { 
-							prop = i.slice(0,-3);
-							if ( rawitem[ prop ] < filter[i] )
-								doadd += 1;
-						}
-						if ( i.endsWith('$ge') ) { 
-							prop = i.slice(0,-3);
-							if ( rawitem[ prop ] >= filter[i] )
-								doadd += 1;
-						}
-						if ( i.endsWith('$se') ) { 
-							prop = i.slice(0,-3);
-							if ( rawitem[ prop ] <= filter[i] )
-								doadd += 1;
-						}
-						if ( i.endsWith('$ne') ) { 
-							prop = i.slice(0,-3);
-							if ( rawitem[ prop ] != filter[i] )
-								doadd += 1;
-						}
-						if ( i.endsWith('$ma') ) { 
-							prop = i.slice(0,-3);
-							var tags = (rawitem[ prop ] || '');
-							if (filter[i] === '') doadd += 1;
-							else if (filter[i] == ',') {
-								if (tags === '') doadd += 1;
-							} else {
-								tags.split(',').forEach(function (tag) {
-									if (tag.trim() == filter[i])
-										doadd += 1;
-								});
-							}
-						}
-						if ( i.endsWith('$ee') ) { 
-							prop = i.slice(0,-3);
-							if ( rawitem[ prop ] === filter[i] )
-								doadd += 1;
-						}
-						else if ( rawitem[i] == filter[i] ) doadd += 1;
-						++count;
-						if (doadd) ++matchedprops;
-					}
-					if (matchedprops === totalprops)
-						filtered.set( rawitem.uid, rawitem );
-				});
-				return filtered;
-			} else return rawitems;
-		},
-		_createstore: function (name, keys) {
-			var objectstore = db.createObjectStore(name, { keyPath: 'uid' });
-			for (var i in keys) {
-				objectstore.createIndex(keys[i], keys[i]);
-			}
-		},
-		_get: function (store, uid, callback) {
-			if (db) {
-				try {
-					db.transaction(store).objectStore(store).get(uid)
-						.onsuccess = function(event) {
-							typeof callback === 'function' && callback(event.target.result);
-						};
-				} catch (error) {
-					$.log('Offline.get', store, uid);
-					$.log.e(error);
-				}
-			} else {
-			}
-		},
-		count: function (store, callback) {
-			var i = 0;
-			db.transaction(store).objectStore(store).openCursor().onsuccess = function (event) {
-				var cursor = event.target.result;
-				if (cursor) {
-					++i;
-					cursor.continue();
-				} else {
-					typeof callback === 'function' && callback(i);
-				}
-			};
-		},
-		filteredcount: function (store, bound, direction, callback) {
-			var i = 0;
-			db.transaction(store).objectStore(store).openCursor(bound, direction).onsuccess = function (event) {
-				var cursor = event.target.result;
-				if (cursor) {
-					++i;
-					cursor.continue();
-				} else {
-					typeof callback === 'function' && callback(i);
-				}
-			};
-		},
-		parsevalue: function (value) {
-			if (value === true) value = 1;
-			if (value === false) value = 0;
-			if (value instanceof Array) {
-				for (var i in value) {
-					value[i] = Offline.parsevalue(value[i] );
-				}
-			}
-			return value;
-		},
-		 
-		format: function (obj, store) {
-			obj = obj || {};
-			var newobj = {};
-				delete obj._store;
-				delete obj.pending;
-				newobj = shallowcopy(obj);
-			var m = maxaazin[store];
-			if (m && isfun(m.tashkeel)) newobj = m.tashkeel(newobj);
-			return newobj;
-		},
-		 
-		_getall: function (store, options, callback) {
-			var objectStore = db.transaction(store).objectStore(store),
-				unsavedStore = db.transaction(unsavedname).objectStore(unsavedname),
-				i = 0,
-				filteredcount = 0, 
-				objects = $.array(),
-				filters = options.filter || {},
-				bound = null,
-				direction = 'prev',
-				extra = {
-						pages: false,
-						count: false,
-						limit: options.limit,
-					};
-			if (extra.limit === undefined || extra.limit === true) {
-				extra.limit = true;
-			}
-			options.key = [];
-			options.only = [];
-			if (filters.cache)
-				filters.cache = undefined;
-			if ( Object.keys(filters).length > 1 ) {
-				var keys = Object.keys(filters);
-				var only = Object.values(filters);
-				for (var i in only) {
-					if (only[i] !== undefined) {
-						options.key.push( keys[i] );
-						options.only.push( only[i] );
-					}
-				}
-			}
-			if ( Object.keys(filters).length <= 1
-			|| options.key.length <= 1 ) {
-				options.key = Object.keys(filters)[0];
-				options.only = Object.values(filters)[0];
-				if (options.only === undefined)
-					options.key = undefined;
-			}
-			if (options.key) {
-				objectStore = objectStore.index( options.key );
-				options.only = Offline.parsevalue( options.only );
-				bound = IDBKeyRange.only( options.only );
-			}
-			if (extra.limit !== true) {
-				extra.limit = extra.limit || 20;
-				var page = options.page || 0;
-				if (page) page = page - 1;
-				var startat = page * extra.limit;
-			}
-			objectStore.openCursor(bound, direction).onsuccess = function (event) {
-				var cursor = event.target.result;
-				if (cursor) {
-					var key = cursor.value.uid;
-					if (extra.limit === true || options.perm) {
-						var item = cursor.value;
-						if (options.format)
-							item = Offline.format( cursor.value, store );
-						objects.set(key, item);
-					} else {
-						if ( i >= startat && objects.length < extra.limit ) {
-							var item = cursor.value;
-							if (options.format)
-								item = Offline.format( cursor.value, store );
-							objects.set(key, item);
-						} else {
-							if (bound)
-								++filteredcount;
-						}
-					}
-					++i;
-					cursor.continue();
-				} else {
-					Offline._getallpending(store, function (unsaved) {
-						unsaved.each(function (item) {
-							if (options.format)
-								item = Offline.format( item, store );
-							return item;
-						});
-						var andfinally = function (objects) {
-							 
-							if (options.perm) {
-								objects.sort(options.reversed || 0, (options.orderby || 'uid'), 'uid');
-								if (typeof options.multifilter === 'object' && Object.keys(options.multifilter).length)
-									objects = Offline.filter(options.multifilter, objects);
-							}
-							if (extra.limit === true) {
-								extra.count = objects.length;
-								extra.pages = false;
-								typeof callback === 'function' && callback(objects, extra, unsaved);
-							} else {
-								Offline.count(store, function (count) {
-									if (bound) {
-										extra.count = objects.length+filteredcount;
-									} else {
-										extra.count = count;
-									}
-									extra.pages = Math.ceil(extra.count / extra.limit);
-									 
-									if (options.perm) {
-										extra.count = objects.length;
-										extra.pages = Math.ceil(extra.count / extra.limit);
-										extra.filteredcount = objects.length;
-										objects = objects.slice(startat, startat+options.limit-1);
-									}
-									typeof callback === 'function' && callback(objects, extra, unsaved);
-								});
-							}
-						};
-						 
-						if (typeof options.uponfillin === 'function') {
-							options.uponfillin(objects, function (objects) {
-								andfinally(objects);
-							}, 1);
-						} else
-							andfinally(objects);
-					});
-				}
-			};
-		},
-		_getallpending: function (store, callback) {
-			var unsavedStore = db.transaction(unsavedname).objectStore(unsavedname),
-				bound = IDBKeyRange.only( store ),
-				objects = $.array();
-			unsavedStore.index( '_store' ).openCursor(bound).onsuccess = function (event) {
-				var cursor = event.target.result;
-				if (cursor) {
-					 
-					cursor.value.uid = cursor.value.uid * -1;
-					objects.set(cursor.value.uid, cursor.value);
-					cursor.continue();
-				} else {
-					typeof callback === 'function' && callback(objects);
-				}
-			};
-		},
-		 
-		getpendingitem: function (uid, callback) {
-			var unsavedStore = db.transaction(unsavedname).objectStore(unsavedname),
-				bound = IDBKeyRange.only( uid * -1 ),
-				objects = $.array();
-			unsavedStore.index( 'uid' ).openCursor(bound).onsuccess = function (event) {
-				var cursor = event.target.result;
-				if (cursor) {
-					cursor.value.uid = cursor.value.uid * -1;
-					objects.set(cursor.value.uid, cursor.value);
-					cursor.continue();
-				} else {
-					typeof callback === 'function' && callback(objects);
-				}
-			};
-		},
-		getallpending: function (store, callback) {
-			 
-			if (store instanceof Array) {
-				var types = {},
-					i = 0,
-					total = 0,
-					q = $.queue();
-				store.forEach(function () {
-					q.set(function (done, queue) {
-						Offline._getallpending(store[i], function (objects) {
-							if (objects.length) {
-								types[ store[i] ] = objects.toNative();
-								++total;
-							}
-							++i;
-							done(queue);
-						});
-					});
-				});
-				q.run(function () {
-					if (total === 0) types = false;
-					typeof callback === 'function' && callback(types);
-				});
-			} else {
-				Offline._getallpending(store, callback);
-			}
-		},
-		getall: function (store, options, callback) {
-			options = options || {};
-			 
-			if (store instanceof Array) {
-				var types = {},
-					i = 0,
-					total = 0,
-					q = $.queue();
-				store.forEach(function () {
-					q.set(function (done, queue) {
-						Offline._getall(store[i], options, function (objects, ignore, unsaved) {
-							if (objects.length || unsaved.length) {
-								if (options.filter
-								&& options.filter.pending
-								&& store[i].endsWith('_archive')) {
-									store[i] = store[i].slice(0, -'_archive'.length);
-								}
-								if (types[ store[i] ]) {
-									types[ store[i] ].concat( objects.toNative().concat( unsaved.toNative() ) )
-								} else {
-									types[ store[i] ] = objects.toNative().concat( unsaved.toNative() );
-								}
-								++total;
-							}
-							++i;
-							done(queue);
-						});
-					});
-				});
-				q.run(function () {
-					if (total === 0) types = false;
-					typeof callback === 'function' && callback(types);
-				});
-			} else {
-				Offline._getall(store, options, callback);
-			}
-		},
-		 
-		set: function (store, arr, callback) {
-			if (debug_offline) $.log.w('Offline.set', store);
-			if (!db) {
-				if (debug_offline) $.log.e('Offline db not created yet', db);
-				return;
-			}
-			 
-			if (arr.length === 0) {
-				typeof callback === 'function' && callback();
-				return;
-			}
-			var needssync = 0;
-			var stores = [store, unsavedname];
-			try {
-				var transaction = db.transaction(stores, 'readwrite');
-			} catch (e) {
-				$.log.e(e);
-				return;
-			}
-			transaction.oncomplete = function(event) {
-				typeof callback === 'function' && callback(needssync);
-			};
-			var objectStore = transaction.objectStore(store);
-			var unsavedStore = transaction.objectStore(unsavedname);
-			arr.forEach(function(obj) {
-				 
-				if (obj.pending === true) obj.pending = 1;
-				if (obj.pending === false) obj.pending = 0;
-				if (obj.uid < 0 || obj.pending) needssync = 1;
-				 
-				if (obj.uid > 0 && obj.ruid < 0) {
-					unsavedStore.delete( obj.ruid * -1 ).onsuccess = function () {
-						delete obj.ruid;
-						delete obj._store;
-						fillmissingkeys(store, obj);
-						objectStore.put(obj);
-					};
-				}
-				else if (obj.uid < 0 && obj.ruid === undefined) {
-					obj.uid = obj.uid * -1;
-					obj._store = store;
-					unsavedStore.get(obj.uid || 0).onsuccess = function(event) {
-						var oldobj = event.target.result;
-						if (oldobj) {
-							oldobj = Object.assign(oldobj, obj);
-							obj = oldobj;
-						}
-						fillmissingkeys(unsavedname, obj);
-						unsavedStore.put(obj);
-					};
-				} else {
-					objectStore.get(obj.uid || 0).onsuccess = function(event) {
-						var oldobj = event.target.result;
-						if (oldobj) {
-							oldobj = Object.assign(oldobj, obj);
-							obj = oldobj;
-						} else {
-							if (obj.pending === false
-							|| obj.pending === undefined
-							|| obj.pending === null)
-								obj.pending = 0;
-						}
-						fillmissingkeys(store, obj);
-						objectStore.put(obj);
-					};
-				}
-			});
-		},
-		pop: function (store, uid, callback) {
-			if (uid < 0) {
-				store = unsavedname;
-				uid = uid * -1;
-			}
-			db.transaction(store, 'readwrite').objectStore(store).delete(uid)
-				.onsuccess = function(event) {
-					typeof callback === 'function' && callback(event.target.result);
-				};
-		},
-		popall: function (store, arr, callback) {
-			var stores = [store, unsavedname];
-			var transaction = db.transaction(stores, 'readwrite');
-			var objectStore = transaction.objectStore(store);
-			var unsavedStore = transaction.objectStore(unsavedname);
-			transaction.oncomplete = function(event) {
-				typeof callback === 'function' && callback();
-			};
-			var objectStore = transaction.objectStore(store);
-			arr.forEach(function(obj) {
-				if (obj.uid < 0) unsavedStore.delete(obj.uid * -1);
-				else objectStore.delete(obj.uid);
-			});
-		},
-		allstores: function () {
-			var oldstores = [];
-			 
-			for (var i in db.objectStoreNames) {
-				if ( db.objectStoreNames.hasOwnProperty(i) ) {
-					var name = db.objectStoreNames[i];
-					if ( db.objectStoreNames.contains(name) ) {
-						if (!exclusions.includes(name))
-							oldstores.push(name);
-					}
-				}
-			}
-			return oldstores;
-		},
-		recreate: function (callback) {
-			db && db.close && db.close();
-			var request = indexedDB.deleteDatabase(database);
-			request.onsuccess = function () {
-				Offline.init(callback);
-			};
-			 
-		},
-		 
-		warning: function (event) {
-			 
-			db.close();
-			dom.setloading( 'appneedsreload' );
-		},
-		init: function (callback) {
-			if (debug_offline) $.log.w('Offline.init');
-			gcallback = callback;
-			Offline.create('unsaved', 'default', {
-				mfateeh: ['_store']
-			});
-		}
-	};
-	Hooks.set('response-sync', function (payload) {
-		for (var name in payload) {
-			for (var need in payload[name]) {
-				var value = payload[name][need];
-				Offline.save(name, need, value);
-				var m = maxaazin[ name+need ];
-				if (m.keyvalue) {
-					var kind = Offline.mundarij.get;
-					if (kind[name] && typeof kind[name][need] == 'function')
-						kind[name][need]( shallowcopy(value) );
-				}
-			}
-		}
-	});
-	Hooks.set('network-connection', function (yes) {
-		if (yes)
-		$.taxeer('offline-sync', function () {
-			ijtama3();
-		}, 250);
-	});
-})();
 var Profile, profile, ISMMUBEENMAX = 48, TAGMAX = 15, HIKAAYAHMAX = 480;
 var profilelist;
 ;(function(){
@@ -7767,6 +8201,12 @@ var profilelist;
 		delay: -1, 
 		keyvalue: 1
 	});
+	function set_sidebar_and_header(subtitle) {
+		if (view.is_active(module_name)) {
+			if (get_global_object().Sidebar) Sidebar.choose(module_name);
+			webapp.header([[module_name], subtitle || '', 'iconperson']);
+		}
+	}
 	Hooks.set('sessionchange', function (signedin) {
 		update_sidebar();
 	});
@@ -7790,15 +8230,17 @@ var profilelist;
 	});
 	Hooks.set('viewready', function (args) {
 		if (args.name == module_name) {
-			Webapp.header( ['Profile', 0, 'iconperson'] );
+			set_sidebar_and_header();
 			softkeys.list.basic(profilelist);
 			profilelist.select();
 			Offline.get(module_name, 0, 0, Time.now());
 		}
 	});
 	Hooks.set('restore', function (args) {
-		if (view.is_active(module_name) && backstack.darajah === 1)
+		if (view.is_active(module_name) && backstack.darajah === 1) {
+			set_sidebar_and_header();
 			innertext(tafawwaq, '');
+		}
 	});
 })();
 var Accounts;
@@ -7839,6 +8281,12 @@ var Accounts;
 			count: count,
 		}); }
 	}
+	function set_sidebar_and_header(subtitle) {
+		if (view.is_active(module_name)) {
+			if (get_global_object().Sidebar) Sidebar.choose(module_name);
+			webapp.header([[module_name], subtitle || '', 'iconpeople']);
+		}
+	}
 	Hooks.set('ready', function () {
 		update_sidebar();
 		var dom_keys = view.dom_keys('accounts');
@@ -7868,7 +8316,7 @@ var Accounts;
 	});
 	Hooks.set('viewready', function (args) {
 		if (args.name == module_name) {
-			Webapp.header( ['Accounts', 0, 'iconpeople'] );
+			set_sidebar_and_header();
 			softkeys.list.basic(accounts_list);
 			accounts_list.select();
 			Offline.get(module_name, 0, 0, Time.now());
@@ -7876,8 +8324,10 @@ var Accounts;
 		}
 	});
 	Hooks.set('restore', function (args) {
-		if (view.is_active(module_name) && backstack.darajah === 1)
+		if (view.is_active(module_name) && backstack.darajah === 1) {
+			set_sidebar_and_header();
 			innertext(tafawwaq, '');
+		}
 	});
 })();
  
@@ -7907,16 +8357,14 @@ var Polling;
  
 var Rooms, rooms;
 ;(function(){
-	var roomslist, keys, oldresults = [], photo,
+	var roomslist, keys, oldresults = [], photo, module_name = 'rooms',
 	waqtsaabiq = 0, mklmttaxeer = 3*60*1000,
 	get_rooms_count = function () {
 		var l = roomslist.length();
-		if (view.is_active('rooms') && backstack.darajah === 1) {
-			webapp.header( l ? (l+' '+translate('rooms'))
+		if (view.is_active('rooms')) {
+			roomslist.title( l ? (l+' '+translate('rooms'))
 							: translate('norooms') );
-			roomslist.select();
 		}
-		roomslist.message(l ? undefined : translate('norooms') );
 	};
 	Rooms = rooms = {
 		raakib: function (members) { 
@@ -8003,52 +8451,8 @@ var Rooms, rooms;
 			oldresults = results;
 		},
 		open: function () { 
-			var suid = sessions.uid(), out = { }, l;
 			Hooks.run('sheet', {
-				n: 'room',
-				t: 'room',
-				i: function (k) {
-					k.search_members.focus();
-					l = list( k.members ).idprefix('members')
-								.listitem('members_item');
-					l.onpress = function (o) {
-						l.baidaa();
-					};
-					l.afterset = function (o, clone, k) {
-					};
-					var add = function (results) {
-						l.popall();
-						results.forEach(function (o) {
-							if (o.uid !== suid)
-							l.set({
-								uid: o.uid,
-								title: o.displayname || ('@'+o.name),
-							});
-						});
-					};
-					k.search_members.onkeyup = function () {
-						var str = this.value;
-						if (str.length)
-							Accounts.search(str, function (results) {
-								add(results);
-							});
-						else
-							l.popall();
-					};
-					k.search_members.onkeyup();
-				},
-				c: function () {
-					if (l)
-					$.taxeer('roomsopen', function () {
-						var o = l.get();
-						if (o.uid !== suid) {
-							messages.open({
-								title: o.displayname || o.name,
-								members: [[suid, 1], [o.uid, 0]]
-							});
-						}
-					}, 100);
-				},
+				n: create_room_sheet,
 			});
 		},
 		invite: function (profile) {
@@ -8078,8 +8482,8 @@ var Rooms, rooms;
 	Offline.create('rooms', 0, {
 		delay: -1, 
 		mfateeh: ['kind'],
-		tashkeel: function (o) {
-			return { uid: o.uid, members: o.members };
+		tashkeel: function (o) { 
+			return { uid: o.uid, name: o.name, link: o.link, members: o.members, created: o.created, updated: o.updated };
 		},
 	});
 	Hooks.set('ready', function () {
@@ -8087,26 +8491,22 @@ var Rooms, rooms;
 			intahaa( sessions.signedin() ? 1 : undefined );
 		});
 		Offline.response.get('rooms', function (response) {
+			$.log( 'Offline.response.get rooms', response );
 			rooms.fahras( response );
 		});
 		Network.response.get('rooms', 'invite', function (response) {
 			if (response) {
-				messages.itlaqcondition(response);
+				messages.apply_condition(response);
 			}
 		});
 		Offline.response.add('rooms', function (response) {
+			$.log( 'Offline.response.add rooms', response );
 			if (response) {
-				if (response.members) {
-					roomslist.pop( response.uid );
-					response.awwal = 1;
 					roomslist.set( response );
-				}
 				if (view.is_active('rooms')) {
-					roomslist.select( parseint(roomslist.id2num(response.uid)) );
 					get_rooms_count();
 				}
-				messages.itlaqcondition(response);
-				messages.itlaqtaxeer(response);
+				messages.apply_condition(response);
 			}
 		});
 		Offline.response.remove('rooms', function (response) {
@@ -8144,8 +8544,11 @@ var Rooms, rooms;
 			}
 			return item;
 		};
-		roomslist.onpress = function (item, key, uid) {
-			messages.open(item);
+		roomslist.onpress = function (o, key, uid) {
+			Hooks.run('view', {
+				name: 'messages',
+				uid: o.link || o.uid,
+			});
 		};
 	});
 	Hooks.set('viewready', function (args) {
@@ -8170,6 +8573,22 @@ var Rooms, rooms;
 				}
 		}
 	});
+	var create_room_sheet = 'setup-room';
+	var sheet_out = { }, sheet_list;
+	Hooks.set('sheet-ready', function (args, k) { if (args.name == create_room_sheet) {
+		Sheet.set_title('Setup Room');
+		var out = sheet_out, l = sheet_list;
+		var suid = Sessions.uid(); 
+		k.name.focus();
+	} });
+	Hooks.set('sheet-okay', function (args, k) { if (args.name == create_room_sheet) {
+		Offline.add(module_name, {
+			uid: k.uid.value || Offline.ruid(),
+			name: k.name.value,
+			link: k.link.value,
+			pending: 1,
+		});
+	} });
 })();
 var messages;
 ;(function(){
@@ -8342,7 +8761,7 @@ var messages;
 			}
 			else return current;
 		},
-		itlaqhaalah: function (m) {
+		apply_condition: function (m) {
 			if (m && current) {
 				var ret = rooms.uxraa(current.members);
 				var ret2 = rooms.uxraa(m.members);
@@ -8907,9 +9326,14 @@ simplify_line = simplify;
 var SocketIO = io({
 	autoConnect: false,
 }), call_list, Whiteboard, pointer_data;
+var media_stream, init_recorder, recorder_options;
+var is_room_creator, opus_recorder, remote_stream;
 ;(function(){
 	var module_name = 'call_screen', connection_status, connection_status_string,
-		is_in_call;
+		is_in_call,
+		is_mic_on = Preferences.get('mic', 1),
+		is_listening = Preferences.get('listen', 1);
+	var permissions = {};
 	var pen_colors = [ 
 		'text',
 		'red',
@@ -8919,7 +9343,7 @@ var SocketIO = io({
 	];
 	var pointer_held = 0;
 	pointer_data = {};
-	function redraw_whiteboard_if_needed() {
+	function redraw_whiteboard_if_needed() { if (!Whiteboard) return;
 		Whiteboard.clear(0, 0, whiteboardui.width, whiteboardui.height);
 		for (var i in pointer_data) {
 			var data = pointer_data[i];
@@ -8947,19 +9371,239 @@ var SocketIO = io({
 	}
 	function update_sidebar() { if (get_global_object().Sidebar) {
 		if (Sessions.signedin()) {
-			Sidebar.set({
+			var o = {
 				uid: module_name,
 				title: translate( module_name ),
+				count: 0,
+				subtitle: '',
 				icon: 'iconcall',
-			});
+			};
+			if (is_in_call) {
+				o.count = call_list.length();
+				o.subtitle = get_connection_string();
+			}
+			Sidebar.set(o);
 		} else {
 			Sidebar.remove(module_name);
 		}
 	} }
+	function setup_analyzer (caller, audioStream) {
+		var max = 0, color_str;
+		$.log( 'setup_analyzer', caller );
+		var keys = call_list.get_item_keys(caller.uid);
+		var aud_ctx = caller.audio_context;
+		var analyser = aud_ctx.createAnalyser();
+		analyser.connect( aud_ctx.destination );
+		if (audioStream) audioStream.connect(analyser);
+		analyser.fftSize = 1024;
+		aud_ctx.resume();
+		var frequencyArray = new Uint8Array(analyser.frequencyBinCount);
+		var doDraw = function () {
+			if (is_in_call ) {
+				analyser.getByteFrequencyData(frequencyArray);
+				var current_max = 0;
+				frequencyArray.slice(0, 255).forEach(function (o) {
+					max = Math.max(o, max);
+					current_max = Math.max(o, current_max);
+				});
+				if (caller.audio_context) {
+					var pct = parsefloat(current_max/max, 2)*2;
+					keys.icon.style.boxShadow = '0 0 0 '+pct+'px green';
+					setTimeout(function () {
+						requestAnimationFrame(doDraw);
+					}, 35);
+				}
+			} else {
+				keys.icon.style.boxShadow = '';
+			}
+		}
+		doDraw();
+	}
+	async function new_decoder(caller) { if (caller) {
+		const min_sample_duration = .1; 
+		const sample_rate = 48000; 
+		const min_sample_size = min_sample_duration * sample_rate;
+		let chunk_size = 4096; 
+		var fetched_data = new Float32Array(0);
+		var is_reading, buffer_source, gain;
+		var decoder;
+		if (caller.decoder) caller.decoder.terminate();
+		decoder = caller.decoder = new OpusToPCM({
+			channels: 1,
+			fallback: true,
+			libopusPath: 'libs/libopus.js'  
+		});
+		if (caller.audio_context) await caller.decoder.close();
+		var audio_context = new AudioContext();
+		caller.audio_context = audio_context;
+		var keys = call_list.get_item_keys(caller.uid);
+		var analyser = audio_context.createAnalyser();
+		analyser.connect( audio_context.destination );
+		analyser.fftSize = 1024;
+		var frequencyArray = new Uint8Array(analyser.frequencyBinCount);
+		gain = audio_context.createGain();
+		gain.gain.value = 1;
+		gain.connect( audio_context.destination );
+		function readingLoop() {
+			if ( fetched_data.length < min_sample_size ) {
+				is_reading = false;
+				return;
+			}
+			is_reading = true;
+			const aud_buf = audio_context.createBuffer( 1, fetched_data.length, sample_rate );
+			aud_buf.copyToChannel( fetched_data, 0 );
+			fetched_data = new Float32Array( 0 );
+			buffer_source = caller.buffer_source = audio_context.createBufferSource();
+			buffer_source.buffer = aud_buf;
+			buffer_source.onended = readingLoop; 
+			buffer_source.connect( gain );
+			buffer_source.connect(analyser);
+			buffer_source.start( 0 );
+		}
+		var max = 0, draw_timeout;
+		function do_draw () {
+			if (is_in_call ) {
+				analyser.getByteFrequencyData(frequencyArray);
+				var current_max = 0;
+				frequencyArray.slice(0, 255).forEach(function (o) {
+					max = Math.max(o, max);
+					current_max = Math.max(o, current_max);
+				});
+				if (audio_context && audio_context.state == 'running') {
+					var pct = parsefloat(current_max/max, 2)*2;
+					keys.icon.style.boxShadow = '0 0 0 '+pct+'px green';
+					clearTimeout(draw_timeout);
+					draw_timeout = setTimeout(function () {
+						requestAnimationFrame(do_draw);
+					}, 55);
+				}
+			} else {
+				keys.icon.style.boxShadow = '';
+			}
+		}
+		do_draw();
+		decoder.on('decode', function(pcmData) {
+			if (pcmData)
+				fetched_data = concatFloat32Arrays( fetched_data, pcmData );
+			if ( !is_reading && fetched_data.length > min_sample_size ) {
+				readingLoop(); 
+			}
+		});
+	} }
+	function apply_recorder_state() {
+		var listeners = 0, session_uid = Sessions.get_session_uid();
+		call_list.adapter.each(function (o) {
+			if (o.uid != session_uid && o.listen) {
+				listeners++;
+			}
+		});
+		if (is_in_call && is_mic_on && listeners >= 1) {
+			if (opus_recorder.state == 'paused') {
+				opus_recorder.resume();
+			} else if (opus_recorder.state == 'inactive') {
+				opus_recorder.start();
+			}
+		} else {
+			opus_recorder.pause();
+		}
+	}
+	function concatFloat32Arrays( arr1, arr2 ) {
+		if( !arr1 || !arr1.length ) {
+			return arr2 && arr2.slice();
+		}
+		if( !arr2 || !arr2.length ) {
+			return arr1 && arr1.slice();
+		}
+		const out = new Float32Array( arr1.length + arr2.length );
+		out.set( arr1 );
+		out.set( arr2, arr1.length );
+		return out;
+	}
+	init_recorder = function () {
+		if (!OpusRecorder.isRecordingSupported()) {
+			Webapp.status("Recording features are not supported in your browser.");
+			$.log.w("Recording features are not supported in your browser.");
+		} else {
+			recorder_options = {
+				mediaTrackConstraints: {
+					audio: true, noiseSuppression: true, echoCancellation: true,
+					autoGainControl: false,
+				},
+				numberOfChannels: 1,
+				encoderFrameSize: 40,
+				encoderBitRate: 5500,
+				encoderSampleRate: 48000,
+				encoderPath: "/libs/encoderWorker.min.js",
+				streamPages: true,
+				rawOpus: true,
+			};
+			var recorder;
+			opus_recorder = recorder = new OpusRecorder(recorder_options);
+			var audio_context = opus_recorder.audioContext;
+			var analyser = audio_context.createAnalyser();
+			analyser.fftSize = 1024;
+			var frequencyArray = new Uint8Array(analyser.frequencyBinCount);
+			var caller, keys;
+			var max = 0, pct, draw_timeout;
+			function do_draw () {
+				if (is_in_call && is_mic_on && opus_recorder.state == 'recording') {
+					analyser.getByteFrequencyData(frequencyArray);
+					var current_max = 0;
+					frequencyArray.slice(0, 255).forEach(function (o) {
+						max = Math.max(o, max);
+						current_max = Math.max(o, current_max);
+					});
+					if (audio_context && audio_context.state == 'running') {
+						pct = parsefloat(current_max/max, 2);
+						keys.icon.style.boxShadow = '0 0 0 '+(pct*2)+'px '+(pct > .45 ? 'green' : 'gray');
+						clearTimeout(draw_timeout);
+						draw_timeout = setTimeout(function () {
+							requestAnimationFrame(do_draw);
+						}, 55);
+					}
+				} else {
+					keys.icon.style.boxShadow = '';
+				}
+			}
+			function get_caller_and_keys() {
+				caller = call_list.adapter.get(Sessions.get_session_uid());
+				keys = call_list.get_item_keys(Sessions.get_session_uid());
+				opus_recorder.sourceNode.connect(analyser);
+			}
+			recorder.onstart = function(e) {
+				$.log.w('recorder started');
+				get_caller_and_keys();
+				do_draw();
+			};
+			recorder.onstop = function(e) {
+				$.log.w('Recorder is stopped');
+			};
+			recorder.onpause = function(e){
+				$.log.w('Recorder is paused');
+			};
+			recorder.onresume = function(e){
+				$.log.w('Recorder is resuming');
+				get_caller_and_keys();
+				do_draw();
+			};
+			recorder.ondataavailable = function( typedArray ){
+				if (pct > .45) {
+					if (caller && keys) {
+						caller.downloaded = (caller.downloaded||0) + typedArray.byteLength;
+						caller.down_str = parseint(caller.downloaded / 1_000) + 'KB';
+						innertext(keys.down_str, caller.down_str)
+					}
+					SocketIO.emit('audio', typedArray);
+				}
+			};
+		}
+	}
+	function recorder_softkeys() {
+	}
 	SocketIO.on('error', function (error) {
 		$.log.e('socket_io error', error);
 		connection_status = 0;
-		on_view_ready();
+		set_sidebar_and_header();
 	});
 	SocketIO.on('connect', function () {
 		$.log.w('socket_io connect');
@@ -8967,47 +9611,424 @@ var SocketIO = io({
 		if (is_in_call) {
 			join_room();
 		}
-		on_view_ready();
+		set_sidebar_and_header();
 	});
 	SocketIO.on('reconnect', function (attempt) { 
 		$.log.w('socket_io reconnect', attempt);
 		connection_status = 1;
-		on_view_ready();
+		set_sidebar_and_header();
+		update_sidebar();
 	});
 	SocketIO.on('disconnect', function (reason) {
 		$.log.w('socket_io disconnect', reason);
 		connection_status = 0;
-		on_view_ready();
+		apply_recorder_state();
+		set_sidebar_and_header();
 	});
-	SocketIO.on('join', after_others_join);
+	SocketIO.on('join', on_join);
 	SocketIO.on('leave', after_leaving);
 	SocketIO.on('pointer', on_pointer);
 	SocketIO.on('pointer_contact', on_pointer_contact);
 	SocketIO.on('undo', on_undo);
+	SocketIO.on('mic', on_mic);
+	SocketIO.on('listen', on_listen);
+	SocketIO.on('audio', on_audio);
+	SocketIO.on('latency', function (t) {
+		var caller = call_list.adapter.get( Sessions.get_session_uid() );
+		if (caller) {
+			caller.latency = Time.now() - t;
+			caller.latency_str = caller.latency + 'ms';
+			var keys = call_list.get_item_keys( caller.uid );
+			innertext(keys.latency_str, caller.latency_str);
+		}
+	});
+	var iceServers = {
+		iceServers: [
+			{ urls: 'stun:stun.l.google.com:19302' },
+			{ urls: "stun:stun.relay.metered.ca:80", },
+			{
+				urls: "turn:standard.relay.metered.ca:80",
+				username: "9e801c2ab408d832411f6a7d",
+				credential: "iBXHtN9VPVPJ7YIW",
+			},
+			{
+				urls: "turn:standard.relay.metered.ca:80?transport=tcp",
+				username: "9e801c2ab408d832411f6a7d",
+				credential: "iBXHtN9VPVPJ7YIW",
+			},
+			{
+				urls: "turn:standard.relay.metered.ca:443",
+				username: "9e801c2ab408d832411f6a7d",
+				credential: "iBXHtN9VPVPJ7YIW",
+			},
+			{
+				urls: "turns:standard.relay.metered.ca:443?transport=tcp",
+				username: "9e801c2ab408d832411f6a7d",
+				credential: "iBXHtN9VPVPJ7YIW",
+			},
+		],
+	};
+	async function new_rpc(caller) {
+		if (caller.rpc) {
+			caller.rpc.close();
+			delete caller.rpc;
+		}
+		var rpc = caller.rpc = new RTCPeerConnection(iceServers);
+		var aud_ctx = caller.audio_context = new AudioContext();
+		aud_ctx.onstatechange = function () {
+		};
+		var analyzer_source;
+		rpc.onicecandidateerror = function (e) {
+			$.log.e( 'onicecandidateerror', e );
+		};
+		rpc.onsignalingstatechange = function () {
+			if (rpc.signalingState == 'closed') {
+				rpc.onconnectionstatechange = null;
+				rpc.onicecandidateerror = null;
+			}
+			caller.signal = rpc.signalingState;
+			if (call_list.adapter.get( caller.uid )) {
+				call_list.set( caller );
+			}
+		};
+		rpc.onconnectionstatechange = function () {
+			caller.state = rpc.connectionState;
+			if (call_list.adapter.get( caller.uid )) {
+				call_list.set( caller );
+			}
+		};
+		rpc.onnegotiationneeded = async () => {
+			try {
+				caller.making_offer = 1;
+				await rpc.setLocalDescription();
+				SocketIO.emit('signal', {
+					key: Sessions.signedin(),
+					sdp: rpc.localDescription,
+				});
+			} catch (err) {
+				$.log.e(err);
+			} finally {
+				caller.making_offer = 0;
+			}
+		};
+		rpc.onicecandidate = function (event) {
+			if (event.candidate) {
+				SocketIO.emit('webrtc_ice_candidate', {
+					key: Sessions.signedin(),
+					label: event.candidate.sdpMLineIndex,
+					candidate: event.candidate.candidate,
+				});
+			}
+		};
+		await get_local_stream();
+		rpc.onaddstream = function (event) {
+			$.log( caller.name, 'added stream', event.stream );
+			var keys = call_list.get_item_keys( caller.uid );
+			if (keys && keys.audio) {
+				analyzer_source = aud_ctx.createMediaStreamSource( event.stream );
+				analyzer_source.connect( aud_ctx.destination );
+				aud_ctx.resume();
+				setup_analyzer( caller, analyzer_source );
+			}
+		};
+		rpc.ontrack = ({ track, streams }) => {
+			track.onunmute = () => {
+				$.log( caller.name, 'unmuted', track.id );
+				var keys = call_list.get_item_keys( caller.uid );
+				if (keys && keys.audio) {
+					if (keys.audio.srcObject) {
+						return;
+					}
+					keys.audio.srcObject = streams[0];
+				}
+			};
+		};
+		caller.state = rpc.connectionState;
+		call_list.set( caller );
+		return rpc;
+	}
+	SocketIO.on('signal', async (connection) => {
+		var caller = call_list.adapter.get(connection.uid) || {};
+		$.log(connection.sdp.type, 'signal by', caller.name, caller.polite ? 'polite' : '');
+		if (caller.rpc) {
+			var offer_collision = connection.sdp.type == 'offer' &&
+					(caller.making_offer || caller.rpc.signalingState !== 'stable');
+			caller.ignore_offer = !caller.polite && offer_collision;
+			if (caller.ignore_offer) {
+				return;
+			}
+			await caller.rpc.setRemoteDescription( connection.sdp );
+			if ( connection.sdp.type == 'offer' ) {
+				await caller.rpc.setLocalDescription();
+				SocketIO.emit('signal', {
+					key: Sessions.signedin(),
+					sdp: caller.rpc.localDescription,
+				});
+			}
+		}
+	});
+	SocketIO.on('ice_candidate', (connection) => {
+		var caller = call_list.adapter.get(connection.uid);
+		$.log('ice_candidate by', (caller||{}).name);
+		if (caller && caller.rpc) {
+			const candidate = new RTCIceCandidate({
+				sdpMLineIndex: connection.label,
+				candidate: connection.candidate,
+			});
+			try {
+				caller.rpc.addIceCandidate(candidate);
+			} catch (e) {
+				if (!caller.ignore_offer)
+					$.log.e( 'addIceCandidate', e );
+			}
+		}
+	});
+	async function setLocalStream(mediaConstraints) {
+		try {
+			localStream = await navigator.mediaDevices.getUserMedia(mediaConstraints)
+			localVideoComponent.srcObject = localStream
+		} catch (error) {
+			$.log.e('Could not get user media', error);
+		}
+	}
+	async function addLocalTracks(rpc) {
+		if (media_stream) {
+			$.log.w( 'addLocalTracks' );
+			media_stream.getTracks().forEach((track) => {
+				rpc.addTrack(track, media_stream);
+			});
+		}
+	}
+	async function removeLocalTracks(rpc) {
+		var streams = rpc.getLocalStreams();
+		if (streams) {
+			streams.forEach(function (s) {
+				var tracks = s.getTracks();
+				tracks.forEach(function (t) {
+					t.stop();
+				});
+				rpc.removeStream(s);
+			});
+		}
+	}
+	async function createOffer(caller) {
+		var rpc = caller.rpc;
+		try {
+			const sessionDescription = await rpc.createOffer({ offerToReceiveVideo: true, offerToReceiveAudio: true });
+			rpc.setLocalDescription(sessionDescription);
+			SocketIO.emit('webrtc_offer', {
+				key: Sessions.signedin(),
+				sdp: sessionDescription,
+			});
+		} catch (error) {
+			$.log.e(error);
+		}
+	}
+	async function createAnswer(rpc) {
+		try {
+			const sessionDescription = await rpc.createAnswer();
+			rpc.setLocalDescription(sessionDescription);
+			SocketIO.emit('webrtc_answer', {
+				key: Sessions.signedin(),
+				sdp: sessionDescription,
+			})
+		} catch (error) {
+			$.log.e(error);
+		}
+	}
+	function sendIceCandidate(event) {
+		if (event.candidate) {
+			SocketIO.emit('ice_candidate', {
+				key: Sessions.signedin(),
+				label: event.candidate.sdpMLineIndex,
+				candidate: event.candidate.candidate,
+			});
+		}
+	}
+	async function get_local_stream() {
+		var caller = call_list.adapter.get( Sessions.get_session_uid() );
+		if (!media_stream && !is_mic_stream_starting && caller) {
+			$.log( 'get_local_stream' );
+			is_mic_stream_starting = 1;
+			var stream;
+			try {
+				stream = await navigator.mediaDevices.getUserMedia({
+					audio: true, noiseSuppression: true, echoCancellation: true,
+					autoGainControl: false,
+				});
+			} catch (e) {
+				$.log( 'get_local_stream', e );
+			}
+			media_stream = stream;
+			apply_mic_state();
+			is_mic_stream_starting = 0;
+				var aud_ctx = caller.audio_context = new AudioContext( { sinkId: { type: 'none' } } );
+				aud_ctx.onstatechange = function () {
+				};
+				analyzer_source = aud_ctx.createMediaStreamSource( stream );
+				analyzer_source.connect( aud_ctx.destination );
+				aud_ctx.resume();
+				setup_analyzer( caller, analyzer_source );
+		}
+		if (media_stream)
+		call_list.adapter.each(function (o) {
+			if (o.rpc) {
+				var streams = o.rpc.getLocalStreams();
+				if (streams.length) {
+					$.log( o.name+' has '+streams.length+' local streams' );
+					var rtpSenders = o.rpc.getSenders();
+					$.log( o.name+' has '+rtpSenders.length+' senders' );
+					if (rtpSenders.length)
+					for (const track of media_stream.getTracks()) {
+						rtpSenders.replaceTrack(track);
+					}
+				} else {
+					$.log( o.name+' has no local streams' );
+					for (const track of media_stream.getTracks()) {
+						o.rpc.addTrack(track, media_stream);
+					}
+				}
+			}
+		});
+	}
 	function join_room() {
 		SocketIO.emit(
 			'join',
 			get_session_details(),
-			after_others_join
+			function (data) {
+				on_join(data, 1);
+			}
 		);
 	}
 	function leave_room() {
 		SocketIO.emit(
 			'leave',
-			get_session_details(),
-			after_leaving
+			get_session_details()
 		);
-		if (!is_in_call) {
-			clear_all_callers();
+		is_room_creator = 0;
+		stop_mic_stream();
+		var session_uid = Sessions.get_session_uid();
+		call_list.adapter.each(function (o) {
+			if (o.uid != session_uid) {
+				if (o.rpc) o.rpc.close();
+				if (o.decoder) {
+					if (o.decoder.destroy)
+						o.decoder.destroy();
+					if (o.decoder.terminate)
+						o.decoder.terminate();
+				}
+				if (o.audio_context) o.audio_context.close();
+			}
+		});
+		if (opus_recorder) opus_recorder.stop();
+		clear_all_callers();
+	}
+	function on_join(result, is_recap) {
+		$.log.w('join', result);
+		set_sidebar_and_header();
+		if (is_recap) is_room_creator = 0;
+		if (isarr(result)) {
+			result.forEach(function (o) {
+				var caller = call_list.adapter.get( o.uid );
+				var details_str = '';
+				if (o.mobile) details_str += 'Mobile';
+				if (o.browser) details_str += ' '+o.browser;
+				if (o.browser_version) details_str += ' '+o.browser_version;
+				if (o.platform) details_str += ' on '+o.platform;
+				var obj = {
+					icon : 'iconperson',
+					uid: o.uid,
+					color : o.color,
+					created : o.created,
+					listen : o.listen,
+					mobile : o.mobile,
+					browser : o.browser,
+					browser_version : o.browser_version,
+					platform: o.platform,
+					mic : o.mic,
+					name : '@'+o.name,
+					details : details_str.trim(),
+					time : o.created,
+					displayname: o.displayname,
+				};
+				if (o.mic) {
+					obj.mic_tag = 'ixtaf';
+				} else {
+					obj.mic_tag$icon = 'iconmoff';
+				}
+				if (o.listen) {
+					obj.listen_tag = 'ixtaf';
+				} else {
+					obj.listen_tag$icon = 'iconheadsetoff';
+				}
+				call_list.set(obj);
+				var keys = call_list.get_item_keys( o.uid );
+				keys.color_tag.style.background = Themes.get(pen_colors[o.color] || 'text');
+				var this_session = call_list.adapter.get( Sessions.get_session_uid() );
+				var caller = call_list.adapter.get(o.uid);
+				if (caller && this_session) {
+					if (caller.uid == Sessions.get_session_uid()) {
+					} else {
+						if (!caller.decoder)
+							new_decoder(caller);
+					}
+				}
+			});
 		}
+		apply_speaker_state();
+		apply_recorder_state();
+		update_sidebar();
+	}
+	function after_leaving(result) {
+		$.log.w('leave', result);
+		var caller = call_list.adapter.get( result );
+		if (caller) {
+			if (caller.rpc) {
+				$.log( 'closing rpc for', caller.name );
+				caller.rpc.close();
+				delete caller.rpc;
+			}
+			if (caller.decoder) {
+				$.log( 'terminating decoder for', caller.name );
+				if (caller.decoder.destroy)
+					caller.decoder.destroy();
+				if (caller.decoder.terminate)
+					caller.decoder.terminate();
+				delete caller.decoder;
+			}
+			if (caller.audio_context) {
+				$.log( 'closing decoder for', caller.name );
+				caller.audio_context.close();
+				delete caller.audio_context;
+			}
+		}
+		call_list.remove_by_uid( result );
+		delete pointer_data[ result ];
+		apply_recorder_state();
+		redraw_whiteboard_if_needed();
+		update_sidebar();
+		if (result == Sessions.get_session_uid()) {
+			$.log( 'stopping mic stream..' );
+			stop_mic_stream();
+		}
+	}
+	function get_pointer_data (session_uid) {
+		var p_data;
+		if (!pointer_data[ session_uid ]) {
+			p_data = pointer_data[ session_uid ] = {
+				uid: session_uid,
+			};
+		} else {
+			p_data = pointer_data[ session_uid ];
+		}
+		return p_data;
 	}
 	function on_pointer (data) {
 		var session_uid = data[0];
 		var converted = percentage_to_pixels(data[1], data[2]);
 		data[1] = converted[0];
 		data[2] = converted[1];
-		var p_data;
-		p_data = pointer_data[ session_uid ] = pointer_data[ session_uid ] || {};
+		var p_data = get_pointer_data(session_uid);
 		p_data.uid = session_uid;
 		p_data.x = data[1];
 		p_data.y = data[2];
@@ -9043,8 +10064,8 @@ var SocketIO = io({
 	}
 	function on_pointer_contact (data) {
 		$.log.w('pointer_contact', data);
-		var p_data;
-		p_data = pointer_data[ data[0] ] = pointer_data[ data[0] ] || {};
+		var session_uid = data[0];
+		var p_data = get_pointer_data(session_uid);
 		p_data.contact = data[1];
 		var lines;
 		lines = p_data.lines = p_data.lines || [];
@@ -9065,10 +10086,10 @@ var SocketIO = io({
 	}
 	function on_undo (data) {
 		var session_uid = data[0];
-		var p_data = pointer_data[ session_uid ];
+		var p_data = get_pointer_data(session_uid);
 		if (p_data) {
 			var lines = p_data.lines;
-			if (lines.length > 1) {
+			if (lines && lines.length > 1) {
 				var shape = lines[ lines.length-1 ];
 				if (shape.length === 0) {
 					lines.splice( lines.length-2, 1 );
@@ -9077,9 +10098,56 @@ var SocketIO = io({
 			}
 		}
 	}
+	function on_mic (data) {
+		$.log.w( 'mic', data );
+		var session_uid = data[0];
+		var caller = call_list.adapter.get(session_uid)
+		var p_data = get_pointer_data(session_uid);
+		p_data.mic = data[1];
+		caller.mic = data[1];
+		if (p_data.mic) {
+			delete caller.mic_tag$icon;
+			caller.mic_tag = 'ixtaf';
+		} else {
+			delete caller.mic_tag;
+			caller.mic_tag$icon = 'iconmoff';
+		}
+		call_list.set(caller);
+		apply_recorder_state();
+	}
+	function on_listen (data) {
+		$.log.w( 'listen', data );
+		var session_uid = data[0];
+		var caller = call_list.adapter.get(session_uid)
+		var p_data = get_pointer_data(session_uid);
+		p_data.listen = data[1];
+		caller.listen = data[1];
+		if (p_data.listen) {
+			delete caller.mic_tag$icon;
+			caller.listen_tag = 'ixtaf';
+		} else {
+			delete caller.listen_tag;
+			caller.listen_tag$icon = 'iconheadsetoff';
+		}
+		call_list.set(caller);
+		apply_recorder_state();
+	}
+	function on_audio(data) {
+		var caller = call_list.adapter.get(data[0]);
+		if (caller && caller.decoder && is_listening) {
+			caller.downloaded = (caller.downloaded||0) + data[1].byteLength;
+			caller.down_str = parseint(caller.downloaded / 1_000) + 'KB';
+			var keys = call_list.get_item_keys( caller.uid );
+			innertext(keys.down_str, caller.down_str)
+			var typedArray = new Uint8Array(data[1]);
+			caller.decoder.decode(typedArray);
+		}
+	}
 	function get_session_details() {
 		var details = {
 			key: Sessions.signedin(),
+			listen: is_listening,
+			mic: is_mic_on,
 			platform: 0,
 			browser: 0,
 			browser_version: 0,
@@ -9100,42 +10168,13 @@ var SocketIO = io({
 		}
 		return details;
 	}
-	function after_others_join(result) {
-		$.log.w('socket_io join', result);
-		on_view_ready();
-		if (isarr(result)) {
-			result.forEach(function (o) {
-				var details_str = '';
-				if (o.mobile) details_str += 'Mobile';
-				if (o.browser) details_str += ' '+o.browser;
-				if (o.browser_version) details_str += ' '+o.browser_version;
-				if (o.platform) details_str += ' on '+o.platform;
-				call_list.set({
-					icon : 'iconperson',
-					uid: o.uid,
-					color : o.color,
-					name : '@'+o.name,
-					displayname: o.displayname,
-					details: details_str.trim(),
-				});
-				var keys = call_list.get_item_keys( o.uid );
-				keys.color_tag.style.background = Themes.get(pen_colors[o.color] || 'text');
-			});
-		}
-	}
-	function after_leaving(result) {
-		$.log.w('socket_io leave', result);
-		call_list.remove_by_uid( result );
-		delete pointer_data[ result ];
-		redraw_whiteboard_if_needed();
-	}
 	function get_connection_string() {
 		if (connection_status === 0) return 'Disconnected';
 		if (connection_status === 1) return 'Connected';
 		if (connection_status === 2) return 'Reconnected'
 		if (connection_status === -1) return 'Error';
 	}
-	function on_view_ready(subtitle) { 
+	function set_sidebar_and_header(subtitle) {
 		if (view.is_active(module_name)) {
 			if (get_global_object().Sidebar) Sidebar.choose(module_name);
 			webapp.header([[module_name], subtitle || get_connection_string() || '', 'iconcall']);
@@ -9151,6 +10190,115 @@ var SocketIO = io({
 			e && e.preventDefault();
 		}
 	};
+	var listen_softkey_object = { k: 'l',
+		alt: 1,
+		c: function (k, e) {
+			is_listening = !is_listening;
+			Preferences.set('listen', is_listening);
+			apply_speaker_state();
+			SocketIO.emit( 'listen', is_listening );
+			on_listen([Sessions.get_session_uid(), is_listening]);
+			set_listen_softkey();
+			e && e.preventDefault();
+		}
+	};
+	function apply_speaker_state() {
+		call_list.adapter.each(function (caller) {
+			if (caller && caller.rpc) {
+				caller.rpc.getRemoteStreams().forEach(function (stream) {
+					stream.getTracks().forEach(function (track) {
+						track.enabled = is_listening;
+					});
+				});
+			}
+		});
+	}
+	function set_listen_softkey() {
+		listen_softkey_object.n = is_listening ? 'Listening' : 'Defeaned';
+		listen_softkey_object.i = is_listening ? 'iconheadset' : 'iconheadsetoff';
+		if (listen_softkey_object.uid && !is_in_call) Softkeys.remove(listen_softkey_object.uid);
+		if (is_in_call) Softkeys.add(listen_softkey_object);
+	}
+	var is_mic_stream_starting;
+	function stop_mic_stream() {
+		if (media_stream) {
+			$.log.w( 'stop_mic_stream' );
+			media_stream.getTracks().forEach(track => track.stop());
+			media_stream = 0;
+			var session_uid = Sessions.get_session_uid();
+			call_list.adapter.each(function (o) {
+				if (o.uid != session_uid && o.rpc) {
+					removeLocalTracks (o.rpc);
+					createOffer (o);
+				}
+			});
+		}
+	}
+	function start_mic_stream() {
+		if (!media_stream && !is_mic_stream_starting) {
+			$.log.w( 'start_mic_stream' );
+			stop_mic_stream();
+			is_mic_stream_starting = 1;
+			navigator.mediaDevices.getUserMedia({
+				audio: true, noiseSuppression: true, echoCancellation: true,
+			}).then((stream) => {
+				is_mic_stream_starting = 0;
+				media_stream = stream;
+				var session_uid = Sessions.get_session_uid();
+				call_list.adapter.each(function (o) {
+					if (o.uid != session_uid && o.rpc) {
+						addLocalTracks (o.rpc);
+						createOffer (o);
+					}
+				});
+			}).catch((err) => {
+				is_mic_stream_starting = 0;
+				$.log.e(err);
+			});
+		}
+	}
+	var mic_softkey_object = { k: 'm',
+		alt: 1,
+		c: function (k, e) {
+			if (permissions.mic) {
+				if (is_mic_on) {
+				} else {
+				}
+				is_mic_on = !is_mic_on;
+				Preferences.set('mic', is_mic_on);
+				apply_mic_state();
+				SocketIO.emit( 'mic', is_mic_on );
+				on_mic([Sessions.get_session_uid(), is_mic_on]);
+				set_mic_softkey();
+			} else {
+				navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+					update_permissions('mic', 'granted');
+					stream.getTracks().forEach(track => track.stop());
+				}).catch((err) => {
+					$.log.e(err);
+				});
+			}
+			e && e.preventDefault();
+		}
+	};
+	function apply_mic_state() {
+		if (media_stream) {
+			var tracks = media_stream.getTracks();
+			tracks.forEach(function (track) {
+				track.enabled = is_mic_on;
+			});
+		}
+		apply_recorder_state();
+	}
+	function set_mic_softkey() {
+		if (!permissions.mic) {
+			is_mic_on = 0;
+		}
+		mic_softkey_object.n = permissions.mic ? (is_mic_on ? 'Mic On' : 'Mic Off') : 'Needs Mic Permission';
+		mic_softkey_object.i = permissions.mic ? (is_mic_on ? 'iconm' : 'iconmoff') : 'iconmnone';
+		if (mic_softkey_object.uid && !is_in_call) Softkeys.remove(mic_softkey_object.uid);
+		if (is_in_call) Softkeys.add(mic_softkey_object);
+	}
 	function set_call_softkey() {
 		Softkeys.add({ n: is_in_call ? 'Leave' : 'Join',
 			k: K.en,
@@ -9162,20 +10310,48 @@ var SocketIO = io({
 					join_room();
 				}
 				is_in_call = !is_in_call;
-				set_call_softkey();
+				update_softkeys();
 				e && e.preventDefault();
 			}
 		});
 		if (undo_softkey_object.uid && !is_in_call) Softkeys.remove(undo_softkey_object.uid);
 		if (is_in_call) Softkeys.add(undo_softkey_object);
 	}
+	function update_softkeys() {
+		set_call_softkey();
+		set_mic_softkey();
+		set_listen_softkey();
+		recorder_softkeys();
+	}
+	function update_permissions(name, state) {
+		permissions[name] = state == 'granted';
+		if (name == 'mic') {
+			set_mic_softkey();
+		}
+	}
+	function setup_permissions() {
+		if ('permissions' in navigator) {
+			navigator.permissions.query({ name: 'microphone' }).then(function (perm) {
+				update_permissions('mic', perm.state);
+				perm.onchange = function () {
+					update_permissions('mic', perm.state);
+				};
+			}).catch(function (e) {
+				$.log.w( 'mic permission check not supported' );
+			});
+		}
+	}
 	function resize_whiteboard() {
 		$.taxeer('resize_whiteboard', function () {
 			var w = headerui.clientWidth-64;
 			whiteboardui.width = w;
 			whiteboardui.height = w;
-			Whiteboard.o.font = '14px sans-serif';
-			Whiteboard.linewidth(3);
+			if (Whiteboard) {
+				Whiteboard.o.font = '14px sans-serif';
+				Whiteboard.linewidth(3);
+				Whiteboard.linecap('round');
+				Whiteboard.linejoin('round');
+			}
 		}, 30);
 	}
 	function clear_all_callers() {
@@ -9193,12 +10369,12 @@ var SocketIO = io({
 			y * whiteboardui.height,
 		];
 	}
-	var soundAllowed, soundNotAllowed;
 	Hooks.set('sessionchange', function (signedin) {
 		update_sidebar();
 	});
 	Hooks.set('ready', function (args) {
 		Webapp.add_minimal_view( module_name );
+		setup_permissions();
 		Whiteboard = Canvas(whiteboardui);
 		whiteboardui.onpointerdown = function () {
 			if (!pointer_held) {
@@ -9231,7 +10407,30 @@ var SocketIO = io({
 		var dom_keys = view.dom_keys( module_name );
 		call_list = List( dom_keys.list ).idprefix( module_name ).listitem( 'call_list_item' ).freeflow(1)
 					.prevent_focus(1);
-		 
+		call_list.before_set = function (o) { 
+			var old = call_list.adapter.get(o.uid);
+			if (old) {
+				o = Object.assign(old, o);
+			}
+			delete o.form_tag$icon;
+			delete o.form_tag;
+			delete o.os_tag$icon;
+			delete o.os_tag;
+			var os_tag;
+			if (o.platform == 'Linux') {
+				os_tag = 'linux';
+			} else if (o.platform == 'Windows') {
+				os_tag = 'windows';
+			}
+			if (os_tag) o.os_tag$icon = 'icon'+os_tag; else o.os_tag = 'ixtaf';
+			var form_tag;
+			if (o.mobile) form_tag = 'phoneandroid';
+			if (form_tag) o.form_tag$icon = 'icon'+form_tag; else o.form_tag = 'ixtaf';
+			return o;
+		};
+		call_list.after_set = function (o, e, k) {
+		};
+		init_recorder();
 	});
 	listener('resize', function () {
 		resize_whiteboard();
@@ -9239,13 +10438,13 @@ var SocketIO = io({
 	});
 	Hooks.set('viewready', function (args) {
 		if (view.is_active(module_name)) {
-			on_view_ready();
-			set_call_softkey();
+			set_sidebar_and_header();
+			update_softkeys();
 		}
 	});
 	Hooks.set('restore', function () {
 		if (backstack.darajah === 1 && view.is_active(module_name)) {
-			on_view_ready();
+			set_sidebar_and_header();
 		}
 	});
 })();
@@ -9287,7 +10486,7 @@ var SocketIO = io({
 			view.run('intro');
 		}
 		if (get_global_object().Sidebar) Sidebar.choose(module_name);
-		webapp.header([Config.appname, Config.desc, '/e.png']);
+		Webapp.header([Config.appname, Config.desc, '/e.png']);
 	}
 	Hooks.set('sessionchange', function (key) {
 		if (key) { 
