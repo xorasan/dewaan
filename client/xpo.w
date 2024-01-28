@@ -106,6 +106,7 @@ unsupported          unsupported
 templateset          templateset
 iconcallend          iconcallend
 iconheadset          iconheadset
+iconmessage          iconmessage
 iconwindows          iconwindows
 vcenterkids          vcenterkids
 fakepadding          fakepadding
@@ -223,11 +224,11 @@ yearsago             yearsago
 thursday             thursday
 saturday             saturday
 language             language
-uploader             uploader
 sklamsah             sklamsah
 skbutton             skbutton
 iconcall             iconcall
 icondone             icondone
+iconedit             iconedit
 iconhelp             iconhelp
 iconhome             iconhome
 iconmenu             iconmenu
@@ -294,7 +295,6 @@ hours24              hours24
 hours12              hours12
 loading              loading
 exiting              exiting
-restore              restore
 skhints              skhints
 iconadd              iconadd
 icontab              icontab
@@ -304,8 +304,6 @@ tasjeel              tasjeel
 inqata3              inqata3
 iltahaq              iltahaq
 infasal              infasal
-marfoo3              marfoo3
-intaxab              intaxab
 biggest              biggest
 tahweem              tahweem
 minimal              minimal
@@ -357,7 +355,6 @@ sunday               sunday
 monday               monday
 friday               friday
 parent               parent
-raafi3               raafi3
 lamsah               lamsah
 popall               popall
 change               change
@@ -432,7 +429,6 @@ la3ib                la3ib
 sajil                sajil
 il3ab                il3ab
 isjal                isjal
-naqal                naqal
 basic                basic
 small                small
 input                input

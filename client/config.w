@@ -67,11 +67,18 @@ icons
 	personadd
 	exittoapp
 	add
+	edit
 	appinstall
 	
 	call
 	callend
 	undo
+	
+	message
+	block
+	photo
+	deleteforever
+	download
 	
 	notifications
 	notificationsoff
