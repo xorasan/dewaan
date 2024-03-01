@@ -33,6 +33,7 @@ src
 	rooms
 	messages
 	recorder
+	sound
 	uploader
 	sw
 name      client
@@ -59,9 +60,19 @@ icons
 	bluron
 	morevert
 	equalizer
+	
+	hourglassempty
+	pause
+	stop
+	send
+	keyboardvoice
 
 	menu
+	
+	filterlist
+	filterlistrev
 
+	owner
 	people
 	person
 	personadd
@@ -78,7 +89,7 @@ icons
 	block
 	photo
 	deleteforever
-	download
+	filedownload
 	
 	notifications
 	notificationsoff
@@ -137,6 +148,7 @@ include
 	profile
 	accounts
 	polling.client
+	sound.graph
 	rooms
 	messages
 kind      client

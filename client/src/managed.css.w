@@ -33,5 +33,6 @@
 +include linked/profile.css.w
 +include linked/accounts.css.w
 +include linked/polling.client.css.w
++include linked/sound.graph.css.w
 +include linked/rooms.css.w
 +include linked/messages.css.w

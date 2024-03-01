@@ -1,3 +1,4 @@
+var Callscreen = {};
 ;(function(){
 	'use strict';
 
@@ -47,6 +48,7 @@
 		o.socket_id = socket_id;
 		o.created = get_time_now();
 		o.socket = socket;
+		o.room = data.room || default_room;
 		o.listen = data.listen;
 		o.mic = data.mic;
 		o.mobile = data.mobile;
@@ -81,6 +83,7 @@
 			uid: o.session.uid,
 			color: o.color,
 			created: o.created,
+			room: o.room || default_room,
 			name: o.account.name,
 			listen: o.listen,
 			mic: o.mic,
@@ -94,8 +97,12 @@
 	function count_connections() {
 		return Object.keys(connections).length;
 	}
-	function get_room_size(name) {
-		var o = SocketIO.sockets.adapter.rooms.get( default_room );
+	function get_socket_rooms(socket_id) {
+		return SocketIO.sockets.manager.roomClients[socket_id];
+	}
+	function get_room_size(room) {
+		if (!room) return 0;
+		var o = SocketIO.sockets.adapter.rooms.get( room );
 		if (o) return o.size;
 		else return 0;
 	}
@@ -112,10 +119,29 @@
 			}
 		});
 	}
+	
+	Callscreen.get_room_size = get_room_size;
+	Callscreen.export_connection = export_connection;
+	Callscreen.get_room_connections = function (room) {
+		var arr = [];
+		
+		if (!room) return arr;
+		
+		var socketsInRoom = SocketIO.sockets.adapter.rooms.get( room );
+
+		if (socketsInRoom)
+		socketsInRoom.forEach(function (socket_id, color) {
+			var c = get_connection(socket_id);
+			if (c) {
+				arr.push( export_connection( connections[c] ) );
+			}
+		});
+		return arr;
+	};
 
 	// FIX BUG listen on session logout hook and remove related connections
 
-	setInterval(function () {
+	setInterval(function () { // TODO get all sockets that are at least in one room
 		var socketsInRoom = SocketIO.sockets.adapter.rooms.get( default_room );
 		if (socketsInRoom)
 		socketsInRoom.forEach(function (socket_id) {
@@ -133,34 +159,41 @@
 				Sessions.get_session_account(data.key, (result) => {
 					if (result) {
 						var result_object = add_connection( socket.id, data.key, result, data, socket );
+						
+						// leave from all other rooms
+						var room = [...socket.rooms].slice(1, 2)[0];
+						if (room) {
+							SocketIO.to( room ).emit( 'leave', result.session.uid );
+							socket.leave( room );
+							Rooms.update_room_by_uid( room, result.account.uid );
+							$.log('user left', result.account.name);
+							$.log(room+' room size', get_room_size( room ) );
+						}
 
-						socket.join( default_room );
+						room = data.room || default_room;
+
+						// join new room
+						socket.join( room );
+						Rooms.update_room_by_uid( room, result.account.uid );
 						
 						// also redo colors for all in the room, before emission and exports
-						redo_colors_in_room( default_room );
+						redo_colors_in_room( room );
 
-						result_object.order = get_room_size( default_room );
+						result_object.order = get_room_size( room );
 						result_object = export_connection( result_object );
 						
 						// socket.to excludes this socket from receiving join
 						// you can use SocketIO to include it :)
 						// this adds the new user to others lists
-						SocketIO.to( default_room ).emit( 'join', [ result_object ] );
+						SocketIO.to( room ).emit( 'join', [ result_object ] );
 
 						// this resends the entire room to the new comer
-						var arr = [];
-						var socketsInRoom = SocketIO.sockets.adapter.rooms.get( default_room );
-						socketsInRoom.forEach(function (socket_id, color) {
-							var c = get_connection(socket_id);
-							if (c) {
-								arr.push( export_connection( connections[c] ) );
-							}
-						});
+						var arr = Callscreen.get_room_connections( room );
 						if (isfun(callback)) { // returns all connections to the new caller
 							callback(arr);
 						}
 						$.log('user joined', result.account.name);
-						$.log('room size', get_room_size( default_room ) );
+						$.log(room+' room size', get_room_size( room ) );
 					} else {
 						$.log('user failed to auth for joining', data, result);
 					}
@@ -171,11 +204,15 @@
 			if (isstr(data.key) && data.key.length) {
 				Sessions.get_session_account(data.key, (result) => {
 					if (result) {
-						SocketIO.to( default_room ).emit( 'leave', result.session.uid );
-						socket.leave( default_room );
+						var room = [...socket.rooms].slice(1, 2)[0];
+						if (room) {
+							SocketIO.to( room ).emit( 'leave', result.session.uid );
+							socket.leave( room );
+							Rooms.update_room_by_uid( room, result.account.uid );
+							$.log('user left', result.account.name);
+							$.log(room+' room size', get_room_size( room ) );
+						}
 						if (isfun(callback)) { callback( result.session.uid ); }
-						$.log('user left', result.account.name);
-						$.log('room size', get_room_size( default_room ) );
 						remove_connection(socket.id);
 					} else {
 						$.log('user failed to auth for leaving', data, result);
@@ -189,9 +226,12 @@
 				if (conn) { // TODO verify it's allowed to use pointer
 					var result = connections[conn];
 					if (result) {
-						// only send to others
-						// client draws self pointer without a server trip
-						socket.to( default_room ).emit( 'pointer', [result.session.uid, data[0], data[1]] );
+						var room = [...socket.rooms].slice(1, 2)[0] || default_room;
+						if (room) {
+							// only send to others
+							// client draws self pointer without a server trip
+							socket.to( room ).emit( 'pointer', [result.session.uid, data[0], data[1]] );
+						}
 					}
 				}
 			}
@@ -202,28 +242,37 @@
 				if (conn) { // TODO verify it's allowed to use pointer
 					var result = connections[conn];
 					if (result) {
-						socket.to( default_room ).emit( 'pointer_contact', [result.session.uid, data] );
+						var room = [...socket.rooms].slice(1, 2)[0] || default_room;
+						if (room) {
+							socket.to( room ).emit( 'pointer_contact', [result.session.uid, data] );
+						}
 					}
 				}
 			}
 		});
 		socket.on('undo', (data, callback) => {
 			var conn = get_connection(socket.id);
-			if (conn) { // TODO verify it's allowed
+			if (conn) {
 				var result = connections[conn];
 				if (result) {
-					socket.to( default_room ).emit( 'undo', [result.session.uid] );
+					var room = [...socket.rooms].slice(1, 2)[0] || default_room;
+					if (room) {
+						socket.to( room ).emit( 'undo', [result.session.uid] );
+					}
 				}
 			}
 		});
 		socket.on('mic', (data, callback) => {
 			var conn = get_connection(socket.id);
-			if (conn) { // TODO verify it's allowed
+			if (conn) {
 				var result = connections[conn];
 				if (result && result.session && result.session.uid) {
-					result.mic = data ? 1 : 0;
-					$.log( 'mic', result.account.name, data );
-					socket.to( default_room ).emit( 'mic', [result.session.uid, result.mic] );
+					var room = [...socket.rooms].slice(1, 2)[0];
+					if (room) {
+						result.mic = data ? 1 : 0;
+						$.log( 'mic', result.account.name, data );
+						socket.to( room ).emit( 'mic', [result.session.uid, result.mic] );
+					}
 				}
 			}
 		});
@@ -232,14 +281,17 @@
 			if (conn) { // TODO verify it's allowed, is this validation enough? can socket ids be replicated
 				var result = connections[conn];
 				if (result && result.session && result.session.uid) {
-					var socketsInRoom = SocketIO.sockets.adapter.rooms.get( default_room );
-					socketsInRoom.forEach(function (socket_id) {
-						var c = get_connection(socket_id);
-						if (c) {
-							if (connections[c].listen)
-								connections[c].socket.emit( 'audio', [ result.session.uid, data ] );
-						}
-					});
+					var room = [...socket.rooms].slice(1, 2)[0];
+					if (room) {
+						var socketsInRoom = SocketIO.sockets.adapter.rooms.get( room );
+						socketsInRoom.forEach(function (socket_id) {
+							var c = get_connection(socket_id);
+							if (c) {
+								if (connections[c].listen)
+									connections[c].socket.emit( 'audio', [ result.session.uid, data ] );
+							}
+						});
+					}
 				}
 			}
 		});
@@ -248,9 +300,12 @@
 			if (conn) { // TODO verify it's allowed, is this validation enough? can socket ids be replicated
 				var result = connections[conn];
 				if (result && result.session && result.session.uid) {
-					result.listen = data ? 1 : 0;
-					$.log( 'listen', result.account.name, data );
-					socket.to( default_room ).emit( 'listen', [ result.session.uid, data ] );
+					var room = [...socket.rooms].slice(1, 2)[0];
+					if (room) {
+						result.listen = data ? 1 : 0;
+						$.log( 'listen', result.account.name, data );
+						socket.to( room ).emit( 'listen', [ result.session.uid, data ] );
+					}
 				}
 			}
 		});
@@ -258,10 +313,13 @@
 			var conn = get_connection(socket.id);
 			if (conn) {
 				var result = connections[conn];
-				socket.to( default_room ).emit( 'leave', result.session.uid );
-				socket.leave( default_room );
-				$.log('user left', result.account.name);
-				$.log('room size', get_room_size( default_room ) );
+				var room = [...socket.rooms].slice(1, 2)[0];
+				if (room) {
+					socket.to( room ).emit( 'leave', result.session.uid );
+					socket.leave( room );
+					$.log('user left', result.account.name);
+					$.log(room+' room size', get_room_size( room ) );
+				}
 				remove_connection(socket.id);
 			}
 		});

@@ -33,5 +33,6 @@
 +include linked/profile.htm.w
 +include linked/accounts.htm.w
 +include linked/polling.client.htm.w
++include linked/sound.graph.htm.w
 +include linked/rooms.htm.w
 +include linked/messages.htm.w

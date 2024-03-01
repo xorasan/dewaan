@@ -1,8 +1,12 @@
 +htm
 body
 	+include managed.htm.w
+	script @src(/libs/simplify.line.js)
+	script @src(/libs/socket.io.min.js)
 	script @src(/libs/recorder.min.js)
 	script @src(/libs/opus_to_pcm.js)
+	script @src(/libs/fixwebm.js)
+	script @src(/libs/pica.js)
 
 	[view=main]
 		[id=list]

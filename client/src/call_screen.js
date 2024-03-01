@@ -2,14 +2,14 @@
 // TODO clicking outside or pointer leaving WB should hide pointer
 // TODO add signed in check on view ready
 // TODO list.retain_props to keep previous props and only apply new values
+// TODO make calls unique to each room
 var SocketIO = io({
 	autoConnect: false,
 }), call_list, Whiteboard, pointer_data;
 var media_stream, init_recorder, recorder_options;
-var is_room_creator, opus_recorder, remote_stream;
+var is_room_creator, opus_recorder, remote_stream, is_in_call, current_room, room_to_join;
 ;(function(){
 	var module_name = 'call_screen', connection_status, connection_status_string,
-		is_in_call,
 		is_mic_on = Preferences.get('mic', 1),
 		is_listening = Preferences.get('listen', 1);
 
@@ -59,14 +59,17 @@ var is_room_creator, opus_recorder, remote_stream;
 				count: 0,
 				subtitle: '',
 				icon: 'iconcall',
+				luid: current_room,
 			};
 			if (is_in_call) {
 				o.count = call_list.length();
 				o.subtitle = get_connection_string();
 			}
 			Sidebar.set(o);
+			Sidebar.show_item(module_name);
 		} else {
-			Sidebar.remove(module_name);
+			Sidebar.hide_item(module_name);
+//			Sidebar.remove(module_name);
 		}
 	} }
 	function setup_analyzer (caller, audioStream) {
@@ -740,9 +743,13 @@ var is_room_creator, opus_recorder, remote_stream;
 	}
 
 	function join_room() {
+		leave_room();
+		
+		var details = get_session_details();
+		current_room = details.room;
 		SocketIO.emit(
 			'join',
-			get_session_details(),
+			details,
 			function (data) {
 				on_join(data, 1);
 			}
@@ -753,6 +760,7 @@ var is_room_creator, opus_recorder, remote_stream;
 			'leave',
 			get_session_details()
 		);
+		current_room = 0;
 		is_room_creator = 0;
 		stop_mic_stream();
 //		disconnect_speaker();
@@ -773,6 +781,7 @@ var is_room_creator, opus_recorder, remote_stream;
 		if (opus_recorder) opus_recorder.stop();
 
 		clear_all_callers();
+		set_sidebar_and_header();
 	}
 
 	function on_join(result, is_recap) {
@@ -819,7 +828,9 @@ var is_room_creator, opus_recorder, remote_stream;
 				call_list.set(obj);
 				var keys = call_list.get_item_keys( o.uid );
 				// TODO add support for changing this color on theme change
-				keys.color_tag.style.background = Themes.get(pen_colors[o.color] || 'text');
+				if (keys && keys.color_tag) {
+					keys.color_tag.style.background = Themes.get(pen_colors[o.color] || 'text');
+				}
 
 				var this_session = call_list.adapter.get( Sessions.get_session_uid() );
 				var caller = call_list.adapter.get(o.uid);
@@ -878,6 +889,7 @@ var is_room_creator, opus_recorder, remote_stream;
 		apply_recorder_state();
 		redraw_whiteboard_if_needed();
 		update_sidebar();
+		set_sidebar_and_header();
 		if (result == Sessions.get_session_uid()) {
 			$.log( 'stopping mic stream..' );
 			stop_mic_stream();
@@ -1037,6 +1049,9 @@ var is_room_creator, opus_recorder, remote_stream;
 			browser_version: 0,
 			mobile: 0,
 		};
+		if (room_to_join) {
+			details.room = room_to_join.uid;
+		}
 		var uad = navigator.userAgentData;
 		if (uad) {
 			details.platform = uad.platform;
@@ -1054,10 +1069,29 @@ var is_room_creator, opus_recorder, remote_stream;
 	}
 
 	function get_connection_string() {
-		if (connection_status ===  0) return 'Disconnected';
-		if (connection_status ===  1) return 'Connected';
-		if (connection_status ===  2) return 'Reconnected'
-		if (connection_status === -1) return 'Error';
+		var s = current_room, new_name;
+		
+		if (room_to_join) {
+			if (room_to_join.link) {
+				new_name = '@'+room_to_join.link;
+			} else {
+				new_name = room_to_join.name;
+			}
+		}
+		if (connection_status ===  0) s = 'Disconnected';
+		if ([1, 2].includes(connection_status)) {
+			if (is_in_call) {
+				if (room_to_join.uid !== current_room) {
+					s = 'Leave other room & Join this one...';
+				} else {
+					s = 'Joined';
+				}
+			} else {
+				s = 'Connected to Server';
+			}
+		}
+		if (connection_status === -1) s = 'Error';
+		return (new_name ? new_name+' - ' : '')+s;
 	}
 
 	function set_sidebar_and_header(subtitle) {
@@ -1109,8 +1143,10 @@ var is_room_creator, opus_recorder, remote_stream;
 		listen_softkey_object.n = is_listening ? 'Listening' : 'Defeaned';
 		listen_softkey_object.i = is_listening ? 'iconheadset' : 'iconheadsetoff';
 		
-		if (listen_softkey_object.uid && !is_in_call) Softkeys.remove(listen_softkey_object.uid);
-		if (is_in_call) Softkeys.add(listen_softkey_object);
+		var same_room = is_in_the_same_room();
+
+		if (listen_softkey_object.uid && !same_room) Softkeys.remove(listen_softkey_object.uid);
+		if (same_room) Softkeys.add(listen_softkey_object);
 	}
 
 	var is_mic_stream_starting;
@@ -1205,28 +1241,41 @@ var is_room_creator, opus_recorder, remote_stream;
 		mic_softkey_object.n = permissions.mic ? (is_mic_on ? 'Mic On' : 'Mic Off') : 'Needs Mic Permission';
 		mic_softkey_object.i = permissions.mic ? (is_mic_on ? 'iconm' : 'iconmoff') : 'iconmnone';
 		
-		if (mic_softkey_object.uid && !is_in_call) Softkeys.remove(mic_softkey_object.uid);
-		if (is_in_call) Softkeys.add(mic_softkey_object);
+		var same_room = is_in_the_same_room();
+
+		if (mic_softkey_object.uid && !same_room) Softkeys.remove(mic_softkey_object.uid);
+		if (same_room) Softkeys.add(mic_softkey_object);
 	}
 
-	function set_call_softkey() {
-		Softkeys.add({ n: is_in_call ? 'Leave' : 'Join',
-			k: K.en,
-			i: is_in_call ? 'iconcallend' : 'iconcall',
-			c: function (k, e) {
-				if (is_in_call) {
-					leave_room();
-				} else {
-					join_room();
-				}
-				is_in_call = !is_in_call;
-				update_softkeys();
-				e && e.preventDefault();
-			}
-		});
+	function is_in_the_same_room() {
+		return is_in_call && room_to_join && room_to_join.uid === current_room;
+	}
 
-		if (undo_softkey_object.uid && !is_in_call) Softkeys.remove(undo_softkey_object.uid);
-		if (is_in_call) Softkeys.add(undo_softkey_object);
+	var call_softkey_object = { k: K.en, c: function (k, e) {
+		var same_room = is_in_the_same_room();
+		if (same_room) {
+			leave_room();
+			is_in_call = 0;
+		} else {
+			join_room();
+			is_in_call = 1
+		}
+		update_softkeys();
+		e && e.preventDefault();
+	} };
+	function set_call_softkey() {
+		var same_room = is_in_the_same_room();
+		if (room_to_join) {
+			call_softkey_object.n = same_room ? 'Leave' : 'Join';
+			call_softkey_object.i = same_room ? 'iconcallend' : 'iconcall';
+			Softkeys.add(call_softkey_object);
+		} else {
+			if (call_softkey_object.uid)
+				Softkeys.remove(call_softkey_object);
+		}
+
+		if (undo_softkey_object.uid && !same_room) Softkeys.remove(undo_softkey_object.uid);
+		if (same_room) Softkeys.add(undo_softkey_object);
 	}
 
 	function update_softkeys() {
@@ -1234,6 +1283,20 @@ var is_room_creator, opus_recorder, remote_stream;
 		set_mic_softkey();
 		set_listen_softkey();
 		recorder_softkeys();
+		if (is_in_call && room_to_join && room_to_join.uid === current_room) {
+			izhar(whiteboardui);
+		} else {
+			ixtaf(whiteboardui);
+		}
+		if (room_to_join) {
+			if (is_in_call && room_to_join && room_to_join.uid === current_room) {
+				call_list.message();
+			} else {
+				call_list.message( (room_to_join.connected||[]).length+' people in '+room_to_join.name );
+			}
+		} else {
+			call_list.message('Room not found');
+		}
 	}
 
 	function update_permissions(name, state) {
@@ -1242,18 +1305,16 @@ var is_room_creator, opus_recorder, remote_stream;
 			set_mic_softkey();
 		}
 	}
-	function setup_permissions() {
-		if ('permissions' in navigator) {
-			navigator.permissions.query({ name: 'microphone' }).then(function (perm) {
+	function setup_permissions() { if ('permissions' in navigator) {
+		navigator.permissions.query({ name: 'microphone' }).then(function (perm) {
+			update_permissions('mic', perm.state);
+			perm.onchange = function () {
 				update_permissions('mic', perm.state);
-				perm.onchange = function () {
-					update_permissions('mic', perm.state);
-				};
-			}).catch(function (e) {
-				$.log.w( 'mic permission check not supported' );
-			});
-		}
-	}
+			};
+		}).catch(function (e) {
+			$.log.w( 'mic permission check not supported' );
+		});
+	} }
 
 	function resize_whiteboard() {
 		$.taxeer('resize_whiteboard', function () {
@@ -1363,11 +1424,26 @@ var is_room_creator, opus_recorder, remote_stream;
 		$.taxeer('redraw-whiteboard', redraw_whiteboard_if_needed, 60);
 	});
 
+	async function get_room_and_setup_view() {
+		var uid = View.get_uid();
+		if (uid) { // fetch room
+			call_list.message('Getting room details...');
+			room_to_join = await Rooms.get_room(uid);
+			if (View.is_active(module_name)) {
+				set_sidebar_and_header();
+				update_softkeys();
+			}
+		} else {
+			// QUESTION TODO idk offer a way back to rooms list or home?
+		}
+	}
 	Hooks.set('viewready', function (args) {
-		if (view.is_active(module_name)) {
+		if (View.is_active(module_name)) {
+			room_to_join = 0;
 			set_sidebar_and_header();
 			update_softkeys();
-//			Network.get(module_name, 'active', 1);
+
+			get_room_and_setup_view();
 		}
 	});
 	Hooks.set('restore', function () {

@@ -33,5 +33,6 @@
 +include linked/profile.js
 +include linked/accounts.js
 +include linked/polling.client.js
++include linked/sound.graph.js
 +include linked/rooms.js
 +include linked/messages.js

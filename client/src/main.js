@@ -1,3 +1,4 @@
+// TODO update view on session change
 ;(function(){
 	'use strict';
 
@@ -33,10 +34,10 @@
 	};
 	
 	function restore_view_by_context() {
-		if (sessions.signedin()) {
-			view.run('rooms');
+		if (Sessions.signedin()) {
+			View.run('rooms');
 		} else {
-			view.run('intro');
+			View.run('intro');
 		}
 		if (get_global_object().Sidebar) Sidebar.choose(module_name);
 		Webapp.header([Config.appname, Config.desc, '/e.png']);
@@ -64,19 +65,19 @@
 		Webapp.ask_on_exit(1);
 		main.update(); // setup pager
 		
-		main_dom_keys = view.dom_keys(module_name);
+		main_dom_keys = View.dom_keys(module_name);
 		
 //		$.taxeer('goto-view', function () {
 //			Hooks.run('view', 'call_screen');
 //		}, 100);
 	});
 	Hooks.set('viewready', function (args) {
-		if (view.is_active(module_name)) {
+		if (View.is_active(module_name)) {
 			restore_view_by_context();
 		}
 	});
 	Hooks.set('restore', function () {
-		if (backstack.darajah === 0 && view.is_active([module_name, 'rooms'])) {
+		if (backstack.darajah === 0 && View.is_active([module_name, 'rooms'])) {
 			restore_view_by_context();
 		}
 	});

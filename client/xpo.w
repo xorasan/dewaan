@@ -1,13 +1,17 @@
 iconfeaturedplaylist iconfeaturedplaylist
 iconnotificationsoff iconnotificationsoff
-navigationlongpress  navigationlongpress
+iconhourglassempty   iconhourglassempty
 usernameavailable    usernameavailable
 softkeystouchdpad    softkeystouchdpad
+icondeleteforever    icondeleteforever
+iconfilterlistrev    iconfilterlistrev
+iconkeyboardvoice    iconkeyboardvoice
 iconnotifications    iconnotifications
 iconvisibilityoff    iconvisibilityoff
 tallscreenpadding    tallscreenpadding
 checkingusername     checkingusername
 appcachedoffline     appcachedoffline
+iconfiledownload     iconfiledownload
 iconphoneandroid     iconphoneandroid
 statusbarpadding     statusbarpadding
 fetchingcaptcha      fetchingcaptcha
@@ -15,8 +19,6 @@ usernamedetails      usernamedetails
 newversionfound      newversionfound
 seeghahjadeedah      seeghahjadeedah
 translateupdate      translateupdate
-navigationstart      navigationstart
-navigationpress      navigationpress
 iconbrightness7      iconbrightness7
 realdatereplace      realdatereplace
 statusbarshadow      statusbarshadow
@@ -27,6 +29,7 @@ signoutconfirm       signoutconfirm
 appcachefailed       appcachefailed
 webapptouchdir       webapptouchdir
 iconappinstall       iconappinstall
+iconfilterlist       iconfilterlist
 iconformatsize       iconformatsize
 iconheadsetoff       iconheadsetoff
 iconvisibility       iconvisibility
@@ -45,7 +48,6 @@ passwordunder        passwordunder
 passwordwrong        passwordwrong
 swunsupported        swunsupported
 icontranslate        icontranslate
-navigationend        navigationend
 iconarrowback        iconarrowback
 iconbugreport        iconbugreport
 icondaterange        icondaterange
@@ -72,6 +74,7 @@ mklmhtatrood         mklmhtatrood
 usernameover         usernameover
 passwordover         passwordover
 transparency         transparency
+qatraudioctx         qatraudioctx
 iconmorevert         iconmorevert
 iconsettings         iconsettings
 relativetime         relativetime
@@ -103,7 +106,6 @@ answerblank          answerblank
 answerwrong          answerwrong
 requestfeat          requestfeat
 unsupported          unsupported
-templateset          templateset
 iconcallend          iconcallend
 iconheadset          iconheadset
 iconmessage          iconmessage
@@ -115,6 +117,7 @@ freecolumns          freecolumns
 messageitem          messageitem
 profile_tag          profile_tag
 status_icon          status_icon
+secondaryxd          secondaryxd
 queuearray           queuearray
 progressfn           progressfn
 willdelete           willdelete
@@ -129,7 +132,6 @@ minutesago           minutesago
 timeformat           timeformat
 animations           animations
 mousewheel           mousewheel
-navigation           navigation
 iconbluron           iconbluron
 iconmudeer           iconmudeer
 iconpeople           iconpeople
@@ -173,9 +175,13 @@ monthsago            monthsago
 alongtime            alongtime
 wednesday            wednesday
 iconapple            iconapple
+iconblock            iconblock
 iconclose            iconclose
 iconlinux            iconlinux
 iconmnone            iconmnone
+iconowner            iconowner
+iconpause            iconpause
+iconphoto            iconphoto
 icontheme            icontheme
 icontimer            icontimer
 monthname            monthname
@@ -224,8 +230,6 @@ yearsago             yearsago
 thursday             thursday
 saturday             saturday
 language             language
-sklamsah             sklamsah
-skbutton             skbutton
 iconcall             iconcall
 icondone             icondone
 iconedit             iconedit
@@ -233,6 +237,8 @@ iconhelp             iconhelp
 iconhome             iconhome
 iconmenu             iconmenu
 iconmoff             iconmoff
+iconsend             iconsend
+iconstop             iconstop
 iconundo             iconundo
 _minutes             _minutes
 _seconds             _seconds
@@ -295,7 +301,6 @@ hours24              hours24
 hours12              hours12
 loading              loading
 exiting              exiting
-skhints              skhints
 iconadd              iconadd
 icontab              icontab
 ittasal              ittasal
@@ -355,7 +360,6 @@ sunday               sunday
 monday               monday
 friday               friday
 parent               parent
-lamsah               lamsah
 popall               popall
 change               change
 jaame3               jaame3
@@ -371,6 +375,7 @@ before               before
 mulhaq               mulhaq
 medium               medium
 bigger               bigger
+nowrap               nowrap
 sticky               sticky
 header               header
 bottom               bottom
@@ -383,6 +388,7 @@ skdots               skdots
 baidaa               baidaa
 hidden               hidden
 bardaa               bardaa
+lamsah               lamsah
 soorah               soorah
 qrcode               qrcode
 margin               margin
@@ -450,6 +456,7 @@ ixtaf                ixtaf
 pager                pager
 shakl                shakl
 photo                photo
+owner                owner
 image                image
 names                names
 error                error
@@ -464,7 +471,7 @@ kind                 kind
 jobs                 jobs
 high                 high
 i18n                 i18n
-hawm                 hawm
+text                 text
 _uid                 _uid
 _day                 _day
 year                 year
@@ -502,8 +509,8 @@ mh75                 mh75
 dimx                 dimx
 xaas                 xaas
 bare                 bare
-text                 text
 row2                 row2
+hawm                 hawm
 row1                 row1
 item                 item
 body                 body
@@ -568,3 +575,4 @@ ru                   ru
 de                   de
 es                   es
 on                   on
+                     
