@@ -8,6 +8,7 @@
 +include linked/offline.js
 +include linked/sidebar.js
 +include linked/network.js
++include linked/network.internals.js
 +include linked/manifest.js
 +include linked/list.js
 +include linked/backstack.js
@@ -32,6 +33,7 @@
 +include linked/sessions.js
 +include linked/profile.js
 +include linked/accounts.js
++include linked/accounts.access.js
 +include linked/polling.client.js
 +include linked/sound.graph.js
 +include linked/rooms.js

@@ -12,8 +12,10 @@ tallscreenpadding    tallscreenpadding
 checkingusername     checkingusername
 appcachedoffline     appcachedoffline
 iconfiledownload     iconfiledownload
+iconnetworkcheck     iconnetworkcheck
 iconphoneandroid     iconphoneandroid
 statusbarpadding     statusbarpadding
+accounts_access      accounts_access
 fetchingcaptcha      fetchingcaptcha
 usernamedetails      usernamedetails
 newversionfound      newversionfound
@@ -235,6 +237,7 @@ icondone             icondone
 iconedit             iconedit
 iconhelp             iconhelp
 iconhome             iconhome
+iconlock             iconlock
 iconmenu             iconmenu
 iconmoff             iconmoff
 iconsend             iconsend
@@ -281,6 +284,7 @@ intahaa              intahaa
 payload              payload
 account              account
 rasaail              rasaail
+network              network
 profile              profile
 friends              friends
 created              created

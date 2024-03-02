@@ -8,6 +8,7 @@
 +include linked/offline.htm.w
 +include linked/sidebar.htm.w
 +include linked/network.htm.w
++include linked/network.internals.htm.w
 +include linked/manifest.htm.w
 +include linked/list.htm.w
 +include linked/backstack.htm.w
@@ -32,6 +33,7 @@
 +include linked/sessions.htm.w
 +include linked/profile.htm.w
 +include linked/accounts.htm.w
++include linked/accounts.access.htm.w
 +include linked/polling.client.htm.w
 +include linked/sound.graph.htm.w
 +include linked/rooms.htm.w

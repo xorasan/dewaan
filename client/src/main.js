@@ -33,14 +33,28 @@
 		},
 	};
 	
-	function restore_view_by_context() {
+	async function restore_view_by_context() {
 		if (Sessions.signedin()) {
 			View.run('rooms');
 		} else {
 			View.run('intro');
 		}
 		if (get_global_object().Sidebar) Sidebar.choose(module_name);
-		Webapp.header([Config.appname, Config.desc, '/e.png']);
+		Webapp.header([0, 0, '/e.png']);
+
+		var o = await Offline.fetch( 'manifest' );
+		if (Webapp.is_at_home()) {
+			if (o && o.length) {
+				var name, description;
+				o.forEach(function (o, i) {
+					if (o.uid == 'name') name = o.value;
+					if (o.uid == 'description') description = o.value;
+				});
+				Webapp.header([name, description, '/e.png']);
+			} else {
+				Webapp.header([Config.appname, Config.desc, '/e.png']);
+			}
+		}
 	}
 	
 	Hooks.set('sessionchange', function (key) {

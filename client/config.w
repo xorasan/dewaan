@@ -68,11 +68,13 @@ icons
 	keyboardvoice
 
 	menu
-	
+	networkcheck
+
 	filterlist
 	filterlistrev
 
 	owner
+	lock
 	people
 	person
 	personadd
@@ -123,6 +125,7 @@ include
 	offline
 	sidebar
 	network
+	network.internals
 	manifest
 	list
 	backstack
@@ -147,6 +150,7 @@ include
 	sessions
 	profile
 	accounts
+	accounts.access
 	polling.client
 	sound.graph
 	rooms
