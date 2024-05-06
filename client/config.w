@@ -34,6 +34,7 @@ src
 	messages
 	recorder
 	sound
+	markdown
 	uploader
 	sw
 name      client
@@ -64,6 +65,8 @@ icons
 	hourglassempty
 	pause
 	stop
+	fastrewind
+	fastforward
 	send
 	keyboardvoice
 
@@ -96,6 +99,9 @@ icons
 	notifications
 	notificationsoff
 
+	checkbox
+	checkboxoutlineblank
+
 	m
 	mnone
 	moff
@@ -122,12 +128,13 @@ include
 	webapp.13inch
 //	webapp.sw
 	webapp.notify
+	webapp.checkbox
 	offline
 	sidebar
 	network
 	network.internals
-	manifest
 	list
+	list.recycle
 	backstack
 	backstack.history
 	preferences
@@ -140,11 +147,13 @@ include
 	recorder
 	uploader
 	canvas
+	markdown
 	softkeys
 	softkeys.list
 	sheet
 	themes
 	dialog
+	manifest
 	webapp.touch
 	softkeys.touch
 	sessions

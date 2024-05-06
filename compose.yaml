@@ -29,6 +29,7 @@ services:
       - dewaan-network
     environment:
       DEWAAN_MONGO_URI: ${DEWAAN_MONGO_URI}
+      DEWAAN_MONGO_DB: ${DEWAAN_MONGO_DB}
     volumes:
       - ./released:/dewaan
 volumes:

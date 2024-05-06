@@ -13,6 +13,8 @@ body
 
 	[view=intro]
 		b 'intro'
+		em 'this app is currently in ALPHA, which means it might be unstable, missing features and likely crash'
+		em 'we are working our way towards the BETA version, stay tuned'
 		[id=list]
 	
 	[view=call_screen] #call_screen_ui

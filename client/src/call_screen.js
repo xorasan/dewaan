@@ -52,20 +52,20 @@ var is_room_creator, opus_recorder, remote_stream, is_in_call, current_room, roo
 		}
 	}
 	function update_sidebar() { if (get_global_object().Sidebar) {
-		if (Sessions.signedin()) {
-			var o = {
-				uid: module_name,
-				title: translate( module_name ),
-				count: 0,
-				subtitle: '',
-				icon: 'iconcall',
-				luid: current_room,
-			};
+		var o = {
+			uid: module_name,
+			title: translate( module_name ),
+			count: 0,
+			subtitle: room_to_join ? room_to_join.name : '',
+			icon: 'iconcall',
+			luid: current_room,
+		};
+		Sidebar.set(o);
+		if (View.is_active(module_name) || current_room) {
 			if (is_in_call) {
 				o.count = call_list.length();
 				o.subtitle = get_connection_string();
 			}
-			Sidebar.set(o);
 			Sidebar.show_item(module_name);
 		} else {
 			Sidebar.hide_item(module_name);
@@ -1345,12 +1345,10 @@ var is_room_creator, opus_recorder, remote_stream, is_in_call, current_room, roo
 		];
 	}
 
-	Hooks.set('sessionchange', function (signedin) {
-		update_sidebar();
-	});
 	Hooks.set('ready', function (args) {
 		Webapp.add_minimal_view( module_name );
 		setup_permissions();
+		update_sidebar();
 
 		Whiteboard = Canvas(whiteboardui);
 		whiteboardui.onpointerdown = function () {
@@ -1432,6 +1430,7 @@ var is_room_creator, opus_recorder, remote_stream, is_in_call, current_room, roo
 			if (View.is_active(module_name)) {
 				set_sidebar_and_header();
 				update_softkeys();
+				update_sidebar();
 			}
 		} else {
 			// QUESTION TODO idk offer a way back to rooms list or home?
@@ -1445,6 +1444,7 @@ var is_room_creator, opus_recorder, remote_stream, is_in_call, current_room, roo
 
 			get_room_and_setup_view();
 		}
+		update_sidebar();
 	});
 	Hooks.set('restore', function () {
 		if (backstack.darajah === 1 && view.is_active(module_name)) {
