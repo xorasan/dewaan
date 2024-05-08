@@ -11,13 +11,17 @@ Only tested on Ubuntu 22 LTS. Your mileage may vary.
 
 - Install [Docker](https://docs.docker.com/engine/install/ubuntu/)
 - For Development *(optional)*
-	- Clone [Mudeer](https://github.com/xorasan/mudeer) repo & install it
+	- Install [Mudeer](https://github.com/xorasan/mudeer)
 - Clone Dewaan repo
+	- `git clone https://github.com/xorasan/dewaan.git`
 - For Production
-	- **TODO** Get the latest stable release of Dewaan
+	- **TODO** Get the latest stable release of Dewaan (needs to be published)
 - Setup important variables in `.env`
+	- **TODO** what does each variable do?
 - Build the image
+	- `./build-docker-image.sh`
 - Run the image
+	- `docker compose up`
 
 # Goals
 [TODO](https://github.com/xorasan/dewaan/blob/main/TODO.md)
