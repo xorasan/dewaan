@@ -3,7 +3,7 @@ services:
     image: mongodb/mongodb-community-server:7.0.3-ubuntu2204
     container_name: dewaan-mongodb
     ports:
-      - 27017:27017
+      - ${DEWAAN_MONGO_PORT:-27017}:27017
     volumes:
       - type: volume
         target: /data/db
@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 3060:3060
+      - ${DEWAAN_WEB_PORT:-3060}:3060
     networks:
       - dewaan-network
     environment:

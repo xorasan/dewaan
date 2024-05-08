@@ -7,28 +7,34 @@
 
 * [ ] Store
 
-* [ ] Rooms
+* [x] Rooms
 	* [ ] Sort
 		* [x] sort by date created, both ways
 
-* [ ] Messages
-	* [ ] Pagination
+* [x] Messages
+	* [x] Pagination
 		* [ ] limit sync to latest messages
 		* [ ] load older on demand
 
-* [ ] Accounts
-	* [ ] Ownership
+* [x] Accounts
+	* [x] Ownership
 		* [x] cli tool to modify ownership
-		* [ ] show ownership status
+		* [x] show ownership status
 		* [ ] deliver notifications about changes
 
-* [ ] Profile
+* [x] Profile
 
-* [ ] Sessions
+* [x] Sessions
+
+* [x] Deployment
+	* [x] `DEWAAN_MONGO_PORT` & `DEWAAN_WEB_PORT` can be used to change default port so you can run multiple instances
+	* [ ] Upload the latest package
+	* [ ] Figure out a way to deliver packages more efficiently
+	* [ ] Dewaan should support automatically updating itself to new stable versions
 
 * [ ] Misc
 	* [ ] Write tools to import from Rocket.chat and Mattermost
-	* [ ] Make the MongoDB connection string dynamic (eg: to allow connecting to dynamic docker containers)
+	* [x] Make the MongoDB connection string dynamic (eg: to allow connecting to dynamic docker containers)
 	* [ ] Free time slots, users should be able to offer time slots in groups and DMs when they'll be free
 		* [ ] these can then be used to schedule meetings
 		* [ ] they should show up as vertical slots, limited by the next few days or a week or so
