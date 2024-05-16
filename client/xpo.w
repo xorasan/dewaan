@@ -475,7 +475,6 @@ kind                     kind
 jobs                     jobs
 high                     high
 text                     text
-icon                     icon
 _uid                     _uid
 _day                     _day
 year                     year
@@ -508,6 +507,7 @@ flex                     flex
 less                     less
 grow                     grow
 more                     more
+icon                     icon
 mh25                     mh25
 mh50                     mh50
 mh75                     mh75

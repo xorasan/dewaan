@@ -1,5 +1,8 @@
 {
 	"name": "client",
 	"main": "../released/index.html",
-	"chromium-args": "--disable-features=ProcessPerSiteUpToMainFrameThreshold"
+	"chromium-args": "--disable-features=ProcessPerSiteUpToMainFrameThreshold",
+	"window": {
+		"icon": "pub/e.png"
+	}
 }

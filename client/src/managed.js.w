@@ -30,6 +30,7 @@
 +include linked/sheet.js
 +include linked/themes.js
 +include linked/dialog.js
++include linked/notifications.js
 +include linked/manifest.js
 +include linked/webapp.touch.js
 +include linked/softkeys.touch.js

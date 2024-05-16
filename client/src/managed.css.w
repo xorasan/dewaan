@@ -30,6 +30,7 @@
 +include linked/sheet.css.w
 +include linked/themes.css.w
 +include linked/dialog.css.w
++include linked/notifications.css.w
 +include linked/manifest.css.w
 +include linked/webapp.touch.css.w
 +include linked/softkeys.touch.css.w

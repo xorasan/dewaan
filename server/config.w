@@ -17,6 +17,7 @@ src
 	accounts
 	databases
 	manifest
+	notifications
 	rooms
 	messages
 name      server
@@ -43,6 +44,7 @@ include
 	messages.server
 	databases
 	databases.mongodb
+	notifications.server
 	polling
 deps
 	express

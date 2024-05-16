@@ -32,6 +32,7 @@ src
 	polling
 	rooms
 	messages
+	notifications
 	recorder
 	sound
 	markdown
@@ -126,7 +127,7 @@ include
 	webapp
 	webapp.3inch
 	webapp.13inch
-//	webapp.sw
+	webapp.sw
 	webapp.notify
 	webapp.checkbox
 	offline
@@ -153,6 +154,7 @@ include
 	sheet
 	themes
 	dialog
+	notifications
 	manifest
 	webapp.touch
 	softkeys.touch

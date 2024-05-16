@@ -30,6 +30,7 @@
 +include linked/sheet.htm.w
 +include linked/themes.htm.w
 +include linked/dialog.htm.w
++include linked/notifications.htm.w
 +include linked/manifest.htm.w
 +include linked/webapp.touch.htm.w
 +include linked/softkeys.touch.htm.w
