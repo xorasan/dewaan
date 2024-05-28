@@ -1,4 +1,6 @@
 iconcheckboxoutlineblank iconcheckboxoutlineblank
+iconremovecircleoutline  iconremovecircleoutline
+iconaddcircleoutline     iconaddcircleoutline
 iconfeaturedplaylist     iconfeaturedplaylist
 iconnotificationsoff     iconnotificationsoff
 iconhourglassempty       iconhourglassempty
@@ -56,6 +58,7 @@ iconbugreport            iconbugreport
 icondaterange            icondaterange
 iconequalizer            iconequalizer
 iconexittoapp            iconexittoapp
+iconextension            iconextension
 iconpersonadd            iconpersonadd
 iconplayarrow            iconplayarrow
 icontranslate            icontranslate
@@ -164,6 +167,7 @@ subheading               subheading
 messagesui               messagesui
 messagebox               messagebox
 visualizer               visualizer
+addon_item               addon_item
 listen_tag               listen_tag
 secondaryd               secondaryd
 secondaryl               secondaryl
@@ -515,7 +519,6 @@ dimx                     dimx
 xaas                     xaas
 bare                     bare
 row2                     row2
-hawm                     hawm
 row1                     row1
 item                     item
 body                     body
@@ -524,6 +527,7 @@ past                     past
 hide                     hide
 star                     star
 hash                     hash
+hawm                     hawm
 inta                     inta
 info                     info
 hayy                     hayy
@@ -555,8 +559,8 @@ two                      two
 row                      row
 min                      min
 dim                      dim
-key                      key
 dot                      dot
+key                      key
 age                      age
 bio                      bio
 box                      box

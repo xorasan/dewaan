@@ -16,6 +16,9 @@
 +include linked/backstack.history.css.w
 +include linked/preferences.css.w
 +include linked/activity.css.w
++include linked/weld.css.w
++include linked/weld.htm.css.w
++include linked/weld.css.css.w
 +include linked/view.css.w
 +include linked/time.css.w
 +include linked/settings.css.w

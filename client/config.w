@@ -28,6 +28,7 @@ src
 	canvas
 	profile
 	accounts
+	weld
 	sidebar
 	polling
 	rooms
@@ -96,6 +97,7 @@ icons
 	photo
 	deleteforever
 	filedownload
+	extension
 	
 	notifications
 	notificationsoff
@@ -117,6 +119,9 @@ icons
 	linux
 	windows
 	apple
+	
+	addcircleoutline
+	removecircleoutline
 langs
 	en
 include
@@ -127,7 +132,7 @@ include
 	webapp
 	webapp.3inch
 	webapp.13inch
-	webapp.sw
+//	webapp.sw
 	webapp.notify
 	webapp.checkbox
 	offline
@@ -140,6 +145,9 @@ include
 	backstack.history
 	preferences
 	activity
+	weld
+	weld.htm
+	weld.css
 	view
 	time
 	settings

@@ -23,6 +23,9 @@
 	cursor			crosshair
 	border-radius	15px
 
+.addon_item
+	padding			10px 15px
+
 .call_list_item .profile_icon
 	position		relative
 .call_list_item .profile_tag

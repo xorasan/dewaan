@@ -16,6 +16,9 @@
 +include linked/backstack.history.js
 +include linked/preferences.js
 +include linked/activity.js
++include linked/weld.js
++include linked/weld.htm.js
++include linked/weld.css.js
 +include linked/view.js
 +include linked/time.js
 +include linked/settings.js

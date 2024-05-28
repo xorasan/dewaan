@@ -17,6 +17,22 @@ body
 		em 'we are working our way towards the BETA version, stay tuned'
 		[id=list]
 	
+	#addons-scripts
+	#addons-styles
+	#addons-dom
+	
+	[view=addons]
+		[id=list]
+
+	[template=addon_item] .soft_item .addon_item .flex .padb
+		[id=icon] .icon .center .pad
+		.flex .vertical .pad .grow
+			.flex .big
+				[id=name] .name
+				[id=build] .build .dim .pad
+			[id=description] .description
+		[id=state] .state .center .pad .upper .bold
+	
 	[view=call_screen] #call_screen_ui
 //		#visualizer .flex
 		canvas [id=whiteboard] #whiteboardui
