@@ -60,7 +60,7 @@ let Addons = {
 				if (o.icon) {
 					addon.icon$h = o.icon;
 				} else {
-					addon.icon = 'iconextension';
+					addon.icon = Templates.get_icon_as_svg( module_icon );
 				}
 				addons_list.set(addon);
 			});
@@ -70,6 +70,14 @@ let Addons = {
 		} else {
 			addons_list.message('No addons found');
 		}
+	}
+
+	async function activate_addon(uid) {
+		addons_list.get_item_object( uid )
+		activate(  );
+	}
+	async function disable_addon(uid) {
+		
 	}
 	
 	async function activate(o, activate_only = 0) {
@@ -85,11 +93,16 @@ let Addons = {
 			if (result) {
 				let client = result.client;
 				if (state === 1 && client) { // client
+					let default_icon;
+					if (!o.icon$h && !o.icon) {
+						default_icon = Templates.get_icon_as_svg( module_icon );
+					}
+
 					let addon = Addons.active[ o.uid ] = {
-						icon: o.icon$h || o.icon
+						icon: o.icon$h || o.icon || default_icon
 					};
 					// TODO satisfy deps first if any
-
+					
 					
 					if (client.main) { // client.js
 						let addons_scripts = elementbyid('addons-scripts');
@@ -184,8 +197,7 @@ let Addons = {
 	
 	var activate_sk = { n: 'Activate',
 		k: 'a',
-		shift: 1,
-		ctrl: 1,
+		alt: 1,
 		c: function () {
 			activate( addons_list.get_item_object() );
 		},
@@ -219,7 +231,7 @@ let Addons = {
 		dom_keys = View.dom_keys(module_name);
 		
 		addons_list = List(dom_keys.list).id_prefix('addon').list_item('addon_item');
-		addons_list.on_selection = function () {
+		addons_list.on_selection = function (o) {
 			update_softkeys();
 		};
 		addons_list.before_set = function (o) {

@@ -31,9 +31,9 @@ src
 	weld
 	sidebar
 	polling
-	rooms
-	messages
-	notifications
+//	rooms
+//	messages
+//	notifications
 	recorder
 	sound
 	markdown
@@ -162,7 +162,7 @@ include
 	sheet
 	themes
 	dialog
-	notifications
+//	notifications
 	manifest
 	webapp.touch
 	softkeys.touch
@@ -172,8 +172,8 @@ include
 	accounts.access
 	polling.client
 	sound.graph
-	rooms
-	messages
+//	rooms
+//	messages
 kind      client
 appname   Dewaan
 sub       Forum Software

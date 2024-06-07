@@ -96,10 +96,6 @@ visiblesheet             visiblesheet
 profileshakl             profileshakl
 extendedinfo             extendedinfo
 account_item             account_item
-members_item             members_item
-durationitem             durationitem
-full_message             full_message
-katabmessage             katabmessage
 whiteboardui             whiteboardui
 profile_icon             profile_icon
 fetchcancel              fetchcancel
@@ -126,8 +122,6 @@ justifytext              justifytext
 fakepadding              fakepadding
 profileitem              profileitem
 freecolumns              freecolumns
-message_str              message_str
-messageitem              messageitem
 profile_tag              profile_tag
 status_icon              status_icon
 secondaryxd              secondaryxd
@@ -164,8 +158,6 @@ softkeysui               softkeysui
 sksoftleft               sksoftleft
 short_name               short_name
 subheading               subheading
-messagesui               messagesui
-messagebox               messagebox
 visualizer               visualizer
 addon_item               addon_item
 listen_tag               listen_tag
@@ -282,12 +274,6 @@ softkeys                 softkeys
 floating                 floating
 tafawwaq                 tafawwaq
 flexible                 flexible
-roomitem                 roomitem
-messages                 messages
-preview2                 preview2
-hasphoto                 hasphoto
-mu3allaq                 mu3allaq
-msg_info                 msg_info
 form_tag                 form_tag
 primaryt                 primaryt
 tertiary                 tertiary
@@ -335,11 +321,6 @@ heading                  heading
 tafseel                  tafseel
 details                  details
 animate                  animate
-members                  members
-preview                  preview
-playing                  playing
-irtiqaa                  irtiqaa
-mahvoof                  mahvoof
 mic_tag                  mic_tag
 primary                  primary
 accentd                  accentd
@@ -404,7 +385,6 @@ lamsah                   lamsah
 hidden                   hidden
 soorah                   soorah
 qrcode                   qrcode
-margin                   margin
 os_tag                   os_tag
 accent                   accent
 textxd                   textxd
@@ -467,7 +447,6 @@ pager                    pager
 shakl                    shakl
 photo                    photo
 image                    image
-names                    names
 error                    error
 redbg                    redbg
 under                    under
@@ -530,10 +509,6 @@ hash                     hash
 hawm                     hawm
 inta                     inta
 info                     info
-hayy                     hayy
-baaq                     baaq
-hafr                     hafr
-sawt                     sawt
 path                     path
 over                     over
 redl                     redl
@@ -563,7 +538,6 @@ dot                      dot
 key                      key
 age                      age
 bio                      bio
-box                      box
 red                      red
 re                       re
 _r                       _r

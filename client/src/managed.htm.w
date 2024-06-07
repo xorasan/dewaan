@@ -33,7 +33,6 @@
 +include linked/sheet.htm.w
 +include linked/themes.htm.w
 +include linked/dialog.htm.w
-+include linked/notifications.htm.w
 +include linked/manifest.htm.w
 +include linked/webapp.touch.htm.w
 +include linked/softkeys.touch.htm.w
@@ -43,5 +42,3 @@
 +include linked/accounts.access.htm.w
 +include linked/polling.client.htm.w
 +include linked/sound.graph.htm.w
-+include linked/rooms.htm.w
-+include linked/messages.htm.w

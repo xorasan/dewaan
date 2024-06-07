@@ -25,6 +25,7 @@
 
 .addon_item
 	padding			10px 15px
+	align-items		center
 
 .call_list_item .profile_icon
 	position		relative

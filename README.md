@@ -49,7 +49,8 @@ Only tested on Ubuntu 22 LTS. Your mileage may vary.
 # Goals
 [TODO](https://github.com/xorasan/dewaan/blob/main/TODO.md)
 
-
+# Documentation
+[Dewaan Documentation](https://github.com/xorasan/dewaan-docs)
 
 
 

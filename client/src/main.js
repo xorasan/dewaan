@@ -34,11 +34,11 @@
 	};
 	
 	async function restore_view_by_context() {
-		if (Sessions.signedin()) {
-			View.run('rooms');
-		} else {
+//		if (Sessions.signedin()) {
+//			View.run('rooms');
+//		} else {
 			View.run('intro');
-		}
+//		}
 		if (get_global_object().Sidebar) Sidebar.choose(module_name);
 		Webapp.header([0, 0, '/e.png']);
 
@@ -73,7 +73,7 @@
 			});
 		}
 
-		Webapp.add_home_view(['rooms', 'intro']);
+		Webapp.add_home_view([/*'rooms', */'intro']);
 		Webapp.header_sticky(1);
 		Webapp.status_bar_padding();
 		Webapp.ask_on_exit(1);
@@ -91,7 +91,7 @@
 		}
 	});
 	Hooks.set('restore', function () {
-		if (backstack.darajah === 0 && View.is_active([module_name, 'rooms'])) {
+		if (backstack.darajah === 0 && View.is_active([module_name/*, 'rooms'*/])) {
 			restore_view_by_context();
 		}
 	});

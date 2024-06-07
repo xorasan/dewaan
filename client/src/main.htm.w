@@ -25,7 +25,7 @@ body
 		[id=list]
 
 	[template=addon_item] .soft_item .addon_item .flex .padb
-		[id=icon] .icon .center .pad
+		[id=icon] .icon .center .pad .large
 		.flex .vertical .pad .grow
 			.flex .big
 				[id=name] .name

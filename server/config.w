@@ -56,6 +56,7 @@ deps
 	svg-captcha
 	music-metadata
 	socket.io
+	chokidar
 kind      server
 port      3060
 database
