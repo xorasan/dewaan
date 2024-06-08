@@ -35,9 +35,9 @@
 	
 	async function restore_view_by_context() {
 //		if (Sessions.signedin()) {
-//			View.run('rooms');
+//			Views.run('rooms');
 //		} else {
-			View.run('intro');
+			Views.run('intro');
 //		}
 		if (get_global_object().Sidebar) Sidebar.choose(module_name);
 		Webapp.header([0, 0, '/e.png']);
