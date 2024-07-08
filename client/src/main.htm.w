@@ -31,6 +31,9 @@ body
 				[id=name] .name
 				[id=build] .build .dim .pad
 			[id=description] .description
+			[id=needs_group] .flex .dim .small
+				"needs " .padr .bold
+				[id=needs] .needs
 		[id=state] .state .center .pad .upper .bold
 	
 	[view=call_screen] #call_screen_ui

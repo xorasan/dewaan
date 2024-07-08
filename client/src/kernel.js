@@ -17,6 +17,7 @@
 if (typeof module !== 'object') { module = {}; }
 if (typeof module.exports !== 'object') { module.exports = {}; }
 if (typeof window !== 'object') { window = global||{}; }
+if (typeof global !== 'object') { global = window||{}; }
 if (typeof document !== 'object') {
 	document = {
 		body: {},
@@ -160,6 +161,9 @@ $.log = function () {
 			}, customdelay );
 		}
 	};
+	
+	$.delay = $.taxeer;
+	$.cancel_delay = $.taxeercancel;
 
 })();
 
@@ -861,4 +865,4 @@ $.unload = function (mods, fn) {
 })();
 
 $._r();
-$.b = 2;
+$.b = 3;

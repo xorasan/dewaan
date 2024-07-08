@@ -13,8 +13,6 @@
 +include linked/accounts.server.js
 +include linked/manifest.server.js
 +include linked/profile.server.js
-+include linked/rooms.server.js
-+include linked/messages.server.js
 +include linked/databases.js
 +include linked/databases.mongodb.js
 +include linked/notifications.server.js

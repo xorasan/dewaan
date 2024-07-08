@@ -142,14 +142,16 @@ var Callscreen = {};
 	// FIX BUG listen on session logout hook and remove related connections
 
 	setInterval(function () { // TODO get all sockets that are at least in one room
-		var socketsInRoom = SocketIO.sockets.adapter.rooms.get( default_room );
-		if (socketsInRoom)
-		socketsInRoom.forEach(function (socket_id) {
-			var c = get_connection(socket_id);
-			if (c) {
-				connections[c].socket.emit( 'latency', get_time_now() );
-			}
-		});
+		if (SocketIO) { // in case there's any delays in Server + Web init
+			var socketsInRoom = SocketIO.sockets.adapter.rooms.get( default_room );
+			if (socketsInRoom)
+			socketsInRoom.forEach(function (socket_id) {
+				var c = get_connection(socket_id);
+				if (c) {
+					connections[c].socket.emit( 'latency', get_time_now() );
+				}
+			});
+		}
 	}, 5000);
 	
 	Hooks.set('socket', (socket) => {

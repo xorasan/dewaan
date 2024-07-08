@@ -18,8 +18,8 @@ src
 	databases
 	manifest
 	notifications
-	rooms
-	messages
+//	rooms
+//	messages
 name      server
 appname   Dewaan
 connected y
@@ -40,8 +40,8 @@ include
 //	accounts.server.access TODO
 	manifest.server
 	profile.server
-	rooms.server
-	messages.server
+//	rooms.server
+//	messages.server
 	databases
 	databases.mongodb
 	notifications.server

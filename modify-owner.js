@@ -21,7 +21,7 @@ if (args.length < 2) {
 	log(' please pass two arguments: username ownership');
 	process.exit();
 } else {
-	const client = new MongoClient( 'mongodb://'+environment.DEWAAN_MONGO_USER+':'+environment.DEWAAN_MONGO_PASS+'@127.0.0.1:27017/' );
+	const client = new MongoClient( 'mongodb://'+environment.DEWAAN_MONGO_USER+':'+environment.DEWAAN_MONGO_PASS+'@127.0.0.1:'+environment.DEWAAN_MONGO_PORT+'/' );
 	const db = client.db( environment.DEWAAN_MONGO_DB || 'dewaan' );
 	var value = parseInt( args[1] );
 	if ([0, 1].includes(value)) {

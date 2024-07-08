@@ -27,9 +27,8 @@ services:
       - ${DEWAAN_WEB_PORT:-3060}:3060
     networks:
       - dewaan-network
-    environment:
-      DEWAAN_MONGO_URI: ${DEWAAN_MONGO_URI}
-      DEWAAN_MONGO_DB: ${DEWAAN_MONGO_DB}
+    env_file:
+      - .env
     volumes:
       - ./released:/dewaan
 volumes:

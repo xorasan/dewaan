@@ -56,7 +56,6 @@ icons
 	home
 	formatsize
 	translate
-	playarrow
 	theme
 	brightness7
 	tab
@@ -65,6 +64,7 @@ icons
 	equalizer
 	
 	hourglassempty
+	playarrow
 	pause
 	stop
 	fastrewind
@@ -122,6 +122,8 @@ icons
 	
 	addcircleoutline
 	removecircleoutline
+	
+	refresh
 langs
 	en
 include
