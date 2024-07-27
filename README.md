@@ -1,8 +1,7 @@
 <p align=center><img src=./icon.svg width=128px /></p>
 
 # Dewaan
-Tiny self-hosted modern forum software for small companies.
-Dewaan uses MongoDB to store data.
+Tiny self-hosted modern forum software for small companies. It uses MongoDB to store data.
 
 * [Changelog](https://github.com/xorasan/dewaan/blob/main/CHANGELOG.md)
 * [TODO](https://github.com/xorasan/dewaan/blob/main/TODO.md)
