@@ -1,6 +1,7 @@
 +include linked/hooks.css.w
 +include linked/reset.css.w
 +include linked/reset.client.css.w
++include linked/cli.css.w
 +include linked/webapp.css.w
 +include linked/webapp.3inch.css.w
 +include linked/webapp.13inch.css.w
@@ -9,6 +10,7 @@
 +include linked/offline.css.w
 +include linked/sidebar.css.w
 +include linked/network.css.w
++include linked/network.client.css.w
 +include linked/network.internals.css.w
 +include linked/list.css.w
 +include linked/list.recycle.css.w

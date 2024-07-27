@@ -262,6 +262,7 @@ softkeys                 softkeys
 floating                 floating
 tafawwaq                 tafawwaq
 flexible                 flexible
+headline                 headline
 form_tag                 form_tag
 primaryt                 primaryt
 tertiary                 tertiary

@@ -27,9 +27,10 @@ body
 	[template=addon_item] .soft_item .addon_item .flex .padb
 		[id=icon] .icon .center .pad .large
 		.flex .vertical .pad .grow
-			.flex .big
+			.flex .headline
 				[id=name] .name
 				[id=build] .build .dim .pad
+				[id=new_build] .build .dim .pad .small .vcenter
 			[id=description] .description
 			[id=needs_group] .flex .dim .small
 				"needs " .padr .bold

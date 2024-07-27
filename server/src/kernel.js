@@ -27,7 +27,7 @@ if (typeof document !== 'object') {
 
 
 //frontend-srv
-var glatteis = {
+glatteis = {
 };
 
 // if fn is not provided, that means the user is expecting immediate response and no deferring
@@ -37,7 +37,7 @@ var glatteis = {
  * a move to .then(cb) would be awesome or nuh?
  * @todo indeed.
  */
-var glatteisfn = function (name, fn) {
+glatteisfn = function (name, fn) {
 	if (name) {
 
 		// if the mod is loaded or it's a core module
@@ -69,7 +69,7 @@ var glatteisfn = function (name, fn) {
 	return false;
 };
 
-var $ = $$ = glatteis = Object.assign(glatteisfn, glatteis);
+$ = $$ = glatteis = Object.assign(glatteisfn, glatteis);
 
 if (typeof module === 'object') {
 	module.exports = glatteis;
@@ -887,4 +887,4 @@ $.unload = function (mods, fn) {
 })();
 
 $._r();
-$.b = 3;
+$.b = 4;

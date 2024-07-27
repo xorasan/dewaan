@@ -1,5 +1,4 @@
-var Addons = {};
-global.Addons = Addons;
+Addons = {};
 ;(function(){
 	'use strict';
 
@@ -32,6 +31,8 @@ global.Addons = Addons;
 	// when an addon changes, it should be reloaded with a timeout
 	// when an addon is created, it should be added but kept disabled
 	// TODO when removed, its database entry should also get removed
+	// TODO exclude /data
+	// TODO for client changes, broadcast changes to client
 	watcher = chokidar.watch('./addons', {
 		persistent: true,
 		awaitWriteFinish: true,
@@ -161,6 +162,14 @@ global.Addons = Addons;
 		return server;
 	}
 
+	Object.assign(Addons, {
+		does_addon_exist,
+		get_icon,
+		get_manifest,
+		get_addon_client,
+		get_addon_server,
+	});
+
 	// TODO these changes should mark themselves in an object with timestamps & deliver through Polling
 	async function activate_addon(uid) {
 		if (active_addons[uid]) {
@@ -185,12 +194,12 @@ global.Addons = Addons;
 		Cli.echo( ' ^bright^Addons > '+uid+'~~ activating...' );
 		let server = await get_addon_server( uid );
 		if (server.main) {
-			// TODO we can improve the isolation here ;)
-			// vm.runInNewContext(server.main, { Hooks, and other fns }, uid)
 			try {
-				let modified_script =
-`
-;(function(){
+				let pre_script =
+`let addon_path = $.path+'/addons/${uid}';
+let echo = function () {
+	return Cli.echo.apply($, [' ^bright^Addons > ${uid}~~', ...arguments]);
+};
 let Addons = shallowcopy(get_global_object().Addons);
 Addons.add_global = function () {
 	let original = get_global_object().Addons;
@@ -205,12 +214,25 @@ Hooks.set = function () {
 	Addons.get_active_addons()[ "${uid}" ].hooks.push( result );
 	return result;
 };
+`;
+				let modified_script =
+`;(function(){
+${pre_script}
 ${server.main}
 })();`
 ;
-				strict_eval(modified_script);
+				const script = new vm.Script(modified_script, {
+					filename: uid,
+					lineOffset: -pre_script.match(/\n/g).length-2,
+				});
+				let ctx = { ...global, require };
+				for (let i of Object.getOwnPropertyNames(global)) {
+					ctx[i] = global[i];
+				}
+				script.runInNewContext(ctx);
+//				strict_eval(modified_script);
 			} catch (e) {
-				$.log.e( e );
+				$.log.e( 'Addons error in', e );
 			}
 		}
 		await Hooks.until( 'addon-activate', { uid } );

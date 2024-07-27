@@ -6,6 +6,7 @@ src
 	webapp
 	manifest
 	softkeys
+	cli
 	themes
 	sheet
 	preferences
@@ -131,6 +132,7 @@ include
 	reset
 	reset.client
 //	pager
+	cli
 	webapp
 	webapp.3inch
 	webapp.13inch
@@ -140,6 +142,7 @@ include
 	offline
 	sidebar
 	network
+	network.client
 	network.internals
 	list
 	list.recycle

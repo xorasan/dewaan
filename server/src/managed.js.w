@@ -8,6 +8,7 @@
 +include linked/captcha.js
 +include linked/server.js
 +include linked/server.web.js
++include linked/network.js
 +include linked/network.server.js
 +include linked/sessions.server.js
 +include linked/accounts.server.js

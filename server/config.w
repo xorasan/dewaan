@@ -34,6 +34,7 @@ include
 	captcha
 	server
 	server.web
+	network
 	network.server
 	sessions.server
 	accounts.server
@@ -57,6 +58,7 @@ deps
 	music-metadata
 	socket.io
 	chokidar
+	node-tar
 kind      server
 port      3060
 database

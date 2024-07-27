@@ -26,6 +26,17 @@
 .addon_item
 	padding			10px 15px
 	align-items		center
+.addon_item .headline
+	font-size		160%
+.addon_item .icon svg
+	width			64px
+	height			64px
+if max-width = 600px
+	.addon_item .headline
+		font-size		120%
+	.addon_item .icon svg
+		width			36px
+		height			36px
 
 .call_list_item .profile_icon
 	position		relative

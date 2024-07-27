@@ -1,6 +1,7 @@
 +include linked/hooks.js
 +include linked/reset.js
 +include linked/reset.client.js
++include linked/cli.js
 +include linked/webapp.js
 +include linked/webapp.3inch.js
 +include linked/webapp.13inch.js
@@ -9,6 +10,7 @@
 +include linked/offline.js
 +include linked/sidebar.js
 +include linked/network.js
++include linked/network.client.js
 +include linked/network.internals.js
 +include linked/list.js
 +include linked/list.recycle.js

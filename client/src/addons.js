@@ -93,6 +93,65 @@ var Addons = {}, addons_list, debug_addons = 1;
 		}
 	}
 
+	function append_script({ addon, content = '', name = Time.now() }) {
+		let uid = addon.manifest.uid;
+		let addons_scripts = elementbyid('addons-scripts');
+		let element = createelement('script', 0, 'addon-script-'+uid+( name ? '-'+name : '' ));
+		
+		let modified_script =
+`;(function(){
+let echo = function () {
+	return Cli.echo.apply($, [' ^bright^Addons > ${uid}~~', ...arguments]);
+};
+let Recycler = function () {
+	let original = get_global_object().Recycler;
+	let recycler = original.apply(original, arguments);
+	Addons.get_active_addons()[ "${uid}" ].recyclers.push( recycler );
+	return recycler;
+};
+let List = function () {
+	let original = get_global_object().List;
+	let list = original.apply(original, arguments);
+	Addons.get_active_addons()[ "${uid}" ].lists.push( list );
+	return list;
+};
+let Addons = shallowcopy(get_global_object().Addons);
+Addons.add_global = function () {
+	let original = get_global_object().Addons;
+	let name = original.add_global.apply(original, arguments);
+	Addons.get_active_addons()[ "${uid}" ].globals.push( name );
+	return name;
+};
+let Hooks = shallowcopy(get_global_object().Hooks);
+Hooks.set = function () {
+	let original = get_global_object().Hooks;
+	let result = original.set.apply(original, arguments);
+	Addons.get_active_addons()[ "${uid}" ].hooks.push( result );
+	return result;
+};
+let Sidebar = shallowcopy(get_global_object().Sidebar);
+Sidebar.set = function () {
+	let original = get_global_object().Sidebar;
+
+	let uid = (arguments[0] || {}).uid;
+	let old_object = Sidebar.get(uid); // has to come first
+
+	let result = original.set.apply(original, arguments);
+
+	if (!old_object) // only remember new objects
+		Addons.get_active_addons()[ "${uid}" ].sidebar.push( uid );
+
+	return result;
+};
+${content}
+})();`
+;
+
+		innerhtml(element, modified_script);
+		addon.script_elements.push( element );
+		addons_scripts.append( element );
+	}
+
 	async function activate_addon(uid) { // loads into memory & runs the addon
 		// if already active, break
 		// get the client
@@ -128,36 +187,15 @@ var Addons = {}, addons_list, debug_addons = 1;
 
 		if (debug_addons) $.log.w('Addons activating', manifest.name || uid);
 		
+		addon.script_elements = [];
+		addon.hooks = [];
+		addon.globals = [];
+		addon.sidebar = [];
+		addon.recyclers = [];
+		addon.lists = [];
+		
 		if (client.main) { // client.js
-			let addons_scripts = elementbyid('addons-scripts');
-			let element = createelement('script', 0, 'addon-script-'+uid);
-			
-			addon.script_element = element;
-			addon.hooks = [];
-			addon.globals = [];
-
-			let modified_script =
-`;(function(){
-let Addons = shallowcopy(get_global_object().Addons);
-Addons.add_global = function () {
-	let original = get_global_object().Addons;
-	let name = original.add_global.apply(original, arguments);
-	Addons.get_active_addons()[ "${uid}" ].globals.push( name );
-	return name;
-};
-let Hooks = shallowcopy(get_global_object().Hooks);
-Hooks.set = function () {
-	let original = get_global_object().Hooks;
-	let result = original.set.apply(original, arguments);
-	Addons.get_active_addons()[ "${uid}" ].hooks.push( result );
-	return result;
-};
-${client.main}
-})();`
-;
-
-			innerhtml(element, modified_script);
-			addons_scripts.append( element );
+			append_script({ addon, content: client.main });
 		}
 
 		let files = client.files;
@@ -200,6 +238,12 @@ ${client.main}
 				addons_styles.append( element );
 				addons_styles.append( dynamic_element );
 			}
+		
+			for (var name in files) {
+				if (name.endsWith('.js')) {
+					append_script({ addon, content: files[name], name });
+				}
+			}
 		}
 
 		await Hooks.until( 'addon-activate', { uid } );
@@ -221,19 +265,23 @@ ${client.main}
 			}
 		}
 
-		// TODO move this to disable function and update the API
-		await Hooks.until( 'addon-disable', { uid } );
-
 		let addon = active_addons[ uid ];
 		
-		// remove scripts, dom and styles
-		let addons_script = elementbyid('addon-script-'+uid);
-		if (addons_script) addons_script.remove();
-		
 		if (addon) {
+			// remove scripts, dom and styles
+			for (let script of addon.script_elements) {
+				if (script && script.remove) script.remove();
+			}
+			addon.script_elements = [];
+
 			if (addon.hooks) {
 				addon.hooks.forEach(function (hook) {
 					if (hook.remove) hook.remove();
+				});
+			}
+			if (addon.sidebar) {
+				addon.sidebar.forEach(function (uid) {
+					Sidebar.remove(uid);
 				});
 			}
 			if (addon.globals) {
@@ -241,11 +289,19 @@ ${client.main}
 					Addons.remove_global(name);
 				});
 			}
-			
-			if (addon.script_element) addon.script_element.remove();
+			if (addon.recyclers) {
+				for await (let recycler of addon.recyclers) {
+					await recycler.destroy();
+				}
+			}
+			if (addon.lists) {
+				for await (let list of addon.lists) {
+					await list.destroy();
+				}
+			}
 
 			if (addon.dom_element) {
-				View.expunge( addon.dom_element );
+				Views.expunge( addon.dom_element );
 				Sheet.expunge( addon.dom_element );
 				Templates.expunge( addon.dom_element );
 				addon.dom_element.remove();
@@ -274,6 +330,8 @@ ${client.main}
 	}
 	async function disable_addon(uid) {
 		$.log.w( 'Addons disabling...', uid );
+		await Hooks.until( 'addon-disable', { uid } );
+
 		let result = await Network.fetch(module_name, 'state', {
 			uid,
 			state: 0,
@@ -388,6 +446,7 @@ ${client.main}
 	};
 	
 	async function add_reactivate_softkey(addon_uid) {
+		reactivate_sk.h = 0;
 		reactivate_sk.c = async function () {
 			if (View.is_active_fully(module_name)) {
 				addon_uid = ( addons_list.get_item_object() || {} ).uid;

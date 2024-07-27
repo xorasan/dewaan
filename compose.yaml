@@ -15,7 +15,7 @@ services:
     environment: # to change these you have to delete the mongodb data volume
       MONGODB_INITDB_ROOT_USERNAME: ${DEWAAN_MONGO_USER}
       MONGODB_INITDB_ROOT_PASSWORD: ${DEWAAN_MONGO_PASS}
-  web:
+  dewaan-web:
     image: dewaan:latest
     container_name: dewaan-web
     init: true
@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - ${DEWAAN_WEB_PORT:-3060}:3060
+      - ${DEWAAN_WEB_PORT:-3060}:${DEWAAN_WEB_PORT:-3060}
     networks:
       - dewaan-network
     env_file:
@@ -35,4 +35,4 @@ volumes:
   dewaan-mongodb-data:
 networks:
   dewaan-network:
-    driver: bridge
+    external: true

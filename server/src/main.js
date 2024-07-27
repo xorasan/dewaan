@@ -1,4 +1,4 @@
-var Callscreen = {};
+Callscreen = {};
 ;(function(){
 	'use strict';
 
@@ -155,7 +155,7 @@ var Callscreen = {};
 	}, 5000);
 	
 	Hooks.set('socket', (socket) => {
-		$.log('a user connected', socket.id);
+		$.log( 'a user connected', socket.id );
 		socket.on('join', (data, callback) => {
 			if (isstr(data.key) && data.key.length) {
 				Sessions.get_session_account(data.key, (result) => {
@@ -373,11 +373,11 @@ var Callscreen = {};
 		$.taxeer('kill-server', () => {
 			Cli.echo( ' ^bright^Updated~~ source code, exiting... ' );
 			process.exit();
-		}, 500);
+		}, 1500);
 	});
 	// better to crash in unknown app state
 	process.on('unhandledRejection', (err) => { 
-		$.log.e(err);
+		$.log.e( 'unhandledRejection', err );
 		process.exit(1);
 	});
 
