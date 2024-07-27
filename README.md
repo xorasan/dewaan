@@ -2,9 +2,12 @@
 
 # Dewaan
 Tiny self-hosted modern forum software for small companies.
-
-# Database
 Dewaan uses MongoDB to store data.
+
+* [Changelog](https://github.com/xorasan/dewaan/blob/main/CHANGELOG.md)
+* [TODO](https://github.com/xorasan/dewaan/blob/main/TODO.md)
+* [Documentation](https://github.com/xorasan/dewaan-docs)
+
 
 # Getting Started
 Only tested on Ubuntu 22 LTS. Your mileage may vary.
@@ -45,12 +48,6 @@ Only tested on Ubuntu 22 LTS. Your mileage may vary.
 	- Sign up, pick a memorable *username* and a strong password
 	- Once logged into Dewaan, use `modify-owner.js <username> 1` to make yourself the owner of your brand new Dewaan instance!
 - Have fun!
-
-# Goals
-[TODO](https://github.com/xorasan/dewaan/blob/main/TODO.md)
-
-# Documentation
-[Dewaan Documentation](https://github.com/xorasan/dewaan-docs)
 
 
 
