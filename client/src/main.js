@@ -39,7 +39,7 @@
 //		} else {
 			Views.run('intro');
 //		}
-		if (get_global_object().Sidebar) Sidebar.choose(module_name);
+		Sidebar.choose(module_name);
 		Webapp.header([0, 0, '/e.png']);
 
 		var o = await Offline.fetch( 'manifest' );

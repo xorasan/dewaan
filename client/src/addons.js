@@ -103,6 +103,12 @@ var Addons = {}, addons_list, debug_addons = 1;
 let echo = function () {
 	return Cli.echo.apply($, [' ^bright^Addons > ${uid}~~', ...arguments]);
 };
+let listener = function () {
+	let original = get_global_object().listener;
+	let result = original.apply(original, arguments); // returns { remove };
+	Addons.get_active_addons()[ "${uid}" ].listeners.push( result );
+	return result;
+};
 let Recycler = function () {
 	let original = get_global_object().Recycler;
 	let recycler = original.apply(original, arguments);
@@ -116,9 +122,19 @@ let List = function () {
 	return list;
 };
 let Addons = shallowcopy(get_global_object().Addons);
-Addons.add_global = function () {
+Addons.add_global = function (name, object) {
 	let original = get_global_object().Addons;
-	let name = original.add_global.apply(original, arguments);
+	let new_object = object;
+	if (isfun(object)) {
+		new_object = new Proxy(object, {
+			apply: (target, this_arg, args) => {
+				let result = target(...args);
+				Hooks.run('addons-function-call', { name, module_name: '${uid}', result, args: args });
+				return result;
+			}
+		});
+	}
+	name = original.add_global(name, new_object);
 	Addons.get_active_addons()[ "${uid}" ].globals.push( name );
 	return name;
 };
@@ -193,6 +209,7 @@ ${content}
 		addon.sidebar = [];
 		addon.recyclers = [];
 		addon.lists = [];
+		addon.listeners = [];
 		
 		if (client.main) { // client.js
 			append_script({ addon, content: client.main });
@@ -297,6 +314,11 @@ ${content}
 			if (addon.lists) {
 				for await (let list of addon.lists) {
 					await list.destroy();
+				}
+			}
+			if (addon.listeners) {
+				for await (let listener of addon.listeners) {
+					listener.remove();
 				}
 			}
 

@@ -201,9 +201,19 @@ let echo = function () {
 	return Cli.echo.apply($, [' ^bright^Addons > ${uid}~~', ...arguments]);
 };
 let Addons = shallowcopy(get_global_object().Addons);
-Addons.add_global = function () {
+Addons.add_global = function (name, object) {
 	let original = get_global_object().Addons;
-	let name = original.add_global.apply(original, arguments);
+	let new_object = object;
+	if (isfun(object)) {
+		new_object = new Proxy(object, {
+			apply: (target, this_arg, args) => {
+				let result = target(...args);
+				Hooks.run('addons-function-call', { name, module_name: '${uid}', result, args: args });
+				return result;
+			}
+		});
+	}
+	name = original.add_global(name, new_object);
 	Addons.get_active_addons()[ "${uid}" ].globals.push( name );
 	return name;
 };
