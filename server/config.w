@@ -18,8 +18,6 @@ src
 	databases
 	manifest
 	notifications
-//	rooms
-//	messages
 name      server
 appname   Dewaan
 connected y
@@ -41,8 +39,6 @@ include
 //	accounts.server.access TODO
 	manifest.server
 	profile.server
-//	rooms.server
-//	messages.server
 	databases
 	databases.mongodb
 	notifications.server
@@ -56,7 +52,6 @@ deps
 	easy-pbkdf2
 	svg-captcha
 	music-metadata
-	socket.io
 	chokidar
 	node-tar
 kind      server

@@ -6,8 +6,19 @@ var Addons = {}, addons_list, debug_addons = 1;
 		dom_keys, active_addons = {};
 
 	Addons.get_active_addons = function () { return active_addons; };
-	Addons.get_icon = function (name) {
-		if (active_addons[name]) return active_addons[name].icon;
+	Addons.get_list = function () {
+		return addons_list;
+	};
+	Addons.get_icon = function (name, icon) {
+		let addon = active_addons[name];
+		if (addon) {
+			if (icon) {
+				if (addon.client.icons)
+					return addon.client.icons[ icon ];
+			} else {
+				return addon.icon;
+			}
+		}
 	};
 	Addons.add_global = function (name, o) {
 		get_global_object()[name] = o;
@@ -97,7 +108,9 @@ var Addons = {}, addons_list, debug_addons = 1;
 		let uid = addon.manifest.uid;
 		let addons_scripts = elementbyid('addons-scripts');
 		let element = createelement('script', 0, 'addon-script-'+uid+( name ? '-'+name : '' ));
-		
+
+		// IMPORTANT any changes made to shallow copied objects wont be reflected inside the addon after this
+		// better use get_* accessors :)
 		let modified_script =
 `;(function(){
 let echo = function () {
@@ -121,7 +134,7 @@ let List = function () {
 	Addons.get_active_addons()[ "${uid}" ].lists.push( list );
 	return list;
 };
-let Addons = shallowcopy(get_global_object().Addons);
+let Addons = shallowcopy( get_global_object().Addons );
 Addons.add_global = function (name, object) {
 	let original = get_global_object().Addons;
 	let new_object = object;
@@ -138,6 +151,9 @@ Addons.add_global = function (name, object) {
 	Addons.get_active_addons()[ "${uid}" ].globals.push( name );
 	return name;
 };
+function get_icon ( icon_name ) {
+	return Addons.get_icon( '${uid}', icon_name );
+}
 let Hooks = shallowcopy(get_global_object().Hooks);
 Hooks.set = function () {
 	let original = get_global_object().Hooks;
@@ -185,6 +201,8 @@ ${content}
 		if (!icon) { icon = Templates.get_icon_as_svg( module_icon ); }
 
 		let addon = active_addons[ uid ] = { client, icon, manifest };
+		
+		if (!addon.client.icons) addon.client.icons = {};
 
 		// TODO server_needs & client_needs
 		if (manifest.needs) {
@@ -329,6 +347,7 @@ ${content}
 				addon.dom_element.remove();
 			}
 
+			if (addon.style_element) addon.style_element.remove();
 			if (addon.dynamic_style_element) addon.dynamic_style_element.remove();
 			if (addon.theme_hook) addon.theme_hook.remove();
 		}
@@ -461,6 +480,7 @@ ${content}
 		},
 	};
 	var reactivate_sk = { n: 'Reactivate Addon',
+		sh: 'Reactiv. Addon',
 		k: 'r',
 		i: 'iconrefresh',
 		alt: 1,
@@ -529,6 +549,7 @@ ${content}
 		dom_keys = View.dom_keys(module_name);
 		
 		addons_list = List(dom_keys.list).id_prefix('addon').list_item('addon_item');
+		$.log.w( 'addons list created' );
 		addons_list.on_selection = function (o) {
 			update_softkeys();
 		};

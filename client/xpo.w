@@ -303,6 +303,7 @@ vcenter                  vcenter
 allcaps                  allcaps
 tooltip                  tooltip
 message                  message
+skenter                  skenter
 sheetui                  sheetui
 heading                  heading
 tafseel                  tafseel
@@ -421,11 +422,14 @@ light                    light
 giant                    giant
 large                    large
 mh100                    mh100
+label                    label
 title                    title
 a3laa                    a3laa
 items                    items
 ixtaf                    ixtaf
 pager                    pager
+shown                    shown
+short                    short
 shakl                    shakl
 photo                    photo
 image                    image

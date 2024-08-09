@@ -40,13 +40,13 @@ Addons = {};
 
 	async function delayed_reload_addon(uid) {
 		$.taxeer('reload-addon-'+uid, async function () {
-			await disable_addon ( uid );
+			await deactivate_addon ( uid );
 			await activate_addon( uid );
 		}, 2500);
 	}
-	async function delayed_disable_addon(uid) {
-		$.taxeer('reload-disable-'+uid, async function () {
-			await disable_addon ( uid );
+	async function delayed_deactivate_addon(uid) {
+		$.taxeer('reload-deactivate-'+uid, async function () {
+			await deactivate_addon ( uid );
 		}, 2500);
 	}
 	
@@ -67,7 +67,7 @@ Addons = {};
 
 		if (event == 'unlinkDir') {
 			if (crumbs.length == 2) { // addons / <uid>
-				delayed_disable_addon( uid );
+				delayed_deactivate_addon( uid );
 			} else if (crumbs.length >= 2) {
 				delayed_reload_addon( uid );
 			}
@@ -109,6 +109,11 @@ Addons = {};
 		manifest = Weld.decode_config( manifest || '' );
 		manifest.needs = to_arr_or_undef(manifest.needs);
 		manifest.client_needs = to_arr_or_undef(manifest.client_needs);
+		// only devs with perms can change this, these addons cannot be removed or disabled
+		manifest.system = to_bool(manifest.system);
+		// these addons are only allowed in dev instances, can't be pushed to production
+		// this helps generate packages witholding certain addons
+		manifest.private = to_bool(manifest.private);
 		manifest.uid = uid;
 		
 		return manifest;
@@ -132,6 +137,22 @@ Addons = {};
 			client_folder.forEach(function (o) {
 				try {
 					client.files[ o ] = Files.get.file(addon_path+'client/'+o).toString();
+				} catch (e) {}
+			});
+		}
+
+		let icons_folder;
+		try {
+			icons_folder = Files.get.folder(addon_path+'icons/');
+		} catch (e) {}
+
+		if (icons_folder) {
+			client.icons = {};
+			icons_folder.forEach(function (o) {
+				try {
+					if (o.endsWith('.svg')) {
+						client.icons[ o.slice(0, -4) ] = Files.get.file(addon_path+'icons/'+o).toString();
+					}
 				} catch (e) {}
 			});
 		}
@@ -248,12 +269,12 @@ ${server.main}
 		await Hooks.until( 'addon-activate', { uid } );
 		Cli.echo( ' ^bright^Addons > '+uid+'~~ activated!' );
 	}
-	async function disable_addon(uid) {
+	async function deactivate_addon(uid) {
 		if (active_addons[uid]) {
 			let addon = active_addons[uid];
 
-			Cli.echo( ' ^bright^Addons > '+uid+'~~ disabling...' );
-			await Hooks.until( 'addon-disable', { uid } );
+			Cli.echo( ' ^bright^Addons > '+uid+'~~ deactivating...' );
+			await Hooks.until( 'addon-deactivate', { uid } );
 
 			if (addon.hooks) {
 				addon.hooks.forEach(function (hook) {
@@ -266,9 +287,19 @@ ${server.main}
 				});
 			}
 
-			Cli.echo( ' ^bright^Addons > '+uid+'~~ disabled!' );
+			Cli.echo( ' ^bright^Addons > '+uid+'~~ deactivated!' );
 			delete active_addons[uid];
 		}
+	}
+	async function enable_addon(uid) {
+		Cli.echo( ' ^bright^Addons > '+uid+'~~ enabling...' );
+		await Hooks.until( 'addon-enable', { uid } );
+		Cli.echo( ' ^bright^Addons > '+uid+'~~ enabled!' );
+	}
+	async function disable_addon(uid) {
+		Cli.echo( ' ^bright^Addons > '+uid+'~~ disabling...' );
+		await Hooks.until( 'addon-disable', { uid } );
+		Cli.echo( ' ^bright^Addons > '+uid+'~~ disabled!' );
 	}
 
 	;(async function(){
@@ -332,9 +363,11 @@ ${server.main}
 			if (added.rows.length) {
 				active = new_state;
 				if (new_state) {
+					await enable_addon( uid );
 					await activate_addon( uid );
 					client = await get_addon_client( uid );
 				} else {
+					await deactivate_addon( uid );
 					await disable_addon( uid );
 				}
 			}
