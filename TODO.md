@@ -1,5 +1,8 @@
 # TODO
 
+- [ ] WebRTC Addon
+- [ ] Whiteboard Addon
+
 * [ ] Modules
 	* [ ] divide into two kinds
 	* [ ] shouldn't require compilation
@@ -41,7 +44,6 @@
 		* [ ] they should show up as vertical slots, limited by the next few days or a week or so
 		* [ ] they also say something like in 2h or in 2.5d
 		* [ ] horizontal line hints to show hours, days, weeks etc
-
 
 
 

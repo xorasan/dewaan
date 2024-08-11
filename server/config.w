@@ -41,7 +41,6 @@ include
 	profile.server
 	databases
 	databases.mongodb
-	notifications.server
 	polling
 deps
 	express

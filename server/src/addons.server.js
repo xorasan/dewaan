@@ -4,6 +4,9 @@ Addons = {};
 
 	let active_addons = {};
 	Addons.get_active_addons = function () { return active_addons; };
+	Addons.get_global = function (name) {
+		return get_global_object()[name];
+	};
 	Addons.add_global = function (name, o) {
 		if (name)
 			get_global_object()[name] = o;
@@ -245,6 +248,9 @@ Hooks.set = function () {
 	Addons.get_active_addons()[ "${uid}" ].hooks.push( result );
 	return result;
 };
+function collect_hook ( hook ) {
+	Addons.get_active_addons()[ "${uid}" ].hooks.push( hook );
+}
 `;
 				let modified_script =
 `;(function(){

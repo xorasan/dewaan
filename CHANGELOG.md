@@ -8,8 +8,11 @@ New features, API changes & bug fixes are tracked here. We try our best to keep 
 	* setting `my_list.select_sk` to a Softkey object overrides the main Select button of a list
 	* after sorting items, use `my_list.restore_selection`  to make `.selected`  reflect the order of the selected item
 * Addons
+	* `Addons.get_global()`  to get a global variable, use case: avoid `need` for an addon, listen to its activation & get its global from there 
 	* SVG icons in your addon's `icons/` directory can be accessed using `get_icon( icon_name )`
-		* if no `icon_name` is given, it returns the addon's primary icon
+	  * if no `icon_name` is given, it returns the addon's primary icon
+	* `collect_hook( hook )` to garbage collect it later, for instance, when you wanna override module lists that use hooks internally, tho you can't destroy the list, you can at least collect the hooks
+	
 
 ## 41xx
 * Lists

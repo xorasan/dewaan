@@ -16,5 +16,4 @@
 +include linked/profile.server.js
 +include linked/databases.js
 +include linked/databases.mongodb.js
-+include linked/notifications.server.js
 +include linked/polling.js

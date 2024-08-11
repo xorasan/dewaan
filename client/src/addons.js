@@ -20,6 +20,9 @@ var Addons = {}, addons_list, debug_addons = 1;
 			}
 		}
 	};
+	Addons.get_global = function (name) {
+		return get_global_object()[name];
+	};
 	Addons.add_global = function (name, o) {
 		get_global_object()[name] = o;
 		return name;
@@ -161,6 +164,9 @@ Hooks.set = function () {
 	Addons.get_active_addons()[ "${uid}" ].hooks.push( result );
 	return result;
 };
+function collect_hook ( hook ) {
+	Addons.get_active_addons()[ "${uid}" ].hooks.push( hook );
+}
 let Sidebar = shallowcopy(get_global_object().Sidebar);
 Sidebar.set = function () {
 	let original = get_global_object().Sidebar;
@@ -549,7 +555,6 @@ ${content}
 		dom_keys = View.dom_keys(module_name);
 		
 		addons_list = List(dom_keys.list).id_prefix('addon').list_item('addon_item');
-		$.log.w( 'addons list created' );
 		addons_list.on_selection = function (o) {
 			update_softkeys();
 		};
