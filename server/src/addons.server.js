@@ -7,13 +7,33 @@ Addons = {};
 	Addons.get_global = function (name) {
 		return get_global_object()[name];
 	};
-	Addons.add_global = function (name, o) {
-		if (name)
+	Addons.add_global = function (name, o, source_addon) {
+		if (name) {
 			get_global_object()[name] = o;
+			Hooks.run('addons-global-added', { source_addon, object_name: name });
+
+			// add to all active addons contexts
+			for ( let addon_name in active_addons ) {
+				let addon = active_addons[ addon_name ];
+				if (addon && addon.context) {
+					addon.context[ name ] = o;
+				}
+			}
+		}
 	};
-	Addons.remove_global = function (name) {
-		if (name)
-			delete get_global_object()[name]
+	Addons.remove_global = function (name, source_addon) {
+		if (name) {
+			delete get_global_object()[name];
+			Hooks.run('addons-global-removed', { source_addon, object_name: name });
+
+			// add to all active addons contexts
+			for ( let addon_name in active_addons ) {
+				let addon = active_addons[ addon_name ];
+				if (addon && addon.context) {
+					delete addon.context[ name ];
+				}
+			}
+		}
 	};
 	
 	const child_process = require('child_process');
@@ -204,6 +224,7 @@ Addons = {};
 		let addon = active_addons[uid] = {
 			hooks: [],
 			globals: [],
+			context: {},
 		};
 		let is_active = await MongoDB.get( Config.database.name, module_name, {
 			uid,
@@ -237,19 +258,30 @@ Addons.add_global = function (name, object) {
 			}
 		});
 	}
-	name = original.add_global(name, new_object);
-	Addons.get_active_addons()[ "${uid}" ].globals.push( name );
-	return name;
+	let result = original.add_global(name, new_object, '${uid}');
+	Addons.get_active_addons()[ '${uid}' ].globals.push( name );
+	return result;
+};
+Addons.remove_global = function (name) {
+	let original = get_global_object().Addons;
+
+	let result = original.remove_global(name, '${uid}');
+
+	let globals = Addons.get_active_addons()[ '${uid}' ].globals;
+	let index = globals.indexOf( name );
+	if (index > -1) globals.splice( index, 1 );
+
+	return result;
 };
 let Hooks = shallowcopy(get_global_object().Hooks);
 Hooks.set = function () {
 	let original = get_global_object().Hooks;
 	let result = original.set.apply(original, arguments);
-	Addons.get_active_addons()[ "${uid}" ].hooks.push( result );
+	Addons.get_active_addons()[ '${uid}' ].hooks.push( result );
 	return result;
 };
 function collect_hook ( hook ) {
-	Addons.get_active_addons()[ "${uid}" ].hooks.push( hook );
+	Addons.get_active_addons()[ '${uid}' ].hooks.push( hook );
 }
 `;
 				let modified_script =
@@ -262,11 +294,11 @@ ${server.main}
 					filename: uid,
 					lineOffset: -pre_script.match(/\n/g).length-2,
 				});
-				let ctx = { ...global, require };
+				addon.context = { ...global, require };
 				for (let i of Object.getOwnPropertyNames(global)) {
-					ctx[i] = global[i];
+					addon.context[i] = global[i];
 				}
-				script.runInNewContext(ctx);
+				script.runInNewContext(addon.context);
 //				strict_eval(modified_script);
 			} catch (e) {
 				$.log.e( 'Addons error in', e );
@@ -289,7 +321,7 @@ ${server.main}
 			}
 			if (addon.globals) {
 				addon.globals.forEach(function (name) {
-					Addons.remove_global(name);
+					Addons.remove_global(name, uid);
 				});
 			}
 

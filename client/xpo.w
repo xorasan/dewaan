@@ -188,6 +188,7 @@ monospace                monospace
 extradimx                extradimx
 taht3nsar                taht3nsar
 sidebarui                sidebarui
+start_pin                start_pin
 soft_item                soft_item
 container                container
 color_tag                color_tag
@@ -302,6 +303,7 @@ minimal                  minimal
 vcenter                  vcenter
 allcaps                  allcaps
 tooltip                  tooltip
+end_pin                  end_pin
 message                  message
 skenter                  skenter
 sheetui                  sheetui
@@ -363,6 +365,7 @@ center                   center
 dimmer                   dimmer
 webapp                   webapp
 skdots                   skdots
+origin                   origin
 baidaa                   baidaa
 bardaa                   bardaa
 lamsah                   lamsah
@@ -520,6 +523,7 @@ two                      two
 row                      row
 min                      min
 dim                      dim
+pin                      pin
 dot                      dot
 key                      key
 age                      age
