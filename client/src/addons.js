@@ -5,6 +5,9 @@ var Addons = {}, addons_list, debug_addons = 1;
 	let module_name = 'addons', module_title = 'Addons', module_icon = 'iconextension',
 		dom_keys, active_addons = {};
 
+	let addon_globals_registry = {};
+	Addons.addon_globals_registry = addon_globals_registry;
+
 	Addons.get_active_addons = function () { return active_addons; };
 	Addons.get_list = function () {
 		return addons_list;
@@ -23,12 +26,63 @@ var Addons = {}, addons_list, debug_addons = 1;
 	Addons.get_global = function (name) {
 		return get_global_object()[name];
 	};
-	Addons.add_global = function (name, o) {
-		get_global_object()[name] = o;
+	function add_global_to_addon_context ( name, addon_name ) {
+		let object = addon_globals_registry[name];
+		let maybe_proxy_object = object;
+		
+		if (isfun(object)) {
+			maybe_proxy_object = new Proxy(object, {
+				apply: (target, this_arg, args) => {
+					let result = target(...args);
+					Hooks.run('addons-function-call', { name, module_name: addon_name, result, args: args });
+					return result;
+				}
+			});
+		}
+
+		return maybe_proxy_object;
+	};
+	Addons.add_global_to_addon_context = add_global_to_addon_context;
+	Addons.add_global = function (name, object, source_addon) {
+		if (isfun(name)) { // if you wanna provide a function as the 1st & only arg
+			object = name; // name is fn
+			name = object.name; // anonymouse fns are '' so they'll be ignored
+		}
+
+		if (name) {
+			addon_globals_registry[name] = object;
+			get_global_object()[name] = object;
+			Hooks.run('addons-global-added', { source_addon, object_name: name });
+
+			// add to all active addons contexts
+			for ( let addon_name in active_addons ) {
+				let addon = active_addons[ addon_name ];
+				if (addon && addon.context) {
+					addon.context[ name ] = add_global_to_addon_context({
+						name,
+						object,
+						addon_name,
+						context: addon.context
+					});
+				}
+			}
+		}
 		return name;
 	};
-	Addons.remove_global = function (name) {
-		delete get_global_object()[name]
+	Addons.remove_global = function (name, source_addon) {
+		if (name) {
+			delete addon_globals_registry[name];
+			delete get_global_object()[name];
+			Hooks.run('addons-global-removed', { source_addon, object_name: name });
+
+			// add to all active addons contexts
+			for ( let addon_name in active_addons ) {
+				let addon = active_addons[ addon_name ];
+				if (addon && addon.context) {
+					delete addon.context[ name ];
+				}
+			}
+		}
 	};
 	
 	async function activate_all_addons() {
@@ -112,6 +166,15 @@ var Addons = {}, addons_list, debug_addons = 1;
 		let addons_scripts = elementbyid('addons-scripts');
 		let element = createelement('script', 0, 'addon-script-'+uid+( name ? '-'+name : '' ));
 
+		let dynamic_functions = '';
+
+		addon.context = {};
+		for (let i in addon_globals_registry) {
+			if (isfun(addon_globals_registry[i])) {
+				dynamic_functions += `${i}=Addons.add_global_to_addon_context('${i}','${uid}');`;
+			}
+		}
+
 		// IMPORTANT any changes made to shallow copied objects wont be reflected inside the addon after this
 		// better use get_* accessors :)
 		let modified_script =
@@ -137,20 +200,18 @@ let List = function () {
 	Addons.get_active_addons()[ "${uid}" ].lists.push( list );
 	return list;
 };
+function get_addon_context () {
+	return Addons.get_active_addons()[ "${uid}" ].context;
+};
 let Addons = shallowcopy( get_global_object().Addons );
 Addons.add_global = function (name, object) {
-	let original = get_global_object().Addons;
-	let new_object = object;
-	if (isfun(object)) {
-		new_object = new Proxy(object, {
-			apply: (target, this_arg, args) => {
-				let result = target(...args);
-				Hooks.run('addons-function-call', { name, module_name: '${uid}', result, args: args });
-				return result;
-			}
-		});
+	if (isfun(name)) { // if you wanna provide a function as the 1st & only arg
+		object = name; // name is fn
+		name = object.name; // anonymouse fns are '' so they'll be ignored
 	}
-	name = original.add_global(name, new_object);
+
+	let original = get_global_object().Addons;
+	name = original.add_global(name, object);
 	Addons.get_active_addons()[ "${uid}" ].globals.push( name );
 	return name;
 };
@@ -181,8 +242,9 @@ Sidebar.set = function () {
 
 	return result;
 };
+${dynamic_functions}
 ${content}
-})();`
+}).call( Addons.get_active_addons()[ '${uid}' ].context );`
 ;
 
 		innerhtml(element, modified_script);
@@ -365,6 +427,10 @@ ${content}
 	async function reactivate_addon(uid) {
 		let old_view_name = Views.get();
 		let old_view_uid  = Views.get_uid();
+
+		let old_sheet_name = Sheets.get_active();
+		let old_sheet_uid = Sheets.get_active_uid();
+
 		let dependents = await get_dependents_tree( uid )
 		await deactivate_addon		( uid );
 		await activate_addon		( uid );
@@ -374,6 +440,10 @@ ${content}
 		
 		// TEST MORE run the view hook again to restore previous view if we're still there
 		Hooks.run('view', { name: old_view_name, uid: old_view_uid });
+		// TEST should we await the view load? (prlm. testing apparently not)
+		if (old_sheet_name) {
+			Hooks.run('sheet', { name: old_sheet_name, uid: old_sheet_uid });
+		}
 	}
 	async function disable_addon(uid) {
 		$.log.w( 'Addons disabling...', uid );

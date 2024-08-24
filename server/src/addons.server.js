@@ -7,16 +7,40 @@ Addons = {};
 	Addons.get_global = function (name) {
 		return get_global_object()[name];
 	};
-	Addons.add_global = function (name, o, source_addon) {
+	function add_global_to_addon_context ({ name, object, addon_name, context }) {
+		let maybe_proxy_object = object;
+		
+		if (isfun(object)) {
+			maybe_proxy_object = new Proxy(object, {
+				apply: (target, this_arg, args) => {
+					let result = target(...args);
+					Hooks.run('addons-function-call', { name, module_name: addon_name, result, args: args });
+					return result;
+				}
+			});
+		}
+
+		context[ name ] = maybe_proxy_object;
+	};
+	Addons.add_global = function (name, object, source_addon) {
+		if (isfun(name)) { // if you wanna provide a function as the 1st & only arg
+			object = name; // name is fn
+			name = object.name; // anonymouse fns are '' so they'll be ignored
+		}
 		if (name) {
-			get_global_object()[name] = o;
+			get_global_object()[name] = object;
 			Hooks.run('addons-global-added', { source_addon, object_name: name });
 
 			// add to all active addons contexts
 			for ( let addon_name in active_addons ) {
 				let addon = active_addons[ addon_name ];
 				if (addon && addon.context) {
-					addon.context[ name ] = o;
+					add_global_to_addon_context({
+						name,
+						object,
+						addon_name,
+						context: addon.context
+					});
 				}
 			}
 		}
@@ -63,8 +87,7 @@ Addons = {};
 
 	async function delayed_reload_addon(uid) {
 		$.taxeer('reload-addon-'+uid, async function () {
-			await deactivate_addon ( uid );
-			await activate_addon( uid );
+			await reactivate_addon ( uid );
 		}, 2500);
 	}
 	async function delayed_deactivate_addon(uid) {
@@ -103,6 +126,20 @@ Addons = {};
 		}
 	});
 
+	async function get_dependents_tree(uid, tree = []) {
+		for (let name in active_addons) {
+			let addon = active_addons[name];
+			if (addon.manifest.needs) {
+				if (addon.manifest.needs.includes(uid)) {
+					push_if_unique(tree, name);
+					await get_dependents_tree(name, tree);
+				}
+			}
+		}
+
+		return tree;
+	}
+
 	async function does_addon_exist(uid) {
 		let addon_path = './addons/'+uid+'/', exists;
 		try {
@@ -132,6 +169,7 @@ Addons = {};
 		manifest = Weld.decode_config( manifest || '' );
 		manifest.needs = to_arr_or_undef(manifest.needs);
 		manifest.client_needs = to_arr_or_undef(manifest.client_needs);
+		manifest.server_needs = to_arr_or_undef(manifest.server_needs);
 		// only devs with perms can change this, these addons cannot be removed or disabled
 		manifest.system = to_bool(manifest.system);
 		// these addons are only allowed in dev instances, can't be pushed to production
@@ -212,6 +250,7 @@ Addons = {};
 		get_manifest,
 		get_addon_client,
 		get_addon_server,
+		get_dependents_tree,
 	});
 
 	// TODO these changes should mark themselves in an object with timestamps & deliver through Polling
@@ -235,6 +274,23 @@ Addons = {};
 			Cli.echo( ' ^bright^Addons > '+uid+'~~ was modified but is disabled, leaving it be!' );
 			return;
 		}
+		
+		let manifest = await get_manifest( uid );
+		addon.manifest = manifest;
+
+		if (manifest.needs) {
+			for await (let need of manifest.needs) {
+				if (need !== uid)
+					await activate_addon( need );
+			}
+		}
+
+		if (manifest.server_needs) {
+			for await (let need of manifest.server_needs) {
+				if (need !== uid)
+					await activate_addon( need );
+			}
+		}
 
 		Cli.echo( ' ^bright^Addons > '+uid+'~~ activating...' );
 		let server = await get_addon_server( uid );
@@ -247,18 +303,13 @@ let echo = function () {
 };
 let Addons = shallowcopy(get_global_object().Addons);
 Addons.add_global = function (name, object) {
-	let original = get_global_object().Addons;
-	let new_object = object;
-	if (isfun(object)) {
-		new_object = new Proxy(object, {
-			apply: (target, this_arg, args) => {
-				let result = target(...args);
-				Hooks.run('addons-function-call', { name, module_name: '${uid}', result, args: args });
-				return result;
-			}
-		});
+	if (isfun(name)) { // if you wanna provide a function as the 1st & only arg
+		object = name; // name is fn
+		name = object.name; // anonymouse fns are '' so they'll be ignored
 	}
-	let result = original.add_global(name, new_object, '${uid}');
+
+	let original = get_global_object().Addons;
+	let result = original.add_global(name, object, '${uid}');
 	Addons.get_active_addons()[ '${uid}' ].globals.push( name );
 	return result;
 };
@@ -297,6 +348,12 @@ ${server.main}
 				addon.context = { ...global, require };
 				for (let i of Object.getOwnPropertyNames(global)) {
 					addon.context[i] = global[i];
+					add_global_to_addon_context({
+						name: i,
+						object: global[i],
+						addon_name: uid,
+						context: addon.context
+					});
 				}
 				script.runInNewContext(addon.context);
 //				strict_eval(modified_script);
@@ -313,6 +370,16 @@ ${server.main}
 
 			Cli.echo( ' ^bright^Addons > '+uid+'~~ deactivating...' );
 			await Hooks.until( 'addon-deactivate', { uid } );
+			// for reloads, keep track of any deps that were active and reactivate them afterwards
+			// also deactivate addons that need this addon
+			for (let name in active_addons) {
+				let addon = active_addons[name];
+				if (addon.manifest.needs) {
+					if (addon.manifest.needs.includes(uid)) {
+						await deactivate_addon(name);
+					}
+				}
+			}
 
 			if (addon.hooks) {
 				addon.hooks.forEach(function (hook) {
@@ -327,6 +394,15 @@ ${server.main}
 
 			Cli.echo( ' ^bright^Addons > '+uid+'~~ deactivated!' );
 			delete active_addons[uid];
+		}
+	}
+	async function reactivate_addon(uid) {
+		Cli.echo( ' ^bright^Addons > '+uid+'~~ reactivating...' );
+		let dependents = await get_dependents_tree( uid )
+		await deactivate_addon		( uid );
+		await activate_addon		( uid );
+		for await (let dep of dependents) {
+			await activate_addon( dep );
 		}
 	}
 	async function enable_addon(uid) {

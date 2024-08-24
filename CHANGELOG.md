@@ -2,19 +2,36 @@
 
 New features, API changes & bug fixes are tracked here. We try our best to keep this comprehensive.
 
+## 44xx
+
 ## 43xx
 
+* Addons
+  * added `Addons.add_global( named_function )` takes a function with a name, anonymous functions are ignored
+  * `addons-function-call` works on both Server & Client now
+    * there's a browser limitation on Client where reactivations will need dependent addons to be reloaded keep it functioning.
+    * this is the default behavior when you specify a `need` in your `manifest`.
+    * the needed addon's globalized functions will correctly be able to identify your addon when called from it.
+* List
+  * Lists now only scroll when needed when using `.up` and `.down`, this feature also applies to `.reverse`d Lists
 * Database Addon
+  * use `Database.indices{ db, collection, { filter, sort, limit, project, uids } }` on Server to get indices of your objects from MongoDB
+    * also supports getting only specific ids
+  
   * anything related to `sync` has been moved to Synchronizer, Database no longer interacts with Network
 * Synchronizer
+  * all Network operations are now handled using Sockets
+  * you can specify `list: { element, template, ... }` when creating a Synchronizer to have it create the `List` & `Recycler` for you
   * handles `sync` logic by itself, Database is now only used for memory
   * when returning objects to Recycler's adapter on `get`, cached indices are assigned as the objects `.order`
 * Sockets
   * `Sockets.emit_by_context( context_checker, ...args )` can be used to check context & emit events per connection depending on the context
 * Recycler
+  * `remove_all({ keep_range })` use `keep_range` to prevent `remove_all` from reseting the range, this also removes items faster
   * `.order` properties in objects are now the preferred method of figuring out where an element is gonna spawn
   * when changing `.order` , elements are swapped, new `.order`s are reflected in objects
   * `.insert` now always uses `.reorder` to assign new `.order`s based on the very first elements `.order`
+
 
 ## 42xx
 
