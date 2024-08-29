@@ -96,7 +96,7 @@ Addons = {};
 		}, 2500);
 	}
 	
-	watcher.on('all', (event, path) => {
+	watcher.on('all', async (event, path) => {
 		// TODO react to more events
 //		$.log(event, path);
 		
@@ -110,19 +110,35 @@ Addons = {};
 			uid = crumbs[1];
 
 		// TODO only reload on the server if .../server/... is modified
+		
+		if (path.endsWith('build.w')) { // since this is written in this function, avoid infinite loop
+			return;
+		}
+		
+		let reload, ignore;
+
+		if (crumbs[2] == 'data') {
+			Cli.echo(uid, 'ignored /data/');
+			ignore = 1;
+		}
 
 		if (event == 'unlinkDir') {
 			if (crumbs.length == 2) { // addons / <uid>
 				delayed_deactivate_addon( uid );
 			} else if (crumbs.length >= 2) {
-				delayed_reload_addon( uid );
+				reload = 1;
 			}
 		}
 
 		if (event == 'change') {
 			if (crumbs.length >= 2) { // addons / <uid> / ..
-				delayed_reload_addon( uid );
+				reload = 1;
 			}
+		}
+		
+		if (reload && !ignore) {
+			await increment_build( uid );
+			delayed_reload_addon( uid );
 		}
 	});
 
@@ -140,11 +156,35 @@ Addons = {};
 		return tree;
 	}
 
-	async function does_addon_exist(uid) {
-		let addon_path = './addons/'+uid+'/', exists;
+	async function increment_build (uid) {
+		let { exists, addon_path } = await does_addon_exist( uid );
+		if (!exists) return 0;
+
+		let build = 1;
 		try {
-			exists = Files.get.folder(addon_path);
+			build = Files.get.file(addon_path+'build.w').toString();
 		} catch (e) {}
+
+		try {
+			Files.set.file(addon_path+'build.w', ''+(++build));
+		} catch (e) {}
+		
+		Cli.echo( ' ^bright^Addons > '+uid+'~~ incremented build...', build );
+	}
+
+	async function does_addon_exist(uid) {
+		let addon_path = './addons/'+uid+'/', exists, is_directory;
+
+		try {
+			let stats = await Files.get_stats(addon_path);
+			is_directory = stats.isDirectory();
+		} catch (e) {}
+
+		if (is_directory) {
+			try {
+				exists = Files.get.folder(addon_path);
+			} catch (e) {}
+		}
 
 		return { exists, addon_path };
 	}
@@ -159,15 +199,18 @@ Addons = {};
 		
 		return icon_file;
 	}
-	async function get_manifest(uid) {
-		let manifest = '';
+	async function get_manifest(uid) { // assumes addon exists (is installed)
+		let manifest = '', build = 1;
 		try {
 			// TODO needs promisification
 			manifest = Files.get.file('./addons/'+uid+'/manifest.w').toString();
+			build = Files.get.file('./addons/'+uid+'/build.w').toString();
 		} catch (e) {}
 
 		manifest = Weld.decode_config( manifest || '' );
+		manifest.build = to_num(build);
 		manifest.needs = to_arr_or_undef(manifest.needs);
+		manifest.enabled = to_bool(manifest.enabled); // enabled by default
 		manifest.client_needs = to_arr_or_undef(manifest.client_needs);
 		manifest.server_needs = to_arr_or_undef(manifest.server_needs);
 		// only devs with perms can change this, these addons cannot be removed or disabled
@@ -222,7 +265,7 @@ Addons = {};
 	}
 	async function get_addon_server(uid) { // assumes addon exists (is installed)
 		let addon_path = './addons/'+uid+'/', server = {};
-		
+
 		try {
 			server.main = Files.get.file(addon_path+'server.js').toString();
 		} catch (e) {}
@@ -265,18 +308,24 @@ Addons = {};
 			globals: [],
 			context: {},
 		};
+		
+		let manifest = await get_manifest( uid );
+		addon.manifest = manifest;
+
 		let is_active = await MongoDB.get( Config.database.name, module_name, {
 			uid,
 			active: 1,
 		});
+		
+		if (!is_active) {
+			if (manifest.enabled)
+				is_active = 1;
+		}
 
 		if (!is_active) {
 			Cli.echo( ' ^bright^Addons > '+uid+'~~ was modified but is disabled, leaving it be!' );
 			return;
 		}
-		
-		let manifest = await get_manifest( uid );
-		addon.manifest = manifest;
 
 		if (manifest.needs) {
 			for await (let need of manifest.needs) {
@@ -300,6 +349,9 @@ Addons = {};
 `let addon_path = $.path+'/addons/${uid}';
 let echo = function () {
 	return Cli.echo.apply($, [' ^bright^Addons > ${uid}~~', ...arguments]);
+};
+let warn = function () {
+	return Cli.warn.apply($, [' ^bright^Addons > ${uid}~~', ...arguments]);
 };
 let Addons = shallowcopy(get_global_object().Addons);
 Addons.add_global = function (name, object) {
@@ -421,14 +473,29 @@ ${server.main}
 		// load their server side code
 		// whenever their dirs change, update the server code
 		// if disabled/deleted, unload the server code, remove db entry
+
+		let available = [], enabled = [];
+		try {
+			available = Files.get.folder('./addons');
+		} catch (e) {}
+		
+		for await (let uid of available) {
+			let manifest = await get_manifest( uid );
+			if (manifest && manifest.enabled) {
+				enabled.push( uid );
+			}
+		}
+
 		let active_addons = await MongoDB.query( Config.database.name, module_name, {
 			active: 1,
 		});
-		
-		Cli.echo( ' ^bright^Addons~~ '+active_addons.rows.length+' active' );
-		
 		for await (let addon of active_addons.rows) {
-			let uid = addon.uid;
+			push_if_unique( enabled, addon.uid );
+		}
+		
+		Cli.echo( ' ^bright^Addons~~ '+enabled.length+' enabled' );
+		
+		for await (let uid of enabled) {
 			let { exists, addon_path } = await does_addon_exist( uid );
 			if (exists) {
 				await activate_addon(uid);
@@ -500,16 +567,24 @@ ${server.main}
 		} catch (e) {}
 		
 		for await (let uid of available) {
-			let addon = await get_manifest( uid );
-			addon.icon = await get_icon( uid );
+			let { exists, addon_path } = await does_addon_exist( uid );
 
-			let is_active = await MongoDB.get( Config.database.name, module_name, { uid, active: 1 } );
-			
-			if (is_active) {
-				addon.active = 1;
+			if (exists) { // only true for existing directories
+				let addon = await get_manifest( uid );
+				addon.icon = await get_icon( uid );
+
+				let is_active = await MongoDB.get( Config.database.name, module_name, { uid, active: 1 } );
+				
+				if (!is_active) { // if it hasn't been explicitly disabled
+					if (addon.enabled) is_active = 1;
+				}
+				
+				if (is_active) {
+					addon.active = 1;
+				}
+
+				out.push( addon );
 			}
-
-			out.push( addon );
 		}
 		
 		response.get( out ).finish();

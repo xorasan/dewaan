@@ -1,4 +1,62 @@
-var Addons = {}, addons_list, debug_addons = 1;
+async function IDBHandler (db_name, version = 8) {
+	if (isundef(db_name)) throw Error('db name required');
+	
+	let handler = {};
+	
+	handler.db_name = db_name;
+	handler.store_name = db_name;
+	handler.version = version;
+	handler.db = null;
+
+	async function init() {
+		return new Promise(function (resolve, reject) {
+			const request = indexedDB.open(handler.db_name, handler.version);
+			request.onupgradeneeded = function (e) {
+				const db = e.target.result;
+				if (db.objectStoreNames.contains(handler.store_name)) {
+					db.deleteObjectStore(handler.store_name);
+				}
+				db.createObjectStore(handler.store_name, { keyPath: 'uid' });
+			};
+			request.onsuccess = function (e) {
+				handler.db = e.target.result;
+				resolve();
+			};
+			request.onerror = function (e) { reject(`Error: ${e.target.error}`) };
+		});
+	}
+	async function set(data) {
+		return handler._operate('put', data);
+	}
+	async function get(uid) {
+		return handler._operate('get', uid);
+	}
+	async function get_all() {
+		return handler._operate('getAll');
+	}
+	async function remove(uid) {
+		return handler._operate('delete', uid);
+	}
+	async function _operate(operation, value) {
+		return new Promise(function (resolve, reject) {
+			const tx = handler.db.transaction([handler.store_name], 'readwrite');
+			const store = tx.objectStore(handler.store_name);
+			const request = store[operation](value);
+			request.onsuccess = function () { resolve(request.result) };
+			request.onerror = function (e) { reject(e.target.error) };
+		});
+	}
+	async function destroy () {
+		handler.db.close();
+	}
+	
+	Object.assign(handler, { init, set, get, get_all, remove, _operate });
+	await init();
+	
+	return handler;
+}
+
+var Addons = {}, AddonsCache, addons_list, debug_addons = 1;
 ;(function(){
 	'use strict';
 	
@@ -85,47 +143,162 @@ var Addons = {}, addons_list, debug_addons = 1;
 		}
 	};
 	
+	async function sleep (time = 200) { return await new Promise((r) => { setTimeout(() => { r() }, time); }) }
+	
 	async function activate_all_addons() {
 		if (debug_addons) $.log.w('Addons activate_all_addons');
 
-		let addons = await get_all_addons();
+		let addons, tracker, got_from_cache, cached_index = {};
+		
+		tracker = measure_performance('AddonsCache creation');
+		AddonsCache = await IDBHandler('addons-cache');
+		tracker.end();
+
+		tracker = measure_performance('get cached addons');
+		addons = await AddonsCache.get_all();
+		if (addons && addons.length) {
+			addons = addons.filter(( addon ) => addon.active);
+		}
+		tracker.end();
+
+		if (!addons.length) {
+			tracker = measure_performance('fetch available addons');
+			addons = await get_all_addons();
+			tracker.end();
+		} else {
+			addons = addons.map((addon) => {
+				cached_index[ addon.uid ] = addon.data;
+				return addon;
+			});
+			got_from_cache = 1;
+		}
+		
+		// sort system addons first
+		addons.sort(function (a, b) {
+			return b.system - a.system;
+		});
+
+		if (!got_from_cache) {
+			tracker = measure_performance('get addons from cache');
+			let cached = await AddonsCache.get_all();
+			cached.forEach(function ({ uid, data }) {
+				cached_index[ uid ] = data;
+			});
+			tracker.end();
+		}
+
+		let activations_tracker = measure_performance('all addons activations');
 		for await (let addon of addons) {
+			if ( active_addons[addon.uid] ) continue;
+			
 			if (addon.active) {
 				let report = {
 					uid:		module_name,
-					title:		module_title,
-					info:		'Activating '+addon.name+'...',
+					title:		addon.name || addon.uid,
+					info:		'Activating...',
 					progress:	'0%',
 				};
-
 				Webapp.report_progress( report );
+				
+				let addon_data = cached_index[addon.uid];
+				
+				if (!got_from_cache && addon_data && addon_data.manifest) {
+					if (addon.build > addon_data.manifest.build) { // if Server build is newer
+						addon_data = 0; // invalidate local data
+						Webapp.report_progress({ ...report, info: 'Needs update...' });
+					}
+				}
+				
+				if (!addon_data) {
+					Webapp.report_progress({ ...report, info: 'Fetching update...' });
+					tracker = measure_performance('fetch + cache addon '+addon.uid);
+					addon_data = await fetch_addon_data( addon.uid, { addon } );
+					tracker.end();
+				}
 
-				await activate_addon( addon.uid );
+				Webapp.report_progress({ ...report, info: 'Activating...', progress: '90%' });
+				await activate_addon( addon.uid, { addon_data } );
 
 				report.progress = '100%';
 				Webapp.report_progress( report );
 			}
 		}
+		
+		activations_tracker.end();
+
+		if (got_from_cache) { // if we got addons from offline storage
+			get_all_addons(); // this gets available addons list & updates addons in cache
+		}
 	}
 	
-	async function get_all_addons() {
-		return await Network.fetch(module_name, 'all', 1);
-	}
+	async function get_all_addons () {
+		// if online, fetch the latest and compare & update old cached ones
+		let addons = await Network.fetch(module_name, 'all', 1);
+		
+		if (addons) {
+			let cached_index = {};
+			let cached = await AddonsCache.get_all();
+			cached.forEach(function ({ uid, data }) {
+				cached_index[ uid ] = data;
+			});
+			
+			for ( let addon of addons ) {
+				// this updates it in the cache 
+				let addon_data = cached_index[ addon.uid ];
+				if (addon_data && addon_data.manifest) {
+					if (addon.build > addon_data.manifest.build) { // if Server build is newer
+						addon_data = 0; // invalidate local data
+					}
+				}
+				
+				if (!addon_data) {
+					addon_data = await Network.fetch( module_name, 'client', { uid: addon.uid } );
 
-	async function list_all_addons() {
+					if (addon_data && AddonsCache) {
+						await AddonsCache.set({ uid: addon.uid, data: addon_data, ...addon });
+					}
+				}
+			}
+		}
+		
+		return addons;
+	}
+	async function fetch_addon_data ( uid, { addon } = {} ) {
+		let addon_data = await AddonsCache.get( uid ), got_from_cache, outdated;
+		if (addon_data) {
+			got_from_cache = 1;
+			outdated = addon_data.outdated;
+			addon_data = addon_data.data;
+		}
+		
+		if (!addon_data || outdated) {
+			try {
+				addon_data = await Network.fetch( module_name, 'client', { uid } );
+			} catch (e) {
+				$.log.w(
+					'couldnt fetch '+(outdated ? 'outdated ' : '' )+'addon', uid,
+					(outdated ? 'using local version instead' : '' )
+				);
+			}
+		}
+
+		if (addon_data && AddonsCache && !got_from_cache) {
+			let tracker = measure_performance('cache addon '+uid);
+			await AddonsCache.set({ uid, data: addon_data, ...addon });
+			tracker.end();
+		}
+
+		return addon_data;
+	}
+	async function list_all_addons () {
 		var addons = await get_all_addons();
 		if (isarr(addons)) {
 			addons_list.message();
 			addons.forEach(function (o, i) {
-				var addon = {
-					uid: o.uid,
+				var addon = { ...o,
 					name: o.name || o.uid,
-					build: o.build,
-					description: o.description,
-					needs: o.needs,
-					active: o.active,
+					icon$h: o.icon || Templates.get_icon_as_svg( module_icon ),
 				};
-				addon.icon$h = o.icon || Templates.get_icon_as_svg( module_icon );
 				addons_list.set(addon);
 			});
 			if (View.is_active_fully(module_name)) {
@@ -174,13 +347,18 @@ var Addons = {}, addons_list, debug_addons = 1;
 				dynamic_functions += `${i}=Addons.add_global_to_addon_context('${i}','${uid}');`;
 			}
 		}
+		
+		let addon_name = addon.manifest.name || uid;
 
 		// IMPORTANT any changes made to shallow copied objects wont be reflected inside the addon after this
 		// better use get_* accessors :)
 		let modified_script =
-`;(function(){
+`;(async function(){
 let echo = function () {
-	return Cli.echo.apply($, [' ^bright^Addons > ${uid}~~', ...arguments]);
+	return Cli.echo.apply($, [' ^bright^Addons > ${addon_name}~~', ...arguments]);
+};
+let warn = function () {
+	return Cli.warn.apply($, [' ^bright^Addons > ${addon_name}~~', ...arguments]);
 };
 let listener = function () {
 	let original = get_global_object().listener;
@@ -228,6 +406,22 @@ Hooks.set = function () {
 function collect_hook ( hook ) {
 	Addons.get_active_addons()[ "${uid}" ].hooks.push( hook );
 }
+function uncollect_hook ( hook ) {
+	let hooks = Addons.get_active_addons()[ "${uid}" ].hooks;
+	
+	let index = hooks.indexOf( hook );
+	if (index > -1) {
+		hooks.splice( index, 1 );
+	}
+}
+function uncollect_list ( list ) {
+	let lists = Addons.get_active_addons()[ "${uid}" ].lists;
+	
+	let index = lists.indexOf( list );
+	if (index > -1) {
+		lists.splice( index, 1 );
+	}
+}
 let Sidebar = shallowcopy(get_global_object().Sidebar);
 Sidebar.set = function () {
 	let original = get_global_object().Sidebar;
@@ -252,7 +446,7 @@ ${content}
 		addons_scripts.append( element );
 	}
 
-	async function activate_addon(uid) { // loads into memory & runs the addon
+	async function activate_addon(uid, { addon_data } = {}) { // loads into memory & runs the addon
 		// if already active, break
 		// get the client
 		// satisfy deps first if any
@@ -261,7 +455,12 @@ ${content}
 		
 		if ( active_addons[uid] ) return;
 		
-		let { client, icon, manifest } = await Network.fetch( module_name, 'client', { uid } );
+		if (!addon_data) {
+			addon_data = await fetch_addon_data( uid );
+			// TODO error handling
+		}
+
+		let { client, icon, manifest } = addon_data;
 		
 		client = client || {};
 		manifest = manifest || { uid };
@@ -316,6 +515,7 @@ ${content}
 				addon.views_found  = Views.index( element );
 				addon.sheets_found = Sheet.index( element );
 				Templates.index( element );
+				Webapp.icons( element, { addon } );
 				
 				addons_dom.append( element );
 			}
@@ -349,14 +549,16 @@ ${content}
 			}
 		}
 
-		await Hooks.until( 'addon-activate', { uid } );
+		await Hooks.until( 'addon-activate', { uid, addon } );
 
 		update_addon_state(uid, 2);
 	}
 	async function deactivate_addon(uid) {
 		if (debug_addons) $.log.w('Addons deactivating', uid);
 
-		await Hooks.until( 'addon-deactivate', { uid } );
+		let addon = active_addons[ uid ];
+
+		await Hooks.until( 'addon-deactivate', { uid, addon } );
 		// for reloads, keep track of any deps that were active and reactivate them afterwards
 		// also deactivate addons that need this addon
 		for (let name in active_addons) {
@@ -367,8 +569,6 @@ ${content}
 				}
 			}
 		}
-
-		let addon = active_addons[ uid ];
 		
 		if (addon) {
 			// remove scripts, dom and styles
@@ -425,6 +625,16 @@ ${content}
 		update_addon_state(uid, 1);
 	}
 	async function reactivate_addon(uid) {
+		await Hooks.until( 'addons-reactivate', { uid } );
+		
+		if (AddonsCache) {
+			let cached_addon = await AddonsCache.get(uid);
+			if (cached_addon) { // if cached
+				cached_addon.outdated = 1; // save hint for possible fetching
+				await AddonsCache.set(cached_addon); // will be used in fetch_addon_data
+			}
+		}
+		
 		let old_view_name = Views.get();
 		let old_view_uid  = Views.get_uid();
 
@@ -449,6 +659,14 @@ ${content}
 		$.log.w( 'Addons disabling...', uid );
 		await Hooks.until( 'addon-disable', { uid } );
 
+		if (AddonsCache) { // mark enabled offline
+			let cached_addon = await AddonsCache.get(uid);
+			if (cached_addon) { // if cached
+				cached_addon.active = 0;
+				await AddonsCache.set(cached_addon);
+			}
+		}
+
 		let result = await Network.fetch(module_name, 'state', {
 			uid,
 			state: 0,
@@ -470,6 +688,15 @@ ${content}
 	}
 	async function enable_addon(uid) {
 		$.log.w( 'Addons enabling...', uid );
+
+		if (AddonsCache) { // mark enabled offline
+			let cached_addon = await AddonsCache.get(uid);
+			if (cached_addon) { // if cached
+				cached_addon.active = 1;
+				await AddonsCache.set(cached_addon);
+			}
+		}
+
 		let result = await Network.fetch(module_name, 'state', {
 			uid,
 			state: 1,
@@ -480,48 +707,16 @@ ${content}
 		return result;
 	}
 	
-	async function activate(o, activate_only = 0) {
-		if (o) {
-			let state;
-			if (activate_only) state = 1;
-			else state = o.active ? 0 : 1;
-
-			if (state === 1 && active_addons[uid]) {
-				$.log.w( uid, 'is already active' );
-				return;
-			}
-
-			// TODO this should only fetch the addon's client
-			// 
-			var result = await Network.fetch(module_name, 'client', {
-				uid: o.uid,
-				state
-			});
-			if (result) {
-				let client = result.client;
-				if (state === 1 && client) { // client
-					let default_icon;
-					if (!o.icon$h && !o.icon) {
-						default_icon = Templates.get_icon_as_svg( module_icon );
-					}
-
-				}
-				
-				
-				// Fire Hooks to all Addons
-				if (state === 0) {
-				}
-			}
-		}
-	}
-
-	Addons.enable		= enable_addon		;
-	Addons.activate		= activate_addon	;
-	Addons.reactivate	= reactivate_addon	;
-	Addons.deactivate	= deactivate_addon	;
-	Addons.disable		= disable_addon		;
+	Object.assign(Addons, {
+		enable		:	enable_addon		,
+		activate	:	activate_addon		,
+		reactivate	:	reactivate_addon	,
+		deactivate	:	deactivate_addon	,
+		disable		:	disable_addon		,
+		get_all		:	get_all_addons		,
+	});
 	
-	var activate_sk = { n: 'Activate',
+	let activate_sk = { n: 'Activate',
 		k: 'a',
 		alt: 1,
 		c: async function () {
@@ -537,7 +732,7 @@ ${content}
 			update_softkeys();
 		},
 	};
-	var enable_sk = { n: 'Enable',
+	let enable_sk = { n: 'Enable',
 		k: 'e',
 		alt: 1,
 		c: async function () {
@@ -555,7 +750,7 @@ ${content}
 			update_softkeys();
 		},
 	};
-	var reactivate_sk = { n: 'Reactivate Addon',
+	let reactivate_sk = { n: 'Reactivate Addon',
 		sh: 'Reactiv. Addon',
 		k: 'r',
 		i: 'iconrefresh',
@@ -632,6 +827,10 @@ ${content}
 				 if (o.active == 2 || active_addons[o.uid]) o.state = 'Active';
 			else if (o.active == 1) o.state = 'Enabled';
 			else 					o.state = 'Disabled';
+			
+			o.is_system  = o.system  ? 'izhar' : 'ixtaf';
+			o.is_private = o.private ? 'izhar' : 'ixtaf';
+			
 			return o;
 		};
 		addons_list.after_set = function (o, c, k) {
@@ -668,6 +867,18 @@ ${content}
 			for (var i in active_addons) {
 				let addon = active_addons[i];
 				if ( addon.views_found && addon.views_found.includes( view_name ) ) {
+					add_reactivate_softkey(addon.manifest.uid);
+					break;
+				}
+			}
+		}
+	});
+	Hooks.set('sheet-ready', async function () {
+		let sheet_name = Sheets.get_active();
+		if (sheet_name) {
+			for (var i in active_addons) {
+				let addon = active_addons[i];
+				if ( addon.sheets_found && addon.sheets_found.includes( sheet_name ) ) {
 					add_reactivate_softkey(addon.manifest.uid);
 					break;
 				}

@@ -174,10 +174,10 @@ include
 	polling.client
 	sound.graph
 kind      client
-appname   Dewaan
+appname   Glatteis
 sub       Forum Software
 desc      Tiny modern forum software for small companies
-repo      https://github.com/xorasan/dewaan
+repo      https://github.com/skanden/glatteis
 port      3060
 bg        #000000
 

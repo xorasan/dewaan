@@ -2,7 +2,27 @@
 
 New features, API changes & bug fixes are tracked here. We try our best to keep this comprehensive.
 
+## 45xx
+
+* Addons
+  * `build.w` is now used to track each addon's build number, this file is managed by the system, whenever changes are detected in an addon's code, it increments the build number, it ignores the `/data/` directory.
+  * Addons are now cached using IndexedDB, the cache is auto-updated whenever a new build is detected.
+  * Startup times have been shaved off by ~1.5 seconds.
+* Updater
+  * ServiceWorker based caching is now enabled by default.
+
 ## 44xx
+
+* Synchronizer
+  * Introduced Variants, there's two that are built-in, default & trashed.
+    * Variants allow dividing objects into multiple logical groups by advancing sorting and filtering methods.
+    * You can now create, activate, extend and duplicate variants.
+  * Upon `sync`, each connection is only delivered updates that are relevant to it.
+  * Upon `fetched-times`, `variant-counts` are also emitted
+* Recycler
+* List
+* Database
+  * Database is now available on Server as well.
 
 ## 43xx
 

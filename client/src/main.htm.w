@@ -29,7 +29,10 @@ body
 			[id=needs_group] .needs_group .flex .dim .small
 				"needs " .padr .bold
 				[id=needs] .needs
-		[id=state] .state .center .pad .upper .bold
+		.flex .center .upper
+			[id=is_system] .is_system .pad .narrowletters 'System'
+			[id=is_private] .is_private .pad .narrowletters 'Private'
+			[id=state] .state .pad .bold
 	
 
 

@@ -19,7 +19,7 @@ src
 	manifest
 	notifications
 name      server
-appname   Dewaan
+appname   Glatteis
 connected y
 include
 	reset

@@ -144,7 +144,6 @@ narrowline               narrowline
 inlineflex               inlineflex
 dimmertext               dimmertext
 softkeysui               softkeysui
-sksoftleft               sksoftleft
 short_name               short_name
 subheading               subheading
 visualizer               visualizer
@@ -357,12 +356,12 @@ medium                   medium
 bigger                   bigger
 nowrap                   nowrap
 sticky                   sticky
-header                   header
 bottom                   bottom
 spaces                   spaces
 inline                   inline
 center                   center
 dimmer                   dimmer
+header                   header
 webapp                   webapp
 skdots                   skdots
 origin                   origin
